@@ -1,6 +1,14 @@
+terraform {
+  required_providers {
+    archive = {
+      source  = "hashicorp/archive"
+      version = "~> 2.2.0"
+    }
+  }
+}
+
 # Alternativ beskrevet i https://github.com/hashicorp/terraform-provider-null/issues/86
 # Må gjøre dette på sikt fordi null_resource er deprecated
-
 resource "null_resource" "lambda_exporter" {
   # (some local-exec provisioner blocks, presumably...)
 
