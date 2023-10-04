@@ -5,7 +5,7 @@ resource "null_resource" "lambda_exporter" {
   # (some local-exec provisioner blocks, presumably...)
 
   triggers = {
-    index : "${base64sha256(file("${path.module}/../../${var.function_folder_location}/main.py"))}"
+    index : base64sha256(file("${path.module}/../../${var.function_folder_location}/main.py"))
   }
 }
 
