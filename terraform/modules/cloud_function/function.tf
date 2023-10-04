@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    archive = {
-      source  = "hashicorp/archive"
-      version = "~> 2.2.0"
-    }
-  }
-}
-
 data "archive_file" "this" {
   type        = "zip"
   output_path = "${path.module}/lambda-files.zip"
