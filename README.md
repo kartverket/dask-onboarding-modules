@@ -1,4 +1,4 @@
-# dask-onboarding-modules
+# dask-modules
 Moduler som provisjonerer nødvendig infrastruktur i GCP-prosjektet til team som onboardes dataplattformen.
 
 ### Hvordan referere
