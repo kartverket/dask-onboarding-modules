@@ -38,11 +38,3 @@ resource "databricks_mws_workspaces" "this" {
     master_ip_range   = "10.3.0.0/28"
   }
 }
-
-output "workspace_url" {
-  value = databricks_mws_workspaces.this.workspace_url
-}
-
-output "workspace_id" {
-  value = databricks_mws_workspaces.this.workspace_id
-}
