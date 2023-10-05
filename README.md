@@ -1,9 +1,8 @@
 # dask-modules
-Moduler som provisjonerer nødvendig infrastruktur i GCP-prosjektet til team som onboardes dataplattformen.
+This repo contains terraform modules maintained by DASK. The modules are used to provision infrastructure for the teams being onboarded to the dataplatform.
 
-### Hvordan referere
-
-Moduler i dette repoet kan refereres til på følgende måte:
+### How to use the modules from other repos
+Modules must be referenced in the source definition as follows:
 
 ````yaml
 # Reference module defined in dbx_workspace_create
