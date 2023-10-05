@@ -17,3 +17,4 @@ module "create_workspace" {
   # ...
 }
 ````
+Be aware of the double slash after `dask-modules`. This indicates to Terraform that the remaining path after `//` is a sub-directory within the package.
