@@ -11,10 +11,6 @@ variable "project_id" {
   description = "The Id of the project for the resources to create"
 }
 
-variable "project_number" {
-  description = "The project number of the project for the resources to create"
-}
-
 variable "region" {
   description = "Location for Databricks workspace / region for GCP vpc. Databricks location should match vpc region."
   default     = "europe-west1"
