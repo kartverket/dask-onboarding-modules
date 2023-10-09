@@ -18,3 +18,7 @@ variable "region" {
 variable "databricks_account_id" {
   description = "Account ID found on https://accounts.gcp.databricks.com/"
 }
+
+variable "env" {
+  description = "Environment for the resources to create"
+}

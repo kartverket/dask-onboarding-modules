@@ -6,7 +6,7 @@ locals {
 }
 
 module "workspace_create" {
-  source = "./dbx_workspace_create/"
+  source    = "./dbx_workspace_create/"
   providers = {
     databricks.accounts = databricks.accounts
   }
@@ -14,6 +14,7 @@ module "workspace_create" {
   name_prefix           = var.name_prefix
   project_id            = var.project_id
   region                = var.region
+  env                   = var.env
 }
 
 resource "random_id" "bucket_suffix" {
