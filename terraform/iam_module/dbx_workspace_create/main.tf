@@ -24,7 +24,7 @@ resource "databricks_mws_networks" "this" {
 resource "databricks_mws_workspaces" "this" {
   provider       = databricks.accounts
   account_id     = var.databricks_account_id
-  workspace_name = "${var.name_prefix}-dbxws-${var.name_postfix}"
+  workspace_name = "${var.name_prefix}-dbxws-${var.env}"
   location       = var.region
 
   cloud_resource_container {
