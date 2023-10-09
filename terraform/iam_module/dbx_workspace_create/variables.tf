@@ -17,5 +17,4 @@ variable "region" {
 
 variable "databricks_account_id" {
   description = "Account ID found on https://accounts.gcp.databricks.com/"
-  default     = "d5146ada-087c-4866-bc39-35c1208098a0"
 }
