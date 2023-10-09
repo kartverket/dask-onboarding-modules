@@ -7,7 +7,9 @@ locals {
 
 module "workspace_create" {
   source = "./dbx_workspace_create/"
-
+  providers = {
+    databricks.accounts = databricks.accounts
+  }
   databricks_account_id = var.databricks_account_id
   name_prefix           = var.name_prefix
   project_id            = var.project_id
