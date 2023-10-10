@@ -14,6 +14,7 @@ module "workspace_create" {
   project_id            = var.project_id
   region                = var.region
   env                   = var.env
+  name_postfix           = var.name_postfix
 }
 
 resource "random_id" "bucket_suffix" {
