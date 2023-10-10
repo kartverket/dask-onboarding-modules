@@ -1,5 +1,5 @@
 locals {
-  name_prefix = env == "prod" ? "" : "${var.env}-"
+  name_prefix = var.env == "prod" ? "" : "${var.env}-"
 }
 
 module "create_vpc_for_databricks" {
