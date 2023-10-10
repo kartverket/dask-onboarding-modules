@@ -11,7 +11,6 @@ module "workspace_create" {
     databricks.accounts = databricks.accounts
   }
   databricks_account_id = var.databricks_account_id
-  name_prefix           = var.name_prefix
   project_id            = var.project_id
   region                = var.region
   env                   = var.env
