@@ -1,7 +1,11 @@
+locals {
+  name_prefix = env == "prod" ? "" : "${var.env}-"
+}
+
 module "create_vpc_for_databricks" {
   source = "../gcp_vpc"
 
-  name_prefix  = "${var.name_prefix}-dbx"
+  name_prefix  = "${local.name_prefix}dbx"
   name_postfix = var.name_postfix
   project_id   = var.project_id
   region       = var.region
@@ -10,7 +14,7 @@ module "create_vpc_for_databricks" {
 resource "databricks_mws_networks" "this" {
   provider     = databricks.accounts
   account_id   = var.databricks_account_id
-  network_name = "${var.name_prefix}-vpc-${var.name_postfix}"
+  network_name = "${local.name_prefix}vpc-${var.name_postfix}"
   gcp_network_info {
     network_project_id    = var.project_id
     vpc_id                = module.create_vpc_for_databricks.vpc_name
@@ -24,7 +28,7 @@ resource "databricks_mws_networks" "this" {
 resource "databricks_mws_workspaces" "this" {
   provider       = databricks.accounts
   account_id     = var.databricks_account_id
-  workspace_name = "${var.name_prefix}-dbxws-${var.env}"
+  workspace_name = "${local.name_prefix}workspace-${var.name_postfix}"
   location       = var.region
 
   cloud_resource_container {
