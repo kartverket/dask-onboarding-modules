@@ -1,20 +1,20 @@
 # dask-modules
-Moduler som provisjonerer nødvendig infrastruktur i GCP-prosjektet til team som onboardes dataplattformen.
+This repo contains terraform modules maintained by DASK. The modules are used to provision infrastructure for the teams being onboarded to the dataplatform.
 
-### Hvordan referere
-
-Moduler i dette repoet kan refereres til på følgende måte:
+### How to use the modules from other repos
+Modules must be referenced in the source definition as follows:
 
 ````yaml
 # Reference module defined in dbx_workspace_create
 module "create_workspace" {
-  source   = "git::https://github.com/kartverket/dask-onboarding-modules//modules/dbx_workspace_create?ref=TD-398-boilerplatekode-onboarding"
+  source   = "git::https://github.com/kartverket/dask-modules//terraform/modules/dbx_workspace_create"
   # ...
 }
 
 # Reference a specific hash/tag/branch
 module "create_workspace" {
-  source   = "git::https://github.com/kartverket/dask-onboarding-modules//modules/dbx_workspace_create?ref=TD-398-boilerplatekode-onboarding?ref=<hash/tag/branch>"
+  source   = "git::https://github.com/kartverket/dask-modules//terraform/modules/dbx_workspace_create?ref=<hash/tag/branch>"
   # ...
 }
 ````
+Be aware of the double slash after `dask-modules`. This indicates to Terraform that the remaining path after `//` is a sub-directory within the package.
