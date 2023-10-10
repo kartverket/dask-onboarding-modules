@@ -23,14 +23,14 @@ resource "random_id" "bucket_suffix" {
 
 resource "google_storage_bucket" "landing_zone" {
   location = var.region
-  name     = "landing-zone-${var.env}-${var.team}-${random_id.bucket_suffix.hex}"
+  name     = "landing-zone-${var.env}-${random_id.bucket_suffix.hex}"
 }
 
 resource "google_service_account" "service_account" {
   project      = var.project_id
-  account_id   = "cluster-${var.team}-sa"
-  display_name = "Service Account ${var.team}"
-  description  = "Service account som bare tilhører ${var.team}. I utgangspunktet har denne kun tilgang til der felles init-scripts blir lagret."
+  account_id   = "cluster-${var.env}-sa"
+  display_name = "Service Account ${var.env}"
+  description  = "Service account som bare tilhører ${var.env}. I utgangspunktet har denne kun tilgang til der felles init-scripts blir lagret."
 }
 
 resource "google_storage_bucket_iam_member" "member" {

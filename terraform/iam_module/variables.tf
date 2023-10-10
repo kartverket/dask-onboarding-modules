@@ -23,7 +23,3 @@ variable "databricks_account_id" {
 variable "env" {
   description = "Environment for the resources to create"
 }
-
-variable "team" {
-  description = "Team for the resources to create"
-}
