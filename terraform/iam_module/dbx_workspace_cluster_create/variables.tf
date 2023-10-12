@@ -11,7 +11,7 @@ variable "deploy_service_account" {
 }
 
 variable "workspace_env" {
-  description = "The environment of the workspace"
+  description = "String to be appended at the end of resource name properties (dev/test/prod)"
 }
 
 #variable "init_script_bucket_name" {

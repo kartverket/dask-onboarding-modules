@@ -1,6 +1,5 @@
 variable "workspace_env" {
-  description = "String to be appended at the end of resource name properties."
-  default     = "tf-managed"
+  description = "String to be appended at the end of resource name properties (dev/test/prod)"
 }
 
 variable "project_id" {

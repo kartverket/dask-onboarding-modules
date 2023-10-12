@@ -17,11 +17,11 @@ data "databricks_spark_version" "latest_lts" {
   long_term_support = true
 }
 
-resource "google_service_account" "service_account" {
+resource "google_service_account" "cluster_service_account" {
   project      = var.project_id
   account_id   = "cluster-${var.workspace_env}-sa"
   display_name = "Service Account ${var.workspace_env}"
-  description  = "Service account som bare tilhører ${var.workspace_env}. I utgangspunktet har denne kun tilgang til der felles init-scripts blir lagret."
+  description  = "Service account for clusteret som bare tilhører ${var.workspace_env}."
 }
 
 #resource "google_storage_bucket_iam_member" "member" {
@@ -62,7 +62,7 @@ resource "databricks_cluster" "shared_autoscaling" {
   gcp_attributes {
     availability           = "PREEMPTIBLE_WITH_FALLBACK_GCP"
     zone_id                = "AUTO"
-    google_service_account = google_service_account.service_account.email
+    google_service_account = google_service_account.cluster_service_account.email
   }
 
 }
