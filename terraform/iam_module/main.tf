@@ -1,41 +1,27 @@
-locals {
-  landing_sa_roles = [
-    "roles/storage.objectViewer",
-    "roles/storage.legacyBucketReader",
-  ]
-}
-
 module "workspace_create" {
   source    = "./dbx_workspace_create/"
   providers = {
     databricks.accounts = databricks.accounts
   }
   databricks_account_id = var.databricks_account_id
-  name_prefix           = var.name_prefix
   project_id            = var.project_id
   region                = var.region
   env                   = var.env
+  workspace_env         = var.workspace_env
 }
 
-resource "random_id" "bucket_suffix" {
-  byte_length = 4
-}
+module "create_cluster_for_ws" {
+  source                 = "./dbx_workspace_cluster_create"
+  project_id             = var.project_id
+  env                    = var.env
+  deploy_service_account = var.deploy_service_account
+  workspace_env          = var.workspace_env
+  depends_on             = [
+    module.workspace_create
+  ]
+  #init_script_bucket_name  = var.init_script_bucket_name
 
-resource "google_storage_bucket" "landing_zone" {
-  location = var.region
-  name     = "landing-zone-${var.env}-${random_id.bucket_suffix.hex}"
-}
-
-resource "google_service_account" "service_account" {
-  project      = var.project_id
-  account_id   = "cluster-${var.env}-sa"
-  display_name = "Service Account ${var.env}"
-  description  = "Service account som bare tilhører ${var.env}. I utgangspunktet har denne kun tilgang til der felles init-scripts blir lagret."
-}
-
-resource "google_storage_bucket_iam_member" "member" {
-  for_each = toset(local.landing_sa_roles)
-  bucket   = google_storage_bucket.landing_zone.name
-  role     = each.value
-  member   = "serviceAccount:${google_service_account.service_account.email}"
+  providers = {
+    databricks.workspace = databricks.workspace
+  }
 }
