@@ -1,0 +1,17 @@
+name: Build
+on:
+  push:
+
+jobs:
+  check_terraform_format:
+    runs-on: ubuntu-latest
+    name: Validate terraform files
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: terraform validate
+        uses: terraform validate
+        with:
+          path: terraform
