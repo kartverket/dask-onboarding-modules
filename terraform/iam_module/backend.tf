@@ -5,7 +5,7 @@ terraform {
     }
     databricks = {
       source                = "databricks/databricks"
-      configuration_aliases = [databricks.accounts]
+      configuration_aliases = [databricks.accounts, databricks.workspace]
     }
   }
 }
