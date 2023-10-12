@@ -15,7 +15,6 @@ module "create_cluster_for_ws" {
   project_id               = var.project_id
   env                      = var.env
   deploy_service_account   = var.deploy_service_account
-  read_bucket_content_role = var.read_bucket_content_role
   #init_script_bucket_name  = var.init_script_bucket_name
 
   providers = {
