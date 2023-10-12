@@ -2,7 +2,7 @@ variable "name_prefix" {
   description = "String to be appended at the beginning of resource name properties."
 }
 
-variable "name_postfix" {
+variable "workspace_env" {
   default     = "tf-managed"
   description = "Name postfix for the vpc resources."
 }

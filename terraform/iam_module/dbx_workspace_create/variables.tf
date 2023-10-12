@@ -1,4 +1,4 @@
-variable "name_postfix" {
+variable "workspace_env" {
   description = "String to be appended at the end of resource name properties."
   default     = "tf-managed"
 }

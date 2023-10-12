@@ -7,7 +7,7 @@ module "workspace_create" {
   project_id            = var.project_id
   region                = var.region
   env                   = var.env
-  name_postfix           = var.name_postfix
+  workspace_env           = var.workspace_env
 }
 
 module "create_cluster_for_ws" {
