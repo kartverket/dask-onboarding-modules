@@ -19,9 +19,9 @@ data "databricks_spark_version" "latest_lts" {
 
 resource "google_service_account" "service_account" {
   project      = var.project_id
-  account_id   = "cluster-${var.project_id}-sa"
-  display_name = "Service Account ${var.project_id}"
-  description  = "Service account som bare tilhører ${var.project_id}. I utgangspunktet har denne kun tilgang til der felles init-scripts blir lagret."
+  account_id   = "cluster-${var.workspace_env}-sa"
+  display_name = "Service Account ${var.workspace_env}"
+  description  = "Service account som bare tilhører ${var.workspace_env}. I utgangspunktet har denne kun tilgang til der felles init-scripts blir lagret."
 }
 
 #resource "google_storage_bucket_iam_member" "member" {
