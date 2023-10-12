@@ -24,11 +24,11 @@ resource "google_service_account" "service_account" {
   description  = "Service account som bare tilhører ${var.project_id}. I utgangspunktet har denne kun tilgang til der felles init-scripts blir lagret."
 }
 
-resource "google_storage_bucket_iam_member" "member" {
-  bucket = var.init_script_bucket_name
-  role   = "roles/storage.objectViewer"
-  member = "serviceAccount:${google_service_account.service_account.email}"
-}
+#resource "google_storage_bucket_iam_member" "member" {
+#  bucket = var.init_script_bucket_name
+#  role   = "roles/storage.objectViewer"
+#  member = "serviceAccount:${google_service_account.service_account.email}"
+#}
 
 resource "databricks_cluster" "shared_autoscaling" {
   provider                = databricks.workspace
