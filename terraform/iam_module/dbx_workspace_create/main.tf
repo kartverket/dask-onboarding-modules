@@ -42,3 +42,9 @@ resource "databricks_mws_workspaces" "this" {
     master_ip_range   = "10.3.0.0/28"
   }
 }
+
+resource "databricks_metastore_assignment" "this" {
+  provider     = databricks.workspace
+  metastore_id = var.metastore_id
+  workspace_id = databricks_mws_workspaces.this.workspace_id
+}

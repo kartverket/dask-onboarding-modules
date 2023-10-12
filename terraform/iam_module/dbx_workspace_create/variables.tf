@@ -17,3 +17,7 @@ variable "databricks_account_id" {
 variable "env" {
   description = "Environment for the resources to create"
 }
+
+variable "metastore_id" {
+  description = "The metastore_id used to share the unity catalog between workspaces"
+}

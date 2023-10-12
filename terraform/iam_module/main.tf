@@ -8,6 +8,7 @@ module "workspace_create" {
   region                = var.region
   env                   = var.env
   workspace_env         = var.workspace_env
+  metastore_id          = var.metastore_id
 }
 
 module "create_cluster_for_ws" {
