@@ -1,9 +1,9 @@
 locals {
-  name_postfix = var.env == "prod" ? "" : "${var.env}-"
+  name_postfix = var.env == "prod" ? "" : "-${var.env}"
 }
 
 resource "databricks_storage_credential" "external" {
-  name = "volume-creds-gcs-${var.gcs_bucket_name}-${var.external_volume_name}-${local.name_postfix}"
+  name = "volume-creds-gcs-${var.external_volume_name}${local.name_postfix}"
   databricks_gcp_service_account {}
 }
 
