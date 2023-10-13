@@ -6,7 +6,6 @@ terraform {
     }
     databricks = {
       source                = "databricks/databricks"
-      configuration_aliases = [databricks.accounts]
       version               = ">= 1.27.0"
     }
   }
