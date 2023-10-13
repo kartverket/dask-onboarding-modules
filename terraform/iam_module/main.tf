@@ -35,9 +35,6 @@ module "create_uc_schema" {
 
 module "register_gcs_bucket_unity_catalog" {
   source = "../modules/dbx_uc_gcs_volume"
-  providers = {
-    databricks.accounts = databricks.accounts
-  }
   databricks_catalog_name = module.create_uc_catalog.catalog_name
   databricks_schema_name  = module.create_uc_schema.schema_name
   env                     = var.env
