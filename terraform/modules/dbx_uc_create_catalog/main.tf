@@ -10,7 +10,7 @@ resource "databricks_storage_credential" "external" {
 resource "google_storage_bucket_iam_member" "member" {
   bucket = var.gcs_bucket_name
   role   = "roles/storage.admin"
-  member = "serviceAccount:${databricks_storage_credential.external.databricks_gcp_service_account}"
+  member = "serviceAccount:${databricks_storage_credential.external.databricks_gcp_service_account[0]}"
 }
 
 resource "databricks_catalog" "this" {
