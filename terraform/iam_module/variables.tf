@@ -19,7 +19,7 @@ variable "location" {
   default     = "europe-west1"
 }
 
-variable "project" {
+variable "project_id" {
   description = "The ID of the project in which the resource belongs. If it is not provided, the provider project is used."
   type        = string
 }
@@ -31,5 +31,10 @@ variable "team_name" {
 
 variable "area_short_name" {
   description = "Short name of organization area team is organized in"
+  type        = string
+}
+
+variable "metastore_id" {
+  description = "(Required for account-level) Unique identifier of the parent Metastore"
   type        = string
 }

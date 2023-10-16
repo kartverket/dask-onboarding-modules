@@ -17,3 +17,8 @@ variable "team_name" {
   description = "Name of the product team"
   type        = string
 }
+
+variable "metastore_id" {
+  description = "(Required for account-level) Unique identifier of the parent Metastore"
+  type        = string
+}

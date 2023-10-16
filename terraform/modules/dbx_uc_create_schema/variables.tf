@@ -20,5 +20,10 @@ variable "schema_name" {
 
 variable "schema_description" {
   description = "Purpose of the schema to be created"
-  type = string
+  type        = string
+}
+
+variable "metastore_id" {
+  description = "(Required for account-level) Unique identifier of the parent Metastore"
+  type        = string
 }

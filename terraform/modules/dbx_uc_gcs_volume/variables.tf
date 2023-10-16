@@ -28,3 +28,8 @@ variable "env" {
   description = "Environment for the resources to create"
   type        = string
 }
+
+variable "metastore_id" {
+  description = "(Required for account-level) Unique identifier of the parent Metastore"
+  type        = string
+}
