@@ -44,7 +44,7 @@ module "create_uc_schema" {
   metastore_id       = var.metastore_id
 }
 
-module "register_gcs_bucket_unity_catalog" {
+module "register_landing_zone_bucket_unity_catalog" {
   source = "../modules/dbx_uc_gcs_volume"
   providers = {
     databricks.accounts  = databricks.accounts,

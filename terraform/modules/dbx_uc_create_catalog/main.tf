@@ -10,17 +10,19 @@ resource "databricks_storage_credential" "gcs_catalog_bucket_creds" {
   databricks_gcp_service_account {}
 }
 
-#resource "google_storage_bucket_iam_member" "member" {
-#  bucket = var.gcs_bucket_name
-#  role   = "roles/storage.admin"
-#  member = "serviceAccount:${databricks_storage_credential.gcs_catalog_bucket_creds.databricks_gcp_service_account[0].email}"
-#}
+resource "google_storage_bucket_iam_member" "give_sa_admin_role" {
+  bucket     = var.gcs_bucket_name
+  role       = "roles/storage.legacyBucketOwner"
+  member     = "serviceAccount:${databricks_storage_credential.gcs_catalog_bucket_creds.databricks_gcp_service_account[0].email}"
+  depends_on = [databricks_storage_credential.gcs_catalog_bucket_creds]
+}
 
 resource "databricks_external_location" "external_location_to_add" {
   provider        = databricks.workspace
   name            = "gcs-${var.gcs_bucket_name}-${local.name_postfix}"
   url             = "gs://${var.gcs_bucket_name}"
   credential_name = databricks_storage_credential.gcs_catalog_bucket_creds.name
+  depends_on      = [google_storage_bucket_iam_member.give_sa_admin_role]
 }
 
 resource "databricks_catalog" "create_team_metastore_catalog" {
@@ -38,8 +40,9 @@ resource "databricks_catalog" "create_team_metastore_catalog" {
 }
 
 resource "databricks_grants" "grants_on_catalog" {
-  catalog  = databricks_catalog.create_team_metastore_catalog.name
-  provider = databricks.workspace
+  catalog   = databricks_catalog.create_team_metastore_catalog.name
+  metastore = var.metastore_id
+  provider  = databricks.workspace
   grant {
     principal  = var.team_name
     privileges = ["ALL_PRIVILEGES"]
