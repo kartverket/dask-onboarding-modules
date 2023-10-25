@@ -9,7 +9,7 @@ variable "databricks_schema_name" {
 }
 
 variable "gcs_bucket_name" {
-  description = "Path to the external volume to be registered in the metastore"
+  description = "Name to the external volume to be registered in the metastore"
   type        = string
 }
 
@@ -25,7 +25,7 @@ variable "external_volume_comment" {
 }
 
 variable "env" {
-  description = "Environment for the resources to create"
+  description = "Environment in which the resources are created"
   type        = string
 }
 

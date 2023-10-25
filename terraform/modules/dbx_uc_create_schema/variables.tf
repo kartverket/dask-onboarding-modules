@@ -1,5 +1,5 @@
 variable "env" {
-  description = "Environment for the resources to create"
+  description = "Environment in which the resources are created"
   type        = string
 }
 
