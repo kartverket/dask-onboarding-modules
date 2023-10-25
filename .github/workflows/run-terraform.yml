@@ -166,18 +166,4 @@ jobs:
       - name: Run Terraform
         if: env.DESTROY == 'false'
         run: terraform apply -input=false -auto-approve=true ${TF_OPTION_1:+"$TF_OPTION_1"}
-      - name: Get Databricks output vars
-        id: databricks-output-vars
-        run: |
-          databricks_host=$(terraform output -raw databricks_host)
-          databricks_token=$(terraform output -raw databricks_token)
-          echo "DATABRICKS_HOST=$databricks_host" >> $GITHUB_OUTPUT
-          echo "DATABRICKS_TOKEN=$databricks_token" >> $GITHUB_OUTPUT
-      - uses: databricks/setup-cli@main
-        name: Setup databricks CLI
-      - name: Deploy databricks files
-        env:
-          DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
-        run: |
-          databricks workspace import-dir ../${{ env.DATABRICKS_SOURCE_PATH }} ${{ env.DATABRICKS_WORKSPACE_DEPLOY_PATH }} --overwrite
+
