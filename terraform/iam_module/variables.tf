@@ -1,28 +1,40 @@
-variable "workspace_env" {
-  description = "String to be appended at the end of resource name properties (dev/test/prod)"
+variable "external_volume_name" {
+  description = "Name to give the external volume in the metastore"
+  type        = string
 }
 
-variable "project_id" {
-  description = "The Id of the project for the resources to create"
-}
-
-variable "region" {
-  description = "Location for Databricks workspace / region for GCP vpc. Databricks location should match vpc region."
-  default     = "europe-west1"
-}
-
-variable "databricks_account_id" {
-  description = "Account ID found on https://accounts.gcp.databricks.com/"
+variable "external_volume_comment" {
+  description = "Comment to describe the external volume in the metastore"
+  type        = string
 }
 
 variable "env" {
-  description = "Environment for the resources to create"
+  description = "Environment in which the resources are created"
+  type        = string
 }
 
-variable "deploy_service_account" {
-  description = "Need to set this to Databricks account owner SA to use Databricks account API, and Databricks workspace owner to use Databricks workspace API."
+variable "location" {
+  description = "The location of this cloud function."
+  type        = string
+  default     = "europe-west1"
 }
 
-#variable "init_script_bucket_name" {
-#  description = "The bucket name in GCP where the init scripts is stored. The service account associated to the workspace/team cluster will have read access to the init script base bucket."
-#}
+variable "project_id" {
+  description = "The ID of the project in which the resource belongs. If it is not provided, the provider project is used."
+  type        = string
+}
+
+variable "team_name" {
+  description = "Name of the product team"
+  type        = string
+}
+
+variable "area_short_name" {
+  description = "Short name of organization area team is organized in"
+  type        = string
+}
+
+variable "metastore_id" {
+  description = "(Required for account-level) Unique identifier of the parent Metastore"
+  type        = string
+}
