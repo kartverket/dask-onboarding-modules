@@ -61,6 +61,11 @@ variable "timeout_seconds" {
   default     = 600
 }
 
+variable "available_memory" {
+    description = "(Optional) The amount of memory in megabytes allotted for the function to use. Defaults to 1024M."
+    default     = "1024M"
+}
+
 variable "environment_variables" {
   description = "(Optional) Environment variables that shall be available during function execution."
   type        = map(string)
