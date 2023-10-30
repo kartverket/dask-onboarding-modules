@@ -26,7 +26,7 @@ resource "google_storage_bucket_iam_member" "SA_storageAdmin_role" {
   bucket     = var.gcs_bucket_name
   role       = "roles/storage.storageAdmin"
   member     = "serviceAccount:${databricks_storage_credential.create_external_location_creds.databricks_gcp_service_account[0].email}"
-  depends_on = [google_storage_bucket_object.empty_folder]
+  depends_on = [google_storage_bucket_iam_member.SA_legacyBucketOwner_role]
 }
 
 resource "databricks_external_location" "external_location_to_add" {
@@ -35,7 +35,7 @@ resource "databricks_external_location" "external_location_to_add" {
   name            = "gcs-${var.gcs_bucket_name}-${var.external_volume_name}-${local.name_postfix}"
   url             = "gs://${var.gcs_bucket_name}"
   credential_name = databricks_storage_credential.create_external_location_creds.name
-  depends_on      = [google_storage_bucket_iam_member.member]
+  depends_on      = [google_storage_bucket_iam_member.SA_storageAdmin_role]
 }
 
 resource "databricks_volume" "add_external_volume_to_schema" {
