@@ -15,9 +15,16 @@ resource "google_storage_bucket_object" "empty_folder" {
   bucket  = var.gcs_bucket_name
 }
 
-resource "google_storage_bucket_iam_member" "member" {
+resource "google_storage_bucket_iam_member" "SA_legacyBucketOwner_role" {
   bucket     = var.gcs_bucket_name
   role       = "roles/storage.legacyBucketOwner"
+  member     = "serviceAccount:${databricks_storage_credential.create_external_location_creds.databricks_gcp_service_account[0].email}"
+  depends_on = [google_storage_bucket_object.empty_folder]
+}
+
+resource "google_storage_bucket_iam_member" "SA_storageAdmin_role" {
+  bucket     = var.gcs_bucket_name
+  role       = "roles/storage.storageAdmin"
   member     = "serviceAccount:${databricks_storage_credential.create_external_location_creds.databricks_gcp_service_account[0].email}"
   depends_on = [google_storage_bucket_object.empty_folder]
 }

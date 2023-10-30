@@ -10,9 +10,16 @@ resource "databricks_storage_credential" "gcs_catalog_bucket_creds" {
   databricks_gcp_service_account {}
 }
 
-resource "google_storage_bucket_iam_member" "give_sa_admin_role" {
+resource "google_storage_bucket_iam_member" "SA_legacyBucketOwner_role" {
   bucket     = var.gcs_bucket_name
   role       = "roles/storage.legacyBucketOwner"
+  member     = "serviceAccount:${databricks_storage_credential.gcs_catalog_bucket_creds.databricks_gcp_service_account[0].email}"
+  depends_on = [databricks_storage_credential.gcs_catalog_bucket_creds]
+}
+
+resource "google_storage_bucket_iam_member" "SA_storageAdmin_role" {
+  bucket     = var.gcs_bucket_name
+  role       = "roles/storage.storageAdmin"
   member     = "serviceAccount:${databricks_storage_credential.gcs_catalog_bucket_creds.databricks_gcp_service_account[0].email}"
   depends_on = [databricks_storage_credential.gcs_catalog_bucket_creds]
 }
