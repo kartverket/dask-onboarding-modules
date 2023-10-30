@@ -24,7 +24,7 @@ resource "google_storage_bucket_iam_member" "SA_legacyBucketOwner_role" {
 
 resource "google_storage_bucket_iam_member" "SA_storageAdmin_role" {
   bucket     = var.gcs_bucket_name
-  role       = "roles/storage.storageAdmin"
+  role       = "roles/storage.admin"
   member     = "serviceAccount:${databricks_storage_credential.create_external_location_creds.databricks_gcp_service_account[0].email}"
   depends_on = [google_storage_bucket_iam_member.SA_legacyBucketOwner_role]
 }
