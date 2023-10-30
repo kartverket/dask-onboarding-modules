@@ -41,7 +41,6 @@ resource "databricks_catalog" "create_team_metastore_catalog" {
 
 resource "databricks_grants" "grants_on_catalog" {
   catalog   = databricks_catalog.create_team_metastore_catalog.name
-  metastore = var.metastore_id
   provider  = databricks.workspace
   grant {
     principal  = var.team_name
