@@ -33,9 +33,9 @@ resource "databricks_external_location" "external_location_to_add" {
 
 resource "databricks_volume" "add_external_volume_to_schema" {
   provider         = databricks.workspace
-  name             = var.external_volume_name
+  name             = lower(var.external_volume_name)
   catalog_name     = var.databricks_catalog_name
-  schema_name      = var.databricks_schema_name
+  schema_name      = lower(var.databricks_schema_name)
   volume_type      = "EXTERNAL"
   storage_location = "gs://${var.gcs_bucket_name}"
   comment          = var.external_volume_comment
