@@ -106,9 +106,9 @@ variable "schedule_params" {
   type = list(object({
     schedule = string,
     body = optional(object({
-      start_index = optional(number),
-      end_index   = optional(number),
-      job_postfix = optional(string),
+      start_index = number,
+      end_index   = number,
+      job_postfix = string,
   })) }))
 }
 
