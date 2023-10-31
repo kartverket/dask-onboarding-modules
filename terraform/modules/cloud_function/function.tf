@@ -65,7 +65,7 @@ resource "google_project_iam_member" "token_creator" {
 }
 
 resource "google_cloud_scheduler_job" "invoke_cloud_function" {
-  for_each = { for idx, val in var.schedule_params : idx => val }
+  for_each         = {for idx, val in var.schedule_params : idx => val}
   name             = "invoke-${var.name}-${each.value.start_index}"
   description      = "Schedule the HTTPS trigger for cloud function"
   schedule         = each.value.schedule
@@ -77,10 +77,10 @@ resource "google_cloud_scheduler_job" "invoke_cloud_function" {
   http_target {
     uri         = google_cloudfunctions2_function.this.service_config[0].uri
     http_method = "POST"
-    body        = base64encode(jsonencode({
-      start_index = each.value.start_index,
-      end_index   = each.value.end_index
-    }))
+#    body        = base64encode(jsonencode({
+#      start_index = each.value.start_index,
+#      end_index   = each.value.end_index
+#    }))
 
     oidc_token {
       service_account_email = var.service_account_email
