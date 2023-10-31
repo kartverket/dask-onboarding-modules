@@ -102,10 +102,6 @@ variable "excludes" {
   ]
 }
 
-variable "schedule" {
-  description = "The cron job schedule for when the cloud function should be triggered. On the format * * * * *. For instance */5 * * * * means every 5th minute. See https://crontab.guru/ for more information."
-}
-
 variable "schedule_params" {}
 
 variable "service_account_email" {}
