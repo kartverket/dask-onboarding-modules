@@ -77,7 +77,7 @@ resource "google_cloud_scheduler_job" "invoke_cloud_function" {
   http_target {
     uri         = google_cloudfunctions2_function.this.service_config[0].uri
     http_method = "POST"
-    body        = base64encode(jsonencode(each.value))
+    body        = base64encode(jsonencode(each.value.body))
     headers = {
       "Content-Type" = "application/json"
     }
