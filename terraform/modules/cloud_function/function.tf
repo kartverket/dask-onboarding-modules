@@ -64,9 +64,13 @@ resource "google_project_iam_member" "token_creator" {
   member  = "serviceAccount:${var.service_account_email}"
 }
 
+locals {
+  job_postfix = length(var.schedule_params) > 1 ? "-${each.key}" : ""
+}
+
 resource "google_cloud_scheduler_job" "invoke_cloud_function" {
   for_each         = {for idx, val in var.schedule_params : idx => val}
-  name             = "invoke-${var.name}-${each.value.start_index}"
+  name             = "invoke-${var.name}${local.job_postfix}"
   description      = "Schedule the HTTPS trigger for cloud function"
   schedule         = each.value.schedule
   time_zone        = "Europe/Oslo"
