@@ -77,10 +77,13 @@ resource "google_cloud_scheduler_job" "invoke_cloud_function" {
   http_target {
     uri         = google_cloudfunctions2_function.this.service_config[0].uri
     http_method = "POST"
-#    body        = base64encode(jsonencode({
-#      start_index = each.value.start_index,
-#      end_index   = each.value.end_index
-#    }))
+    body        = base64encode(jsonencode({
+      start_index = each.value.start_index,
+      end_index   = each.value.end_index
+    }))
+    headers = {
+      "Content-Type" = "application/json"
+    }
 
     oidc_token {
       service_account_email = var.service_account_email
