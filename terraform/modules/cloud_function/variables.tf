@@ -62,8 +62,8 @@ variable "timeout_seconds" {
 }
 
 variable "available_memory" {
-    description = "(Optional) The amount of memory in megabytes allotted for the function to use. Defaults to 1024M."
-    default     = "1024M"
+  description = "(Optional) The amount of memory in megabytes allotted for the function to use. Defaults to 1024M."
+  default     = "1024M"
 }
 
 variable "environment_variables" {
@@ -102,6 +102,14 @@ variable "excludes" {
   ]
 }
 
-variable "schedule_params" {}
+variable "schedule_params" {
+  type = list(object({
+    schedule = string,
+    body = optional(object({
+      start_index = optional(number),
+      end_index   = optional(number),
+      job_postfix = optional(string),
+  })) }))
+}
 
 variable "service_account_email" {}
