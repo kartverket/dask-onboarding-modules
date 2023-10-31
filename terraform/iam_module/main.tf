@@ -39,7 +39,7 @@ module "create_uc_schema" {
   catalog_name       = module.create_uc_catalog.catalog_name
   env                = var.env
   schema_description = "Schema for external resources and volumes"
-  schema_name        = "EXTERNAL"
+  schema_name        = "external"
   team_name          = var.team_name
   metastore_id       = var.metastore_id
 }
