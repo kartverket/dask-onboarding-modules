@@ -31,7 +31,7 @@ resource "google_cloudfunctions2_function" "this" {
   }
 
   service_config {
-    available_memory               = "1024M"
+    available_memory               = var.available_memory
     min_instance_count             = var.min_instance_count
     max_instance_count             = var.max_instance_count
     timeout_seconds                = var.timeout_seconds
@@ -65,9 +65,10 @@ resource "google_project_iam_member" "token_creator" {
 }
 
 resource "google_cloud_scheduler_job" "invoke_cloud_function" {
-  name             = "invoke-${var.name}"
+  for_each         = { for idx, val in var.schedule_params : idx => val }
+  name             = "invoke-${var.name}${each.value.body != null ? each.value.body.job_postfix : ""}"
   description      = "Schedule the HTTPS trigger for cloud function"
-  schedule         = var.schedule # every day at midnight
+  schedule         = each.value.schedule
   time_zone        = "Europe/Oslo"
   project          = google_cloudfunctions2_function.this.project
   region           = google_cloudfunctions2_function.this.location
@@ -76,6 +77,11 @@ resource "google_cloud_scheduler_job" "invoke_cloud_function" {
   http_target {
     uri         = google_cloudfunctions2_function.this.service_config[0].uri
     http_method = "POST"
+    body        = base64encode(jsonencode(each.value.body))
+    headers = {
+      "Content-Type" = "application/json"
+    }
+
     oidc_token {
       service_account_email = var.service_account_email
     }

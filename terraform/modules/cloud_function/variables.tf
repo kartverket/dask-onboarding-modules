@@ -61,6 +61,11 @@ variable "timeout_seconds" {
   default     = 600
 }
 
+variable "available_memory" {
+  description = "(Optional) The amount of memory in megabytes allotted for the function to use. Defaults to 1024M."
+  default     = "1024M"
+}
+
 variable "environment_variables" {
   description = "(Optional) Environment variables that shall be available during function execution."
   type        = map(string)
@@ -97,8 +102,14 @@ variable "excludes" {
   ]
 }
 
-variable "schedule" {
-  description = "The cron job schedule for when the cloud function should be triggered. On the format * * * * *. For instance */5 * * * * means every 5th minute. See https://crontab.guru/ for more information."
+variable "schedule_params" {
+  type = list(object({
+    schedule = string,
+    body = optional(object({
+      start_index = number,
+      end_index   = number,
+      job_postfix = string,
+  })) }))
 }
 
 variable "service_account_email" {}
