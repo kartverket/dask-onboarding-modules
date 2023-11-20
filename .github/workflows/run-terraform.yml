@@ -66,16 +66,10 @@ on:
         required: false
         type: string
         default: ""
-      databricks_source_path:
-        description: "The path to the databricks files to be deployed. Defaults to `src/databricks`"
-        required: false
+      databricks_repo_path:
+        description: "The path to the repo where the notebooks are located in Databricks."
+        required: true
         type: string
-        default: "src/databricks"
-      databricks_workspace_deploy_path:
-        description: "The path in the databricks workspace where the deployed code is. Defaults to `/main`"
-        required: false
-        type: string
-        default: "/main"
 
 env:
   WORKLOAD_IDENTITY_PROVIDER_OVERRIDE: ${{ inputs.workload_identity_provider_override }}
@@ -92,8 +86,7 @@ env:
   TF_INIT_OPTION_2: ${{ inputs.terraform_init_option_2 }}
   TF_INIT_OPTION_3: ${{ inputs.terraform_init_option_3 }}
   TF_OPTION_1: ${{ inputs.terraform_option_1 }}
-  DATABRICKS_SOURCE_PATH: ${{ inputs.databricks_source_path }}
-  DATABRICKS_WORKSPACE_DEPLOY_PATH: ${{ inputs.databricks_workspace_deploy_path }}
+  DATABRICKS_REPO_PATH: ${{ inputs.databricks_repo_path }}
 
 
 jobs:
@@ -175,9 +168,14 @@ jobs:
           echo "DATABRICKS_TOKEN=$databricks_token" >> $GITHUB_OUTPUT
       - uses: databricks/setup-cli@main
         name: Setup databricks CLI
-      - name: Deploy databricks files
+      - name: Deploy repo to Databricks
         env:
           DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
         run: |
-          databricks workspace import-dir ../${{ env.DATABRICKS_SOURCE_PATH }} ${{ env.DATABRICKS_WORKSPACE_DEPLOY_PATH }} --overwrite
+          OUTPUT=$(databricks git-credentials create gitHub --git-username $GITHUB_ACTOR --personal-access-token ${{ secrets.GITHUB_TOKEN }})
+          echo "$OUTPUT"
+          CREDENTIAL_ID=$(echo "$OUTPUT" | jq -r '.credential_id')
+          echo "CREDENTIAL_ID=$CREDENTIAL_ID" >> $GITHUB_ENV
+          databricks repos update ${{ env.DATABRICKS_REPO_PATH }} --branch "main"
+          databricks git-credentials delete $CREDENTIAL_ID
