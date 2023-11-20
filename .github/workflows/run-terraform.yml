@@ -173,7 +173,7 @@ jobs:
           DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
         run: |
-          databricks git-credentials list
+          databricks git-credentials delete 514639476916737
           OUTPUT=$(databricks git-credentials create gitHub --git-username $GITHUB_ACTOR --personal-access-token ${{ secrets.GITHUB_TOKEN }})
           echo "$OUTPUT"
           CREDENTIAL_ID=$(echo "$OUTPUT" | jq -r '.credential_id')
