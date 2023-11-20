@@ -182,3 +182,4 @@ jobs:
         run: |
           databricks git-credentials update 383359761567386 --git-provider gitHub --git-username $GITHUB_ACTOR --personal-access-token ${{secrets.GITHUB_TOKEN}}
           databricks repos update /Repos/smia/smia-data-ingestor --branch "main"
+          databricks git-credentials delete 383359761567386
