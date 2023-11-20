@@ -180,10 +180,9 @@ jobs:
           DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
         run: |
-          databricks git-credentials delete 616639880087229
           OUTPUT=$(databricks git-credentials create gitHub --git-username $GITHUB_ACTOR --personal-access-token ${{ secrets.GITHUB_TOKEN }})
           echo "$OUTPUT"
           CREDENTIAL_ID=$(echo "$OUTPUT" | jq -r '.credential_id')
           echo "CREDENTIAL_ID=$CREDENTIAL_ID" >> $GITHUB_ENV
-          databricks repos update /Repos/smia/smia-data-ingestor --branch "main"
+          databricks repos update ${{ env.DATABRICKS_SOURCE_PATH }} --branch "main"
           databricks git-credentials delete $CREDENTIAL_ID
