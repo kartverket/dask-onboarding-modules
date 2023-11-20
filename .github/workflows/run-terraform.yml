@@ -175,11 +175,14 @@ jobs:
           echo "DATABRICKS_TOKEN=$databricks_token" >> $GITHUB_OUTPUT
       - uses: databricks/setup-cli@main
         name: Setup databricks CLI
-      - name: Deploy databricks files
+      - name: Deploy repo to Databricks
         env:
           DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
         run: |
-          databricks git-credentials update 383359761567386 --git-provider gitHub --git-username $GITHUB_ACTOR --personal-access-token ${{secrets.GITHUB_TOKEN}}
+          OUTPUT=$(databricks git-credentials create gitHub --git-username $GITHUB_ACTOR --personal-access-token ${{secrets.GITHUB_TOKEN}})
+          echo "$OUTPUT"
+          CREDENTIAL_ID=$(echo "$OUTPUT" | jq -r '.credential_id')
+          echo "CREDENTIAL_ID=$CREDENTIAL_ID" >> $GITHUB_ENV
           databricks repos update /Repos/smia/smia-data-ingestor --branch "main"
-          databricks git-credentials delete 383359761567386
+          databricks git-credentials delete --credential-id $CREDENTIAL_ID
