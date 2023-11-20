@@ -181,4 +181,4 @@ jobs:
           DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
         run: |
           databricks git-credentials create gitHub --git-username $GITHUB_ACTOR --personal-access-token ${{secrets.GITHUB_TOKEN}} 
-          databricks repos update --path /Repos/smia/smia-data-ingestor/ --branch "main"
+          databricks repos update /Repos/smia/smia-data-ingestor/ --branch "main"
