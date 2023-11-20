@@ -180,4 +180,4 @@ jobs:
           DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
         run: |
-          databricks repos update /Repos/smia/smia-data-ingestor/ --branch "main"
+          databricks repos update /Repos/smia/smia-data-ingestor --branch "main"
