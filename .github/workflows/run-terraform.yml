@@ -173,4 +173,4 @@ jobs:
           DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
         run: |
-          databricks git-credentials delete 509863356644187
+          databricks git-credentials delete 121535784897378
