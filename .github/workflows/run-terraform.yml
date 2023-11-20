@@ -180,4 +180,4 @@ jobs:
           DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
         run: |
-          databricks git-credentials create Github --git-username dataplattform-deploy@dataprodukter-dev-5daa.iam.gserviceaccount.com --personal-access-token ${{env.DATABRICKS_HOST}} -p DEFAULT
+          databricks git-credentials create Github --git-username ${{env.SERVICE_ACCOUNT}} --personal-access-token ${{env.DATABRICKS_HOST}} -p DEFAULT
