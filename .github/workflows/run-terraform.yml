@@ -185,4 +185,4 @@ jobs:
           CREDENTIAL_ID=$(echo "$OUTPUT" | jq -r '.credential_id')
           echo "CREDENTIAL_ID=$CREDENTIAL_ID" >> $GITHUB_ENV
           databricks repos update /Repos/smia/smia-data-ingestor --branch "main"
-          databricks git-credentials delete --credential-id $CREDENTIAL_ID
+          databricks git-credentials delete $CREDENTIAL_ID
