@@ -68,8 +68,9 @@ on:
         default: ""
       databricks_repo_path:
         description: "The path to the repo where the notebooks are located in Databricks."
-        required: true
+        required: false
         type: string
+        default: "/Repos/"
 
 env:
   WORKLOAD_IDENTITY_PROVIDER_OVERRIDE: ${{ inputs.workload_identity_provider_override }}
