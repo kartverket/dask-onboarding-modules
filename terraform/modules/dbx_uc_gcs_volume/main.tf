@@ -32,11 +32,10 @@ resource "google_storage_bucket_iam_member" "SA_storageAdmin_role" {
 resource "databricks_external_location" "external_location_to_add" {
   provider        = databricks.workspace
   metastore_id    = var.metastore_id
-  name            = "gcs-${var.gcs_bucket_name}-${var.external_volume_name}-${local.name_postfix}"
+  name            = "gcs-${var.gcs_bucket_name}-${var.external_volume_name}${local.name_postfix}"
   url             = "gs://${var.gcs_bucket_name}"
   credential_name = databricks_storage_credential.create_external_location_creds.name
   depends_on      = [google_storage_bucket_iam_member.SA_storageAdmin_role]
-  force           = true
 }
 
 resource "databricks_volume" "add_external_volume_to_schema" {
