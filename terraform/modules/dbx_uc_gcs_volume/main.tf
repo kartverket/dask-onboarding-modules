@@ -7,7 +7,6 @@ resource "databricks_storage_credential" "create_external_location_creds" {
   name         = "volume-creds-gcs-${var.external_volume_name}${local.name_postfix}"
   metastore_id = var.metastore_id
   databricks_gcp_service_account {}
-  force = true
 }
 
 resource "google_storage_bucket_object" "empty_folder" {
@@ -37,6 +36,7 @@ resource "databricks_external_location" "external_location_to_add" {
   url             = "gs://${var.gcs_bucket_name}"
   credential_name = databricks_storage_credential.create_external_location_creds.name
   depends_on      = [google_storage_bucket_iam_member.SA_storageAdmin_role]
+  force           = true
 }
 
 resource "databricks_volume" "add_external_volume_to_schema" {
