@@ -1,5 +1,5 @@
 locals {
-  name_postfix = var.env == "prod" ? "" : "-${var.env}"
+  name_postfix = var.env == "prod" ? "" : "_${var.env}"
 }
 
 resource "databricks_schema" "create_external_schema_in_catalog" {

@@ -38,3 +38,9 @@ variable "metastore_id" {
   description = "(Required for account-level) Unique identifier of the parent Metastore"
   type        = string
 }
+
+variable "landing_zone_object_retention_days" {
+  description = "Buckets object retention policy, in days, before deletion"
+  default     = 30
+  type        = number
+}

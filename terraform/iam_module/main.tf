@@ -16,6 +16,14 @@ resource "google_storage_bucket" "landing_zone_bucket" {
     team    = var.team_name
     purpose = "landing-zone-bucket"
   }
+  lifecycle_rule {
+    condition {
+      age = var.landing_zone_object_retention_days
+    }
+    action {
+      type = "Delete"
+    }
+  }
 }
 
 module "create_uc_catalog" {
