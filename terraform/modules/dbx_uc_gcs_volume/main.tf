@@ -7,6 +7,7 @@ resource "databricks_storage_credential" "create_external_location_creds" {
   name         = "volume-creds-gcs-${var.external_volume_name}${local.name_postfix}"
   metastore_id = var.metastore_id
   databricks_gcp_service_account {}
+  force = true
 }
 
 resource "google_storage_bucket_object" "empty_folder" {

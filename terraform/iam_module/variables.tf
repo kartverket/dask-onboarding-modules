@@ -41,6 +41,6 @@ variable "metastore_id" {
 
 variable "landing_zone_object_retention_days" {
   description = "Buckets object retention policy, in days, before deletion"
-  default = 30
-  type = number
+  default     = 30
+  type        = number
 }
