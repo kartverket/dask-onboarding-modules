@@ -1,6 +1,6 @@
 locals {
-  name_postfix           = var.env == "prod" ? "" : "-${var.env}"
-  area_short_name_prefix = var.area_short_name == "" ? "" : "${var.area_short_name}-"
+  name_postfix           = var.env == "prod" ? "" : "_${var.env}"
+  area_short_name_prefix = var.area_short_name == "" ? "" : "${var.area_short_name}_"
 }
 
 resource "databricks_storage_credential" "gcs_catalog_bucket_creds" {
