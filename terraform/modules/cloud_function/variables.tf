@@ -110,6 +110,7 @@ variable "schedule_params" {
       end_index   = number,
       job_postfix = string,
   })) }))
+  default = []
 }
 
 variable "service_account_email" {}
