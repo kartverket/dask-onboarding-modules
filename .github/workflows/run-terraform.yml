@@ -176,16 +176,25 @@ jobs:
         run: |
           echo "CREDENTIAL_ID=''" >> $GITHUB_ENV
       - name: Create git-credentials
+        env:
+          DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
         run: |
           OUTPUT=$(databricks git-credentials create gitHub --git-username $GITHUB_ACTOR --personal-access-token ${{ secrets.GITHUB_TOKEN }})
           echo "$OUTPUT"
           CREDENTIAL_ID=$(echo "$OUTPUT" | jq -r '.credential_id')
           echo "CREDENTIAL_ID=$CREDENTIAL_ID" >> $GITHUB_ENV
       - name: Update Databricks Repo
+        env:
+          DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
         if: env.CREDENTIAL_ID != ''
         run: |
           databricks repos update ${{ env.DATABRICKS_REPO_PATH }} --branch "main"
       - name: Delete git-credentials
+        env:
+          DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
         if: always() && env.CREDENTIAL_ID != ''
         run: |
           databricks git-credentials delete $CREDENTIAL_ID
