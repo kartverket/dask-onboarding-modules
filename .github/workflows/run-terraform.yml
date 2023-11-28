@@ -165,36 +165,24 @@ jobs:
         run: |
           databricks_host=$(terraform output -raw databricks_host)
           databricks_token=$(terraform output -raw databricks_token)
-          echo "DATABRICKS_HOST=$databricks_host" >> $GITHUB_OUTPUT
-          echo "DATABRICKS_TOKEN=$databricks_token" >> $GITHUB_OUTPUT
+          echo "DATABRICKS_HOST=$databricks_host" >> $GITHUB_ENV
+          echo "DATABRICKS_TOKEN=$databricks_token" >> $GITHUB_ENV
       - uses: databricks/setup-cli@main
         name: Setup databricks CLI
       - name: Set Databricks env variables
-        env:
-          DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
         run: |
           echo "CREDENTIAL_ID=''" >> $GITHUB_ENV
       - name: Create git-credentials
-        env:
-          DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
         run: |
           OUTPUT=$(databricks git-credentials create gitHub --git-username $GITHUB_ACTOR --personal-access-token ${{ secrets.GITHUB_TOKEN }})
           echo "$OUTPUT"
           CREDENTIAL_ID=$(echo "$OUTPUT" | jq -r '.credential_id')
           echo "CREDENTIAL_ID=$CREDENTIAL_ID" >> $GITHUB_ENV
       - name: Update Databricks Repo
-        env:
-          DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
         if: env.CREDENTIAL_ID != ''
         run: |
           databricks repos update ${{ env.DATABRICKS_REPO_PATH }} --branch "main"
       - name: Delete git-credentials
-        env:
-          DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
         if: always() && env.CREDENTIAL_ID != ''
         run: |
           databricks git-credentials delete $CREDENTIAL_ID
