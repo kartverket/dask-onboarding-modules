@@ -19,10 +19,6 @@ on:
         description: "The ID of the provider to use for authentication. Only used for overriding the default workload identity provider based on project number. It should be in the format of `projects/{{project}}/locations/global/workloadIdentityPools/{{workload_identity_pool_id}}/providers/{{workload_identity_pool_provider_id}}`"
         required: false
         type: string
-      deploy_on:
-        description: "Which branch will be the only branch allowed to deploy. This defaults to the main branch so that other branches only run check and plan. Defaults to `refs/heads/main`"
-        required: false
-        type: string
       working_directory:
         description: "The directory in which to run terraform, i.e. where the Terraform files are placed. The path is relative to the root of the repository"
         required: false
@@ -61,11 +57,6 @@ on:
         required: false
         type: boolean
         default: false
-      unlock:
-        description: "An optional string which runs terraform force-unlock on the provided `LOCK_ID`, if set."
-        required: false
-        type: string
-        default: ""
       databricks_repo_path:
         description: "The path to the repo where the notebooks are located in Databricks."
         required: false
@@ -76,13 +67,10 @@ env:
   WORKLOAD_IDENTITY_PROVIDER_OVERRIDE: ${{ inputs.workload_identity_provider_override }}
   AUTH_PROJECT_NUMBER: ${{ inputs.auth_project_number }}
   SERVICE_ACCOUNT: ${{ inputs.service_account }}
-  DEPLOY_ON: ${{ inputs.deploy_on }}
   WORKING_DIRECTORY: ${{ inputs.working_directory }}
   PROJECT_ID: ${{ inputs.project_id }}
   ENVIRONMENT: ${{ inputs.environment }}
-  TF_TMP_WORKSPACE: ${{ inputs.terraform_workspace }}
   DESTROY: ${{ inputs.destroy }}
-  UNLOCK: ${{ inputs.unlock }}
   TF_INIT_OPTION_1: ${{ inputs.terraform_init_option_1 }}
   TF_INIT_OPTION_2: ${{ inputs.terraform_init_option_2 }}
   TF_INIT_OPTION_3: ${{ inputs.terraform_init_option_3 }}
@@ -165,18 +153,24 @@ jobs:
         run: |
           databricks_host=$(terraform output -raw databricks_host)
           databricks_token=$(terraform output -raw databricks_token)
-          echo "DATABRICKS_HOST=$databricks_host" >> $GITHUB_OUTPUT
-          echo "DATABRICKS_TOKEN=$databricks_token" >> $GITHUB_OUTPUT
+          echo "DATABRICKS_HOST=$databricks_host" >> $GITHUB_ENV
+          echo "DATABRICKS_TOKEN=$databricks_token" >> $GITHUB_ENV
       - uses: databricks/setup-cli@main
         name: Setup databricks CLI
-      - name: Deploy repo to Databricks
-        env:
-          DATABRICKS_HOST: ${{ steps.databricks-output-vars.outputs.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ steps.databricks-output-vars.outputs.DATABRICKS_TOKEN }}
+      - name: Set Databricks env variables
+        run: |
+          echo "CREDENTIAL_ID=''" >> $GITHUB_ENV
+      - name: Create git-credentials
         run: |
           OUTPUT=$(databricks git-credentials create gitHub --git-username $GITHUB_ACTOR --personal-access-token ${{ secrets.GITHUB_TOKEN }})
           echo "$OUTPUT"
           CREDENTIAL_ID=$(echo "$OUTPUT" | jq -r '.credential_id')
           echo "CREDENTIAL_ID=$CREDENTIAL_ID" >> $GITHUB_ENV
+      - name: Update Databricks Repo
+        if: env.CREDENTIAL_ID != ''
+        run: |
           databricks repos update ${{ env.DATABRICKS_REPO_PATH }} --branch "main"
+      - name: Delete git-credentials
+        if: always() && env.CREDENTIAL_ID != ''
+        run: |
           databricks git-credentials delete $CREDENTIAL_ID
