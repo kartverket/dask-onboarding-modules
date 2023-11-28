@@ -93,7 +93,7 @@ jobs:
           PROVIDER=${OVERRIDE:-$DEFAULT_WORKLOAD_IDENTITY}
           echo "WORKLOAD_IDENTITY_PROVIDER=$PROVIDER" >> $GITHUB_OUTPUT
   deploy_databricks:
-    needs: [setup-env]
+    needs: [ setup-env ]
     name: Terraform Apply or Destroy
     runs-on: ${{ inputs.runner }}
     environment: ${{ inputs.environment }}
@@ -157,6 +157,21 @@ jobs:
           echo "DATABRICKS_TOKEN=$databricks_token" >> $GITHUB_ENV
       - uses: databricks/setup-cli@main
         name: Setup databricks CLI
+      - name: Check if Databricks repo exists
+        run: |
+          set +e 
+          REPO_EXISTS=$(databricks repos list --output json | jq -r '.repos[] | select(.path == ${{ env.DATABRICKS_REPO_PATH }}) | .path')
+          if [ "$REPO_EXISTS" == "$DATABRICKS_REPO_PATH" ]; then
+           echo "REPO_EXISTS=true" >> $GITHUB_ENV
+          else
+           echo "REPO_EXISTS=false" >> $GITHUB_ENV
+          fi
+          set -e
+      - name: Create Databricks Repo if it does not exist
+        if: env.REPO_EXISTS == 'false'
+        run: |
+          # Replace 'YOUR_GITHUB_REPO_URL' with your repository URL
+          databricks repos create --url YOUR_GITHUB_REPO_URL --path $DATABRICKS_REPO_PATH --branch "main"
       - name: Set Databricks env variables
         run: |
           echo "CREDENTIAL_ID=''" >> $GITHUB_ENV
@@ -166,7 +181,7 @@ jobs:
           echo "$OUTPUT"
           CREDENTIAL_ID=$(echo "$OUTPUT" | jq -r '.credential_id')
           echo "CREDENTIAL_ID=$CREDENTIAL_ID" >> $GITHUB_ENV
-      - name: Update Databricks Repo
+      - name: Update Databricks Repo if it exists
         if: env.CREDENTIAL_ID != ''
         run: |
           databricks repos update ${{ env.DATABRICKS_REPO_PATH }} --branch "main"
