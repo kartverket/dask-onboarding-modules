@@ -18,6 +18,8 @@ resource "google_cloudfunctions2_function" "this" {
   project     = var.project
   labels      = var.labels
 
+  lifecycle { ignore_changes = [build_config[0].source[0].storage_source[0].generation] }
+
   build_config {
     runtime     = var.runtime
     entry_point = var.entry_point
