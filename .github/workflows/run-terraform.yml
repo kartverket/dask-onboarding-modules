@@ -157,10 +157,8 @@ jobs:
         run: |
           databricks_host=$(terraform output -raw databricks_host)
           databricks_token=$(terraform output -raw databricks_token)
-          databricks_workspace_url=$(terraform output -raw databricks_workspace_url)
           echo "DATABRICKS_HOST=$databricks_host" >> $GITHUB_ENV
           echo "DATABRICKS_TOKEN=$databricks_token" >> $GITHUB_ENV
-          echo "DATABRICKS_WORKSPACE_URL=$databricks_workspace_url" >> $GITHUB_ENV
       - uses: databricks/setup-cli@main
         name: Setup databricks CLI
       - name: Set Databricks env variables
