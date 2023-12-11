@@ -173,7 +173,7 @@ jobs:
       - name: Create Databricks Repo if it does not exist
         if: env.REPO_EXISTS == 'false'
         run: |
-          databricks repos create $DATABRICKS_WORKSPACE_URL --path ${{ env.DATABRICKS_REPO_PATH }} ${{ env.REPO_URL }}
+          databricks repos create ${{ env.REPO_URL }} gitHub --path ${{ env.DATABRICKS_REPO_PATH }}
       - name: Set Databricks env variables
         run: |
           echo "CREDENTIAL_ID=''" >> $GITHUB_ENV
