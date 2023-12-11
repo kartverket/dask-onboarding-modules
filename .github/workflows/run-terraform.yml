@@ -61,7 +61,7 @@ on:
         description: "The path to the repo where the notebooks are located in Databricks."
         required: false
         type: string
-        default: "/Repos"
+        default: "/Repos/"
 
 env:
   WORKLOAD_IDENTITY_PROVIDER_OVERRIDE: ${{ inputs.workload_identity_provider_override }}
@@ -162,12 +162,8 @@ jobs:
       - name: Check if Databricks repo exists
         run: |
           set +e 
-          REPO_EXISTS=$(databricks repos list --output json | jq -r --arg REPO_PATH "$DATABRICKS_REPO_PATH" '.repos[] | select(.path == $REPO_PATH) | .path')
-          if [ "$REPO_EXISTS" == "$DATABRICKS_REPO_PATH" ]; then
-           echo "REPO_EXISTS=true" >> $GITHUB_ENV
-          else
-           echo "REPO_EXISTS=false" >> $GITHUB_ENV
-          fi
+          REPO_EXISTS=$(databricks repos list --output json | jq -r --arg REPO_PATH "$DATABRICKS_REPO_PATH" 'map(select(.path == $REPO_PATH)) | if length > 0 then "true" else "false" end')
+          echo "REPO_EXISTS=$REPO_EXISTS" >> $GITHUB_ENV
           set -e
       - name: Create Databricks Repo if it does not exist
         if: env.REPO_EXISTS == 'false'
