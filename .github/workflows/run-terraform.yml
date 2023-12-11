@@ -59,11 +59,10 @@ on:
         default: false
       databricks_repo_path:
         description: "The path to the repo where the notebooks are located in Databricks."
-        required: false
+        required: true
         type: string
-        default: "/Repos/"
       repo_url:
-        description: "The url to the repo where the notebooks are located in Databricks."
+        description: "The url to the GitHub repository."
         required: true
         type: string
 
