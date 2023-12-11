@@ -164,6 +164,15 @@ jobs:
           echo "DATABRICKS_WORKSPACE_URL=$databricks_workspace_url" >> $GITHUB_ENV
       - uses: databricks/setup-cli@main
         name: Setup databricks CLI
+      - name: Set Databricks env variables
+        run: |
+          echo "CREDENTIAL_ID=''" >> $GITHUB_ENV
+      - name: Create git-credentials
+        run: |
+          OUTPUT=$(databricks git-credentials create gitHub --git-username $GITHUB_ACTOR --personal-access-token ${{ secrets.GITHUB_TOKEN }})
+          echo "$OUTPUT"
+          CREDENTIAL_ID=$(echo "$OUTPUT" | jq -r '.credential_id')
+          echo "CREDENTIAL_ID=$CREDENTIAL_ID" >> $GITHUB_ENV
       - name: Check if Databricks repo exists
         run: |
           set +e 
@@ -174,17 +183,8 @@ jobs:
         if: env.REPO_EXISTS == 'false'
         run: |
           databricks repos create ${{ env.REPO_URL }} gitHub --path ${{ env.DATABRICKS_REPO_PATH }}
-      - name: Set Databricks env variables
-        run: |
-          echo "CREDENTIAL_ID=''" >> $GITHUB_ENV
-      - name: Create git-credentials
-        run: |
-          OUTPUT=$(databricks git-credentials create gitHub --git-username $GITHUB_ACTOR --personal-access-token ${{ secrets.GITHUB_TOKEN }})
-          echo "$OUTPUT"
-          CREDENTIAL_ID=$(echo "$OUTPUT" | jq -r '.credential_id')
-          echo "CREDENTIAL_ID=$CREDENTIAL_ID" >> $GITHUB_ENV
       - name: Update Databricks Repo if it exists
-        if: env.CREDENTIAL_ID != ''
+        if: env.REPO_EXISTS == 'true'
         run: |
           databricks repos update ${{ env.DATABRICKS_REPO_PATH }} --branch "main"
       - name: Delete git-credentials
