@@ -59,9 +59,12 @@ on:
         default: false
       databricks_repo_path:
         description: "The path to the repo where the notebooks are located in Databricks."
-        required: false
+        required: true
         type: string
-        default: "/Repos"
+      repo_url:
+        description: "The url to the GitHub repository."
+        required: true
+        type: string
 
 env:
   WORKLOAD_IDENTITY_PROVIDER_OVERRIDE: ${{ inputs.workload_identity_provider_override }}
@@ -76,6 +79,7 @@ env:
   TF_INIT_OPTION_3: ${{ inputs.terraform_init_option_3 }}
   TF_OPTION_1: ${{ inputs.terraform_option_1 }}
   DATABRICKS_REPO_PATH: ${{ inputs.databricks_repo_path }}
+  REPO_URL: ${{ inputs.repo_url }}
 
 
 jobs:
@@ -93,7 +97,7 @@ jobs:
           PROVIDER=${OVERRIDE:-$DEFAULT_WORKLOAD_IDENTITY}
           echo "WORKLOAD_IDENTITY_PROVIDER=$PROVIDER" >> $GITHUB_OUTPUT
   deploy_databricks:
-    needs: [setup-env]
+    needs: [ setup-env ]
     name: Terraform Apply or Destroy
     runs-on: ${{ inputs.runner }}
     environment: ${{ inputs.environment }}
@@ -166,8 +170,18 @@ jobs:
           echo "$OUTPUT"
           CREDENTIAL_ID=$(echo "$OUTPUT" | jq -r '.credential_id')
           echo "CREDENTIAL_ID=$CREDENTIAL_ID" >> $GITHUB_ENV
-      - name: Update Databricks Repo
-        if: env.CREDENTIAL_ID != ''
+      - name: Check if Databricks repo exists
+        run: |
+          set +e 
+          REPO_EXISTS=$(databricks repos list --output json | jq -r --arg REPO_PATH "$DATABRICKS_REPO_PATH" 'map(select(.path == $REPO_PATH)) | if length > 0 then "true" else "false" end')
+          echo "REPO_EXISTS=$REPO_EXISTS" >> $GITHUB_ENV
+          set -e
+      - name: Create Databricks Repo if it does not exist
+        if: env.REPO_EXISTS == 'false'
+        run: |
+          databricks repos create ${{ env.REPO_URL }} gitHub --path ${{ env.DATABRICKS_REPO_PATH }}
+      - name: Update Databricks Repo if it exists
+        if: env.REPO_EXISTS == 'true'
         run: |
           databricks repos update ${{ env.DATABRICKS_REPO_PATH }} --branch "main"
       - name: Delete git-credentials
