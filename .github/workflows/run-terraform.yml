@@ -181,7 +181,7 @@ jobs:
         run: |
           databricks repos create ${{ env.REPO_URL }} gitHub --path ${{ env.DATABRICKS_REPO_PATH }}
       - name: Update Databricks Repo if it exists
-        if: env.REPO_EXISTS == 'true'
+        if: env.REPO_EXISTS == 'true' && env.ENVIRONMENT == 'prod'
         run: |
           databricks repos update ${{ env.DATABRICKS_REPO_PATH }} --branch "main"
       - name: Delete git-credentials
