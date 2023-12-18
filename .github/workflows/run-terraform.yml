@@ -163,7 +163,7 @@ jobs:
         name: Setup databricks CLI
       - name: Temp fix Databricks git-creds for Eiet
         run: |
-          databricks git-credentials list
+          databricks git-credentials delete 783845434800622
       - name: Set Databricks env variables
         run: |
           echo "CREDENTIAL_ID=''" >> $GITHUB_ENV
