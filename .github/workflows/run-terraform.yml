@@ -161,6 +161,9 @@ jobs:
           echo "DATABRICKS_TOKEN=$databricks_token" >> $GITHUB_ENV
       - uses: databricks/setup-cli@main
         name: Setup databricks CLI
+      - name: Temp fix Databricks git-creds for Eiet
+        run: |
+          databricks git-credentials list
       - name: Set Databricks env variables
         run: |
           echo "CREDENTIAL_ID=''" >> $GITHUB_ENV
