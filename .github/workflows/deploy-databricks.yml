@@ -32,28 +32,20 @@ on:
         description: "The GitHub environment to use when deploying. See [using environments for deployment](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment) for more info on this"
         required: false
         type: string
-      terraform_workspace:
-        description: "When provided will set a workspace as the active workspace when planning and deploying"
-        required: false
+      databricks_repo_path:
+        description: "The path to the repo where the notebooks are located in Databricks."
+        required: true
         type: string
-      terraform_option_1:
-        description: "An additional terraform option to be passed to plan and apply. For example `-var-file=dev.tfvars` and `-var=<variableName>=<variableValue>`"
-        required: false
+      databricks_host:
+        description: "The host of the Databricks workspace."
+        required: true
         type: string
-      terraform_init_option_1:
-        description: "An additional config to be passed to terraform init. For example `-backend-config=dev.gcs.tfbackend`"
-        required: false
+      repo_url:
+        description: "The url to the GitHub repository."
+        required: true
         type: string
-      terraform_init_option_2:
-        description: "An additional config to be passed to terraform init. For example `-backend-config=dev.gcs.tfbackend`"
-        required: false
-        type: string
-      terraform_init_option_3:
-        description: "An additional config to be passed to terraform init. For example `-backend-config=dev.gcs.tfbackend`"
-        required: false
-        type: string
-      destroy:
-        description: "An optional boolean which runs terraform destroy when set to true. Defaluts to false"
+      should_update_databricks:
+        description: "An optional boolean which updates the Databricks repo when set to true. Defaults to false"
         required: false
         type: boolean
         default: false
@@ -70,6 +62,10 @@ env:
   TF_INIT_OPTION_2: ${{ inputs.terraform_init_option_2 }}
   TF_INIT_OPTION_3: ${{ inputs.terraform_init_option_3 }}
   TF_OPTION_1: ${{ inputs.terraform_option_1 }}
+  DATABRICKS_REPO_PATH: ${{ inputs.databricks_repo_path }}
+  REPO_URL: ${{ inputs.repo_url }}
+  DATABRICKS_HOST: ${{ inputs.databricks_host }}
+  SHOULD_UPDATE_DATABRICKS: ${{ inputs.should_update_databricks }}
 
 
 jobs:
@@ -88,7 +84,7 @@ jobs:
           echo "WORKLOAD_IDENTITY_PROVIDER=$PROVIDER" >> $GITHUB_OUTPUT
   deploy_databricks:
     needs: [ setup-env ]
-    name: Terraform Apply or Destroy
+    name: Databricks deploy to ${{ inputs.environment }}
     runs-on: ${{ inputs.runner }}
     environment: ${{ inputs.environment }}
 
@@ -99,10 +95,8 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ${{ env.WORKING_DIRECTORY }}
 
     env:
-      TF_WORKSPACE: ${{ inputs.terraform_workspace }}
       WORKLOAD_IDENTITY_PROVIDER: ${{ needs.setup-env.outputs.WORKLOAD_IDENTITY_PROVIDER }}
 
     steps:
@@ -110,35 +104,47 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2.0.3
-        with:
-          terraform_wrapper: false
-
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v1
         with:
           workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ env.SERVICE_ACCOUNT }}
           project_id: ${{ env.PROJECT_ID }}
+          create_credentials_file: true
 
-      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-      - name: Terraform Init
+      - name: Get Databricks output vars
+        id: databricks-output-vars
         run: |
-          terraform init -input=false \
-              ${TF_INIT_OPTION_1:+"$TF_INIT_OPTION_1"} \
-              ${TF_INIT_OPTION_2:+"$TF_INIT_OPTION_2"} \
-              ${TF_INIT_OPTION_3:+"$TF_INIT_OPTION_3"}
-
-      # Run terraform destroy on push to main if 'destroy' is set to true
-      - name: Terraform Destroy
-        if: env.DESTROY == 'true'
-        id: destroy
+          echo "DATABRICKS_HOST=${{ env.DATABRICKS_HOST }}" >> $GITHUB_ENV
+          echo "GOOGLE_CREDENTIALS=${{ steps.gog_id.outputs.credentials_file_path }}" >> $GITHUB_ENV
+      - uses: databricks/setup-cli@main
+        name: Setup databricks CLI
+      - name: Set Databricks env variables
         run: |
-          terraform destroy -auto-approve \
-              ${TF_OPTION_1:+"$TF_OPTION_1"}
-
-      - name: Run Terraform
-        if: env.DESTROY == 'false'
-        run: terraform apply -input=false -auto-approve=true ${TF_OPTION_1:+"$TF_OPTION_1"}
+          echo "CREDENTIAL_ID=''" >> $GITHUB_ENV
+      - name: Create git-credentials
+        run: |
+          OUTPUT=$(databricks git-credentials create gitHub --git-username $GITHUB_ACTOR --personal-access-token ${{ secrets.GITHUB_TOKEN }})
+          echo "$OUTPUT"
+          CREDENTIAL_ID=$(echo "$OUTPUT" | jq -r '.credential_id')
+          echo "CREDENTIAL_ID=$CREDENTIAL_ID" >> $GITHUB_ENV
+      - name: Check if Databricks repo exists
+        run: |
+          set +e 
+          REPO_EXISTS=$(databricks repos list --output json | \
+            jq -r --arg REPO_PATH "$DATABRICKS_REPO_PATH" \
+            'if . != null then (map(select(.path == $REPO_PATH)) | if length > 0 then "true" else "false" end) else "false" end')
+          echo "REPO_EXISTS=$REPO_EXISTS" >> $GITHUB_ENV
+          set -e
+      - name: Create Databricks Repo if it does not exist
+        if: env.REPO_EXISTS == 'false'
+        run: |
+          databricks repos create ${{ env.REPO_URL }} gitHub --path ${{ env.DATABRICKS_REPO_PATH }}
+      - name: Update Databricks Repo if it exists
+        if: env.REPO_EXISTS == 'true' && env.SHOULD_UPDATE_DATABRICKS == 'true'
+        run: |
+          databricks repos update ${{ env.DATABRICKS_REPO_PATH }} --branch "main"
+      - name: Delete git-credentials
+        if: always() && env.CREDENTIAL_ID != ''
+        run: |
+          databricks git-credentials delete $CREDENTIAL_ID
