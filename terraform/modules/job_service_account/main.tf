@@ -34,6 +34,7 @@ resource "google_storage_bucket_iam_member" "catalog_object_admin" {
 
 # Service account access to product team catalog
 resource "databricks_grant" "catalog_grant" {
+  provider   = databricks.workspace
   principal  = google_service_account.dbx_job_runner.email
   privileges = ["ALL_PRIVILEGES"]
   catalog    = var.catalog_name
