@@ -1,3 +1,7 @@
+# Module for creating a service account for running Databricks jobs.
+# Add the service account as an "external user" in dask-infrastructure to get necessary Databricks access:
+# https://github.com/kartverket/dask-infrastructure/blob/main/terraform/modules/product_teams/main.tf#L11
+
 resource "google_service_account" "dbx_job_runner" {
   account_id   = "databricks-job-runner"
   display_name = "My Service Account"
