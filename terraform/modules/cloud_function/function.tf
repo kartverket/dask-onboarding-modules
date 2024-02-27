@@ -53,11 +53,12 @@ resource "google_cloudfunctions2_function_iam_member" "invoker" {
 }
 
 resource "google_cloud_run_service_iam_member" "cloud_run_invoker" {
-  project  = google_cloudfunctions2_function.this.project
-  location = google_cloudfunctions2_function.this.location
-  service  = google_cloudfunctions2_function.this.name
-  role     = "roles/run.invoker"
-  member   = "serviceAccount:${var.service_account_email}"
+  project    = google_cloudfunctions2_function.this.project
+  location   = google_cloudfunctions2_function.this.location
+  service    = google_cloudfunctions2_function.this.name
+  role       = "roles/run.invoker"
+  member     = "serviceAccount:${var.service_account_email}"
+  depends_on = [google_cloudfunctions2_function.this]
 }
 
 resource "google_project_iam_member" "token_creator" {
