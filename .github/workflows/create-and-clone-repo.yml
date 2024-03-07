@@ -54,21 +54,3 @@ jobs:
           echo "git push"
           git push -u origin main
 
-      - name: Create pull request
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ env.GITHUB_TOKEN }}
-          script: |
-            const repoName = ${{ env.REPO_NAME }};
-            const owner = 'kartverket';
-            const head = 'clone-monorepo'; 
-            const base = 'main';
-            const title = 'Clone monorepo reference setup into new repository';
-            
-            await github.rest.pulls.create({
-              owner,
-              repo: repoName,
-              title,
-              head,
-              base,
-            });
