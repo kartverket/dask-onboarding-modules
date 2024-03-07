@@ -1,0 +1,32 @@
+name: Create empty GitHub repo and clone monorepo into it
+
+on:
+  workflow_call:
+    inputs:
+      repo_name:
+        description: "The name of the repository to create"
+        required: true
+        type: string
+
+env:
+  GITHUB_TOKEN: ${{ secrets.DASK_ONBOARDING_PAT }}
+  REPO_NAME: ${{ inputs.repo_name }}
+
+
+jobs:
+  setup_env:
+      runs-on: ubuntu-latest
+  create_and_clone_repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create empty repo
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ env.GITHUB_TOKEN }}
+          script: |
+            const repo = await github.repos.createForAuthenticatedUser({
+              name: env.REPO_NAME,
+              visibility: internal
+            });
+            console.log(repo.data.clone_url);
+
