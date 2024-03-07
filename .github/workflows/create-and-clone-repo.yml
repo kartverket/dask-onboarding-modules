@@ -23,7 +23,7 @@ jobs:
           github-token: ${{ env.GITHUB_TOKEN }}
           script: |
             await github.request('POST /orgs/{org}/repos', {
-                org: 'Kartverket',
+                org: 'kartverket',
                 name: '${{ env.REPO_NAME }}',
                 description: 'This is your first repository',
                 visibility: 'internal',
@@ -31,5 +31,20 @@ jobs:
                   'X-GitHub-Api-Version': '2022-11-28'
                 }
             })
+            echo "Repository created"
+      - name: Checkout the reference repository
+        uses: actions/checkout@v4
+        with:
+          repository: kartverket/dask-monorepo-reference-setup
+          path: 'cloned-repo'
+
+      - name: Initialize new repository and push
+        run: |
+          cd cloned-repo
+          git init
+          git add .
+          git commit -m "Initial commit from reference repository"
+          git remote add origin https://github.com/kartverket/${{ env.REPO_NAME }}.git
+          git push -u origin main
 
 
