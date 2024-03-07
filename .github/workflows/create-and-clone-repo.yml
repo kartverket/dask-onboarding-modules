@@ -49,11 +49,12 @@ jobs:
           rm -rf .git
           git init
           git add .
-          git checkout -b clone-monorepo
-          git remote set-url origin https://github.com/kartverket/${{ env.REPO_NAME }}.git
+          git commit -m "Initial commit"
+          git branch -M main
+          git remote add origin https://github.com/kartverket/${{ env.REPO_NAME }}.git
           echo "git status: $(git status)"
           echo "git push"
-          git push -u origin clone-monorepo
+          git push -u origin main
 
       - name: Create pull request
         uses: actions/github-script@v7
