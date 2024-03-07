@@ -45,8 +45,6 @@ jobs:
           git config user.name "DASK CI"
           git config user.email "noreply@kartverket.no"
           git checkout -b clone-monorepo
-          git add .
-          git commit -m "Cloning monorepo from kartverket/dask-monorepo-reference-setup"
           git remote add origin https://github.com/kartverket/${{ env.REPO_NAME }}.git
           git push -u origin clone-monorepo
 
