@@ -1,7 +1,7 @@
 name: Create empty GitHub repo and clone monorepo into it
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       repo_name:
         description: "The name of the repository to create"
