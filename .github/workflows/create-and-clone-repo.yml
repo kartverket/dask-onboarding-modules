@@ -25,7 +25,7 @@ jobs:
           github-token: ${{ env.GITHUB_TOKEN }}
           script: |
             const octokit = new Octokit({
-              auth: 'YOUR-TOKEN'
+              auth: '${{ env.GITHUB_TOKEN }}'
             })
               
             await octokit.request('POST /orgs/{org}/repos', {
