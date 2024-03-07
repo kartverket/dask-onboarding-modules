@@ -41,13 +41,13 @@ jobs:
 
       - name: Push to a new branch
         env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd cloned-repo
           git config user.name "DASK CI"
           git config user.email "noreply@kartverket.no"
           git checkout -b clone-monorepo
-          git remote set-url origin https://x-access-token:${MY_GITHUB_PAT}@github.com/kartverket/${{ env.REPO_NAME }}.git
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/kartverket/${{ env.REPO_NAME }}.git
           git push -u origin clone-monorepo
 
       - name: Create pull request
