@@ -45,6 +45,7 @@ jobs:
           git init
           git add .
           git commit -m "Initial commit from reference repository"
+          git branch -M main  
           git remote add origin https://github.com/kartverket/${{ env.REPO_NAME }}.git
           git push -u origin main
 
