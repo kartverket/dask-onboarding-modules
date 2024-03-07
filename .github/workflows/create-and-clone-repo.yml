@@ -41,8 +41,6 @@ jobs:
           token: ${{ env.GITHUB_TOKEN }}
 
       - name: Push to a new branch
-        env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
         run: |
           git config --global user.name "DASK CI"
           git config --global user.email "noreply@kartverket.no"
@@ -51,7 +49,7 @@ jobs:
           git add .
           git commit -m "Initial commit"
           git branch -M main
-          git remote add origin https://github.com/kartverket/${{ env.REPO_NAME }}.git
+          git remote add origin https://x-access-token:${{env.GITHUB_TOKEN}}@github.com/kartverket/${{ env.REPO_NAME }}.git
           echo "git status: $(git status)"
           echo "git push"
           git push -u origin main
