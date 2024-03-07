@@ -24,9 +24,19 @@ jobs:
         with:
           github-token: ${{ env.GITHUB_TOKEN }}
           script: |
-            const repo = await github.repos.createForAuthenticatedUser({
-              name: env.REPO_NAME,
-              visibility: internal
-            });
-            console.log(repo.data.clone_url);
+            const octokit = new Octokit({
+              auth: 'YOUR-TOKEN'
+            })
+              
+            await octokit.request('POST /orgs/{org}/repos', {
+              org: 'Kartverket',
+              name: '${{ env.REPO_NAME }}',
+              description: 'This is your first repository',
+              homepage: 'https://github.com',
+              'visibility': 'internal',
+              headers: {
+                'X-GitHub-Api-Version': '2022-11-28'
+             }
+            })
+
 
