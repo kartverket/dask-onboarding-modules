@@ -46,8 +46,10 @@ jobs:
         run: |
           git config --global user.name "DASK CI"
           git config --global user.email "noreply@kartverket.no"
+          rm -rf .git
+          git init
+          git add .
           git checkout -b clone-monorepo
-          git remote remove origin
           git remote set-url origin https://github.com/kartverket/${{ env.REPO_NAME }}.git
           echo "git status: $(git status)"
           echo "git push"
