@@ -26,7 +26,6 @@ jobs:
                 org: 'Kartverket',
                 name: '${{ env.REPO_NAME }}',
                 description: 'This is your first repository',
-                homepage: 'https://github.com',
                 visibility: 'internal',
                 headers: {
                   'X-GitHub-Api-Version': '2022-11-28'
