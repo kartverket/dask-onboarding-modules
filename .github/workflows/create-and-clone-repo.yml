@@ -41,7 +41,7 @@ jobs:
 
       - name: Push to a new branch
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
         run: |
           cd cloned-repo
           git config user.name "DASK CI"
