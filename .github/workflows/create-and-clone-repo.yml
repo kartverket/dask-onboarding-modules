@@ -43,6 +43,8 @@ jobs:
         run: |
           cd cloned-repo
           git init
+          git config --global user.name "DASK CI"
+          git config --global user.email "noreply@kartverket.no"
           git add .
           git commit -m "Initial commit from reference repository"
           git branch -M main  
