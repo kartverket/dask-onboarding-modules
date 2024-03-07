@@ -42,13 +42,12 @@ jobs:
       - name: Initialize new repository and push
         run: |
           cd cloned-repo
-          echo "git init"
           git init
           git config --global user.name "DASK CI"
           git config --global user.email "noreply@kartverket.no"
           git remote rename origin old-origin
           echo "git remote add"
-          git remote add origin https://x-access-token:${{ env.GITHUB_TOKEN }}@https://github.com/kartverket/${{ env.REPO_NAME }}.git
+          git remote add origin https://x-access-token:${{ env.GITHUB_TOKEN }}@github.com/kartverket/${{ env.REPO_NAME }}.git
           git push -u origin --all
           git push -u origin --tags
 
