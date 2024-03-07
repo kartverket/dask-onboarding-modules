@@ -47,7 +47,8 @@ jobs:
           git config --global user.email "noreply@kartverket.no"
           git remote rename origin old-origin
           echo "git remote add"
-          git remote add origin https://x-access-token:${{ env.GITHUB_TOKEN }}@github.com/kartverket/${{ env.REPO_NAME }}.git
+          git remote add origin https://github.com/kartverket/${{ env.REPO_NAME }}.git
+          echo "git push"
           git push -u origin --all
           git push -u origin --tags
 
