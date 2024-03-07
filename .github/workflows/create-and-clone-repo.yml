@@ -14,8 +14,6 @@ env:
 
 
 jobs:
-  setup_env:
-      runs-on: ubuntu-latest
   create_and_clone_repo:
     runs-on: ubuntu-latest
     steps:
