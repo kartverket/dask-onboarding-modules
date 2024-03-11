@@ -35,7 +35,7 @@ jobs:
       - name: Modify files
         working-directory: current-repo
         run: |
-          python scripts/test.py target-repo/terraform/modules/product_teams/main.tf
+          python scripts/test.py ../target-repo/terraform/modules/product_teams/main.tf
 
       - name: Commit and Push to target repository
         working-directory: target-repo

@@ -1,4 +1,5 @@
 import sys
+import os
 
 
 def edit_file(filename):
@@ -43,4 +44,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     file_path = sys.argv[1]
+    absolute_path = os.path.abspath(file_path)
+    print(f"Attempting to access: {absolute_path}")
     edit_file(file_path)
