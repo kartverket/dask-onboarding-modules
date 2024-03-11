@@ -71,14 +71,12 @@ jobs:
 
       - name: Create Pull Request
         uses: actions/github-script@v7
-        env:
-          GIT_TOKEN: ${{ env.GITHUB_TOKEN }}
         with:
           script: |
             const payload = {
                 method: 'POST',
                 headers: {
-                    'Authorization': `token ${process.env.GIT_TOKEN}`,
+                    'Authorization': `token ${{ env.GITHUB_TOKEN }}`,
                     'Accept': 'application/vnd.github.v3+json'
                 },
                 body: JSON.stringify({
