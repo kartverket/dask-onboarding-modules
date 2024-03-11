@@ -64,7 +64,40 @@ jobs:
         run: |
           git config --global user.name "DASK CI"
           git config --global user.email "noreply@kartverket.no"
-          git checkout -b test-workflow
+          git checkout -b dask:new-team
           git add .
           git commit -m "Update files from DASK CI workflow"
-          git push origin test-workflow
+          git push origin dask:new-team
+
+      - name: Create Pull Request
+        uses: actions/github-script@v7
+        env:
+          GIT_TOKEN: ${{ env.GITHUB_TOKEN }}
+        with:
+          script: |
+            const payload = {
+                method: 'POST',
+                headers: {
+                    'Authorization': `token ${process.env.GIT_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({
+                    title: 'Update files from DASK CI workflow',
+                    head: 'dask:new-team',
+                    base: 'main'
+                })
+            };
+
+            fetch(`https://api.github.com/repos/kartverket/target-repo/pulls`, payload)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Pull Request creation failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Pull Request created: ', data.html_url);
+                })
+                .catch(error => {
+                    console.error(error);
+            });
