@@ -25,7 +25,7 @@ jobs:
 
       - name: Make Changes
         run: |
-          python ../../scripts/test.py
+          python scripts/test.py
 
       - name: Commit and Push
         run: |
