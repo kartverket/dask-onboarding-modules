@@ -1,12 +1,12 @@
 name: Create pull request to repository
 
-on:
-  workflow_dispatch:
-    inputs:
-      repo:
-        description: "Repository to create pull request for"
-        required: true
-        type: string
+on: push
+#   workflow_dispatch:
+#     inputs:
+#       repo:
+#         description: "Repository to create pull request for"
+#         required: true
+#         type: string
 
 env:
   GITHUB_TOKEN: ${{ secrets.DASK_ONBOARDING_PAT }}
