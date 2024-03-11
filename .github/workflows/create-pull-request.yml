@@ -13,22 +13,29 @@ env:
   REPO: ${{ inputs.repo }}
 
 jobs:
-  create_and_clone_repo:
+  create_pull_request:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the reference repository
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+        with:
+          path: "current-repo"
+
+      - name: Checkout target repository
         uses: actions/checkout@v4
         with:
           repository: kartverket/${{ env.REPO }}
           ref: main
           token: ${{ env.GITHUB_TOKEN }}
+          path: "target-repo"
 
-      - name: Make Changes
+      - name: Modify files
+        working-directory: current-repo
         run: |
-          cd scripts 
-          python test.py
+          python scripts/test.py
 
-      - name: Commit and Push
+      - name: Commit and Push to target repository
+        working-directory: target-repo
         run: |
           git config --global user.name "DASK CI"
           git config --global user.email "noreply@kartverket.no"
