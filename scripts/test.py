@@ -23,7 +23,7 @@ def edit_file(filepath):
           "sandbox" : "new-team-sandbox",
           "dev" : "new-team-dev"
         }
-      }
+      },
     """
 
     # Find the end of the 'locals' block and insert the new team data

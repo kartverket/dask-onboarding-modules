@@ -16,6 +16,11 @@ jobs:
   create_pull_request:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2.0.3
+        with:
+          terraform_wrapper: false
+
       - name: Checkout current repository
         uses: actions/checkout@v4
         with:
@@ -40,6 +45,7 @@ jobs:
           git config --global user.name "DASK CI"
           git config --global user.email "noreply@kartverket.no"
           git checkout -b test-workflow
+          terraform fmt -recursive
           git add .
           git commit -m "Update file"
           git push origin test-workflow
