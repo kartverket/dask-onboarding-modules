@@ -88,7 +88,7 @@ jobs:
                 })
             };
 
-            fetch(`https://api.github.com/repos/kartverket/target-repo/pulls`, payload)
+            fetch(`https://api.github.com/repos/kartverket/${{ env.TARGET_REPO }}/pulls`, payload)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Pull Request creation failed');
