@@ -1,0 +1,36 @@
+name: Create empty GitHub repo and clone monorepo into it
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: "Repository to create pull request for"
+        required: true
+        type: string
+
+env:
+  GITHUB_TOKEN: ${{ secrets.DASK_ONBOARDING_PAT }}
+  REPO: ${{ inputs.repo }}
+
+jobs:
+  create_and_clone_repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the reference repository
+        uses: actions/checkout@v4
+        with:
+          repository: kartverket/${{ env.REPO }}
+          ref: main
+          token: ${{ env.GITHUB_TOKEN }}
+
+      - name: Make Changes
+        run: |
+          python ../../scripts/test.py
+
+      - name: Commit and Push
+        run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+          git add .
+          git commit -m "Update file"
+          git push origin HEAD:test-workflow
