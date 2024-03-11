@@ -29,6 +29,9 @@ jobs:
           token: ${{ env.GITHUB_TOKEN }}
           path: "target-repo"
 
+      - name: List files in target-repo
+        run: ls -R target-repo/
+
       - name: Modify files
         working-directory: current-repo
         run: |
