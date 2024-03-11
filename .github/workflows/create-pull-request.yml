@@ -15,12 +15,17 @@ on:
         description: "Script to run"
         required: true
         type: string
+      is_terraform_change:
+        description: "Is the change in a Terraform file?"
+        required: true
+        type: boolean
 
 env:
   GITHUB_TOKEN: ${{ secrets.DASK_ONBOARDING_PAT }}
   TARGET_REPO: ${{ inputs.target_repo }}
   FILE_TO_MODIFY_PATH: ${{ inputs.file_to_modify_path }}
   SCRIPT: ${{ inputs.script }}
+  TERRAFORM_CHANGED: ${{ inputs.is_terraform_change }}
 
 jobs:
   create_pull_request:
@@ -49,13 +54,17 @@ jobs:
         run: |
           python scripts/${{ env.SCRIPT }} ../target-repo/${{ env.FILE_TO_MODIFY_PATH }}
 
+      - name: Format Terraform Files
+        if: env.TERRAFORM_CHANGED == 'true'
+        working-directory: target-repo/${{ env.FILE_TO_MODIFY_PATH }}
+        run: terraform fmt -recursive
+
       - name: Commit and Push to target repository
         working-directory: target-repo
         run: |
           git config --global user.name "DASK CI"
           git config --global user.email "noreply@kartverket.no"
           git checkout -b test-workflow
-          terraform fmt -recursive
           git add .
           git commit -m "Update file"
           git push origin test-workflow
