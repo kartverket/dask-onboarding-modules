@@ -1,3 +1,6 @@
+import sys
+
+
 def edit_file(filename):
     with open(filename, 'r') as file:
         lines = file.readlines()
@@ -35,4 +38,9 @@ def edit_file(filename):
 
 
 if __name__ == "__main__":
-    edit_file('terraform/modules/product_teams/main.tf')
+    if len(sys.argv) != 2:
+        print("Usage: python edit_file.py <path-to-file>")
+        sys.exit(1)
+
+    file_path = sys.argv[1]
+    edit_file(file_path)
