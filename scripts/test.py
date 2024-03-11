@@ -2,8 +2,8 @@ import sys
 import os
 
 
-def edit_file(filename):
-    with open(filename, 'r') as file:
+def edit_file(filepath):
+    with open(filepath, 'r') as file:
         lines = file.readlines()
 
     # Define the new team data
@@ -27,14 +27,12 @@ def edit_file(filename):
     """
 
     # Find the end of the 'locals' block and insert the new team data
-    for i, line in enumerate(lines):
-        # Assuming this is the end of a team definition
-        if line.strip() == "}," and lines[i-1].strip().startswith('"'):
-            # Insert new team data before this line
-            lines.insert(i, new_team_data + '\n')
-            break
+    insert_index = next((i for i, line in enumerate(
+        reversed(lines)) if line.strip() == "},"), None)
+    if insert_index is not None:
+        lines.insert(len(lines) - insert_index, new_team_data)
 
-    with open(filename, 'w') as file:
+    with open(filepath, 'w') as file:
         file.writelines(lines)
 
 
