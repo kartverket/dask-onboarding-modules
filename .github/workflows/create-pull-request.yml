@@ -1,0 +1,101 @@
+name: Create pull request to repository
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_repo:
+        description: "Repository to create pull request for"
+        required: true
+        type: string
+      file_to_modify_path:
+        description: "File to modify"
+        required: true
+        type: string
+      script:
+        description: "Script to run"
+        required: true
+        type: string
+      terraform_target_folder:
+        description: "Terraform target folder"
+        required: false
+        type: string
+
+env:
+  GITHUB_TOKEN: ${{ secrets.DASK_ONBOARDING_PAT }}
+  TARGET_REPO: ${{ inputs.target_repo }}
+  FILE_TO_MODIFY_PATH: ${{ inputs.file_to_modify_path }}
+  SCRIPT: ${{ inputs.script }}
+  TERRAFORM_TARGET_FOLDER: ${{ inputs.terraform_target_folder }}
+
+jobs:
+  create_pull_request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2.0.3
+        with:
+          terraform_wrapper: false
+
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+        with:
+          path: "current-repo"
+
+      - name: Checkout target repository
+        uses: actions/checkout@v4
+        with:
+          repository: kartverket/${{ env.TARGET_REPO }}
+          ref: main
+          token: ${{ env.GITHUB_TOKEN }}
+          path: "target-repo"
+
+      - name: Modify files
+        working-directory: current-repo
+        run: |
+          python scripts/${{ env.SCRIPT }} ../target-repo/${{ env.FILE_TO_MODIFY_PATH }}
+
+      - name: Format Terraform Files
+        if: env.TERRAFORM_TARGET_FOLDER != null
+        working-directory: target-repo/${{ env.TERRAFORM_TARGET_FOLDER }}
+        run: terraform fmt -recursive
+
+      - name: Commit and Push to target repository
+        working-directory: target-repo
+        run: |
+          git config --global user.name "DASK CI"
+          git config --global user.email "noreply@kartverket.no"
+          git checkout -b dask-onboarding-ci
+          git add .
+          git commit -m "Update files from DASK CI workflow"
+          git push origin dask-onboarding-ci
+
+      - name: Create Pull Request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const payload = {
+                method: 'POST',
+                headers: {
+                    'Authorization': `token ${{ env.GITHUB_TOKEN }}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({
+                    title: 'Add new team from DASK CI workflow',
+                    head: 'dask-onboarding-ci',
+                    base: 'main'
+                })
+            };
+
+            fetch(`https://api.github.com/repos/kartverket/${{ env.TARGET_REPO }}/pulls`, payload)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Pull Request creation failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Pull Request created: ', data.html_url);
+                })
+                .catch(error => {
+                    console.error(error);
+            });
