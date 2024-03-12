@@ -18,6 +18,7 @@ on:
       script_params:
         description: "Parameters to use in the script"
         required: false
+        type: string
 
 env:
   GITHUB_TOKEN: ${{ secrets.DASK_ONBOARDING_PAT }}
@@ -51,7 +52,7 @@ jobs:
       - name: Modify files
         working-directory: current-repo
         run: |
-          python scripts/${{ env.SCRIPT }} ${{ env.SCRIPT_PARAMS }}
+          python scripts/${{ env.SCRIPT }} ${{ fromJson(env.SCRIPT_PARAMS) }}
 
       - name: Format Terraform Files
         if: env.TERRAFORM_TARGET_FOLDER != null
