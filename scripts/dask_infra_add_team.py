@@ -1,4 +1,3 @@
-import json
 import sys
 import os
 
@@ -42,8 +41,7 @@ if __name__ == "__main__":
         print("Usage: python edit_file.py <path-to-file>")
         sys.exit(1)
 
-    params = json.loads(os.environ["SCRIPT_PARAMS"])
-    file_path = params["file_path"]
+    file_path = sys.argv[1]
     absolute_path = os.path.abspath(file_path)
     print(f"Attempting to access: {absolute_path}")
     edit_file(file_path)
