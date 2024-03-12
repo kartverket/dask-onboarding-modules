@@ -7,10 +7,6 @@ on:
         description: "Repository to create pull request for"
         required: true
         type: string
-      file_to_modify_path:
-        description: "File to modify"
-        required: true
-        type: string
       script:
         description: "Script to run"
         required: true
@@ -26,9 +22,9 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.DASK_ONBOARDING_PAT }}
   TARGET_REPO: ${{ inputs.target_repo }}
-  FILE_TO_MODIFY_PATH: ${{ inputs.file_to_modify_path }}
   SCRIPT: ${{ inputs.script }}
   TERRAFORM_TARGET_FOLDER: ${{ inputs.terraform_target_folder }}
+  SCRIPT_PARAMS: ${{ inputs.script_params }}
 
 jobs:
   create_pull_request:
@@ -55,7 +51,7 @@ jobs:
       - name: Modify files
         working-directory: current-repo
         run: |
-          python scripts/${{ env.SCRIPT }} ../target-repo/${{ env.FILE_TO_MODIFY_PATH }}
+          python scripts/${{ env.SCRIPT }} ${{ env.SCRIPT_PARAMS }}
 
       - name: Format Terraform Files
         if: env.TERRAFORM_TARGET_FOLDER != null
