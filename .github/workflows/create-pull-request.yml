@@ -3,6 +3,10 @@ name: Create pull request to repository
 on:
   workflow_dispatch:
     inputs:
+      should_create_pr:
+        description: "Should create pull request"
+        required: true
+        type: boolean
       target_repo:
         description: "Repository to create pull request for"
         required: true
@@ -25,6 +29,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.DASK_ONBOARDING_PAT }}
+  SHOULD_CREATE_PR: ${{ inputs.should_create_pr }}
   TARGET_REPO: ${{ inputs.target_repo }}
   FILE_TO_MODIFY_PATH: ${{ inputs.file_to_modify_path }}
   SCRIPT: ${{ inputs.script }}
@@ -64,6 +69,7 @@ jobs:
         run: terraform fmt -recursive
 
       - name: Commit and Push to target repository
+        if: env.SHOULD_CREATE_PR == true
         working-directory: target-repo
         run: |
           git config --global user.name "DASK CI"
@@ -74,6 +80,7 @@ jobs:
           git push origin dask-onboarding-ci
 
       - name: Create Pull Request
+        if: env.SHOULD_CREATE_PR == true
         uses: actions/github-script@v7
         with:
           script: |
