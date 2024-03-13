@@ -39,11 +39,6 @@ on:
         description: "The url to the GitHub repository."
         required: true
         type: string
-      should_update_databricks:
-        description: "An optional boolean which updates the Databricks repo when set to true. Defaults to false"
-        required: false
-        type: boolean
-        default: false
 
 env:
   WORKLOAD_IDENTITY_PROVIDER_OVERRIDE: ${{ inputs.workload_identity_provider_override }}
@@ -54,8 +49,6 @@ env:
   DATABRICKS_REPO_PATH: ${{ inputs.databricks_repo_path }}
   REPO_URL: ${{ inputs.repo_url }}
   DATABRICKS_HOST: ${{ inputs.databricks_host }}
-  SHOULD_UPDATE_DATABRICKS: ${{ inputs.should_update_databricks }}
-
 
 jobs:
   setup-env:
@@ -131,7 +124,7 @@ jobs:
         run: |
           databricks repos create ${{ env.REPO_URL }} gitHub --path ${{ env.DATABRICKS_REPO_PATH }}
       - name: Update Databricks Repo if it exists
-        if: env.REPO_EXISTS == 'true' && env.SHOULD_UPDATE_DATABRICKS == 'true'
+        if: env.REPO_EXISTS == 'true'
         run: |
           databricks repos update ${{ env.DATABRICKS_REPO_PATH }} --branch "main"
       - name: Delete git-credentials
