@@ -65,7 +65,7 @@ jobs:
                 echo "\"${{ env.REGISTRY }}/${{ github.repository }}@${{ steps.build-docker.outputs.digest }}\"" > $DIRECTORY/${{ inputs.version_file_name }} 
             }
 
-            if [[ "${{ env.BRANCH }}" == "change-workflow" ]]; then
+            if [[ "${{ env.BRANCH }}" == "main" ]]; then
                 setup_directory 
             fi
 
