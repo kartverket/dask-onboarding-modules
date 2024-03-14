@@ -52,7 +52,7 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v3
         with:
-            repository: kartverket/${{ env.apps_repo }}
+            repository: kartverket/${{ env.APPS_REPO }}
             ref: main
             token: ${{ secrets.PAT_REPO }}
 
