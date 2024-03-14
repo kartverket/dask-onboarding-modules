@@ -20,6 +20,7 @@ env:
   REGISTRY: ghcr.io
   CONTEXT_PATH: ${{inputs.context_path}}
   APPS_REPO: ${{inputs.apps_repo}}
+  BRANCH: ${{ github.head_ref || github.ref_name }}
 
 jobs:
   build:
@@ -64,7 +65,7 @@ jobs:
                 echo "\"${{ env.REGISTRY }}/${{ github.repository }}@${{ steps.build-docker.outputs.digest }}\"" > $DIRECTORY/${{ inputs.version_file_name }} 
             }
 
-            if [[ "${{ github.head_ref || github.ref_name }}" == "publish-docker-image-workflow"]]; then
+            if [[ "${{ env.BRANCH }}" == "change-workflow"]]; then
             setup_directory 
             fi
 
