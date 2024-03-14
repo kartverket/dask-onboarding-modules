@@ -18,8 +18,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  CONTEXT_PATH: ${{inputs.context_path}}
-  APPS_REPO: ${{inputs.apps_repo}}
+  CONTEXT_PATH: ${{ inputs.context_path }}
+  APPS_REPO: ${{ inputs.apps_repo }}
   BRANCH: ${{ github.head_ref || github.ref_name }}
 
 jobs:
