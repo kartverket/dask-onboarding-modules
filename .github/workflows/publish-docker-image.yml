@@ -64,7 +64,7 @@ jobs:
                 echo "\"${{ env.REGISTRY }}/${{ github.repository }}@${{ steps.build-docker.outputs.digest }}\"" > $DIRECTORY/${{ inputs.version_file_name }} 
             }
 
-            if [[ "${{ github.head_ref || github.ref_name }}" == "main" || "${{ github.head_ref || github.ref_name }}" == "publish-docker-image-workflow"]]; then
+            if [[ "${{ github.head_ref || github.ref_name }}" == "publish-docker-image-workflow"]]; then
             setup_directory 
             fi
 
