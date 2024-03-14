@@ -9,6 +9,9 @@ on:
       version_file_name:
         required: true
         type: string
+      apps_repo:
+        required: true
+        type: string
     secrets:
       PAT_REPO:
         required: true
@@ -16,6 +19,7 @@ on:
 env:
   REGISTRY: ghcr.io
   CONTEXT_PATH: ${{inputs.context_path}}
+  APPS_REPO: ${{inputs.apps_repo}}
 
 jobs:
   build:
@@ -48,7 +52,7 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v3
         with:
-            repository: kartverket/dask-apps
+            repository: kartverket/${{ env.apps_repo }}
             ref: main
             token: ${{ secrets.PAT_REPO }}
 
