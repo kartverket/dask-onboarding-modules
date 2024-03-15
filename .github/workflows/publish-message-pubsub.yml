@@ -12,8 +12,11 @@ env:
 
 
 jobs:
-  create_and_clone_repo:
+  publish_message_to_pubsub_onboarding_topic:
+    name: Publish Pub/Sub-message to the onboarding topic
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - name: Set vars
         id: set-output
