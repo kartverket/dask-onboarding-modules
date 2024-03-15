@@ -1,0 +1,41 @@
+name: Create empty GitHub repo and clone monorepo into it
+
+on:
+  push
+
+env:
+  AUTH_PROJECT_NUMBER: 698137771009
+  SERVICE_ACCOUNT: dataplattform-deploy@dataplattform-sandbox-6f27.iam.gserviceaccount.com
+  PUBSUB_TOPIC: onboarding_topic
+  TEAM_NAME: jonas-test-2
+  STEP_ID: start
+
+
+jobs:
+  create_and_clone_repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set vars
+        id: set-output
+        run: |
+          PRODUCT_NAME=$(echo $SERVICE_ACCOUNT | sed 's/-deploy.*//')
+          DEFAULT_WORKLOAD_IDENTITY="projects/$AUTH_PROJECT_NUMBER/locations/global/workloadIdentityPools/$PRODUCT_NAME-deploy-pool/providers/github-provider"
+          OVERRIDE=$WORKLOAD_IDENTITY_PROVIDER_OVERRIDE
+          PROVIDER=${OVERRIDE:-$DEFAULT_WORKLOAD_IDENTITY}
+          echo "WORKLOAD_IDENTITY_PROVIDER=$PROVIDER" >> $GITHUB_OUTPUT
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ steps.set-output.outputs.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+      
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          version: '>= 363.0.0'
+
+      - name: Add message to PubSub topic
+        run: |
+          gcloud pubsub topics publish my-topic --message='{ "team_name": "${{ env.TEAM_NAME }}", step: "${{ env.STEP_ID }}" }'
+
