@@ -13,7 +13,7 @@ env:
 
 jobs:
   publish_message_to_pubsub_onboarding_topic:
-    name: Publish Pub/Sub-message to the onboarding topic
+    name: Notify task completion to the onboarding PubSub-topic
     runs-on: ubuntu-latest
     permissions:
       id-token: write
