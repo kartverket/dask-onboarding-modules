@@ -40,5 +40,5 @@ jobs:
 
       - name: Add message to PubSub topic
         run: |
-          gcloud pubsub topics publish my-topic --message='{ "team_name": "${{ env.TEAM_NAME }}", step: "${{ env.STEP_ID }}" }'
+          gcloud pubsub topics publish ${{ env.PUBSUB_TOPIC }} --message='{ "team_name": "${{ env.TEAM_NAME }}", step: "${{ env.STEP_ID }}" }'
 
