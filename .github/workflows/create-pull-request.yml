@@ -26,6 +26,10 @@ on:
       script_params:
         description: "Parameters to use in the script"
         required: false
+      step_id:
+        description: "The step ID for the current step. Should match what the script does."
+        required: true
+        type: string
 
 env:
   GITHUB_TOKEN: ${{ secrets.DASK_ONBOARDING_PAT }}
@@ -35,6 +39,7 @@ env:
   SCRIPT: ${{ inputs.script }}
   TERRAFORM_TARGET_FOLDER: ${{ inputs.terraform_target_folder }}
   SCRIPT_PARAMS: ${{ inputs.script_params }}
+  STEP_ID: ${{ inputs.step_id }} # Must match step-id in dask-onboarding-service
 
 jobs:
   create_pull_request:
@@ -110,3 +115,17 @@ jobs:
                 .catch(error => {
                     console.error(error);
             });
+  send_success_message_to_pubsub:
+    needs: create_pull_request
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write
+    steps:
+      - name: Send success message to Pub/Sub
+        uses: ./.github/workflows/publish-message-pubsub.yml
+        with:
+          auth_project_number: ${{ env.AUTH_PROJECT_NUMBER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+          team_name: ${{ env.TEAM_NAME }}
+          step_id: ${{ env.STEP_ID }}
+    

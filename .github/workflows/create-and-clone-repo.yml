@@ -3,14 +3,32 @@ name: Create empty GitHub repo and clone monorepo into it
 on:
   workflow_dispatch:
     inputs:
-      repo_name:
+      team_name:
         description: "The name of the repository to create"
         required: true
         type: string
+      service_account:
+        description: "The GCP service account connected to the identity pool that will be used by Terraform for authentication to GCP."
+        required: true
+        type: string
+      auth_project_number:
+        description: "The GCP Project Number used for authentication. A 12-digit number used as a unique identifier for the project. Used to find workload identity pool."
+        required: true
+        type: string
+      debug_mode:
+        description: "If the workflow should actually create resources or just run through without doing so."
+        required: false
+        type: boolean
+        default: false
 
 env:
   GITHUB_TOKEN: ${{ secrets.DASK_ONBOARDING_PAT }}
-  REPO_NAME: ${{ inputs.repo_name }}
+  DEBUG_MODE: ${{ inputs.debug_mode }}
+  TEAM_NAME: ${{ inputs.team_name }} # Lowercase-name-for-team
+  REPO_NAME: ${{ inputs.team_name }}-data-ingestor
+  AUTH_PROJECT_NUMBER: ${{ inputs.auth_project_number }}
+  SERVICE_ACCOUNT: ${{ inputs.service_account }}
+  STEP_ID: setup-ingestor # Must match step-id in dask-onboarding-service
 
 
 jobs:
@@ -18,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create empty repo
+        if: env.DEBUG_MODE == true
         uses: actions/github-script@v7
         with:
           github-token: ${{ env.GITHUB_TOKEN }}
@@ -25,7 +44,7 @@ jobs:
             const repoName = '${{ env.REPO_NAME }}';
             const response = await github.request('POST /orgs/{org}/repos', {
                 org: 'kartverket',
-                name: '${{ env.REPO_NAME }}',
+                name: repoName,
                 description: 'This is your first repository',
                 visibility: 'internal',
                 headers: {
@@ -41,6 +60,7 @@ jobs:
           token: ${{ env.GITHUB_TOKEN }}
 
       - name: Push to a new branch
+        if: env.DEBUG_MODE == true
         run: |
           git config --global user.name "DASK CI"
           git config --global user.email "noreply@kartverket.no"
@@ -53,4 +73,19 @@ jobs:
           echo "git status: $(git status)"
           echo "git push"
           git push -u origin main
+  send_success_message_to_pubsub:
+    runs-on: ubuntu-latest
+    needs: create_and_clone_repo
+    permissions: 
+      id-token: write
+    steps:
+      - name: Send success message to Pub/Sub
+        uses: ./.github/workflows/publish-message-pubsub.yml
+        with:
+          auth_project_number: ${{ env.AUTH_PROJECT_NUMBER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+          team_name: ${{ env.TEAM_NAME }}
+          step_id: ${{ env.STEP_ID }}
+
+
 
