@@ -28,7 +28,6 @@ env:
   REPO_NAME: ${{ inputs.team_name }}-data-ingestor
   AUTH_PROJECT_NUMBER: ${{ inputs.auth_project_number }}
   SERVICE_ACCOUNT: ${{ inputs.service_account }}
-  STEP_ID: setup-ingestor # Must match step-id in dask-onboarding-service
 
 
 jobs:
@@ -85,7 +84,7 @@ jobs:
           auth_project_number: ${{ env.AUTH_PROJECT_NUMBER }}
           service_account: ${{ env.SERVICE_ACCOUNT }}
           team_name: ${{ env.TEAM_NAME }}
-          step_id: ${{ env.STEP_ID }}
+          step_id: setup-ingestor
 
 
 
