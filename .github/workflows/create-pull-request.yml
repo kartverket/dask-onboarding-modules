@@ -81,7 +81,7 @@ jobs:
       - name: Modify files
         working-directory: current-repo
         run: |
-          python scripts/${{ env.SCRIPT }} ../target-repo/${{ env.FILE_TO_MODIFY_PATH }} ${{ fromJson(env.SCRIPT_PARAMS) }}
+          python scripts/${{ env.SCRIPT }} '../target-repo/${{ env.FILE_TO_MODIFY_PATH }}' '${{ fromJson(env.SCRIPT_PARAMS) }}'
 
       - name: Format Terraform Files
         if: env.TERRAFORM_TARGET_FOLDER != null
@@ -136,6 +136,8 @@ jobs:
     permissions: 
       id-token: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Send success message to Pub/Sub
         uses: ./.github/workflows/publish-message-pubsub.yml
         with:
