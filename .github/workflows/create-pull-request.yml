@@ -81,7 +81,7 @@ jobs:
       - name: Modify files
         working-directory: current-repo
         run: |
-          python scripts/${{ env.SCRIPT }} ../target-repo/${{ env.FILE_TO_MODIFY_PATH }} ${{ fromJson(env.SCRIPT_PARAMS) }}
+          python scripts/${{ env.SCRIPT }} '../target-repo/${{ env.FILE_TO_MODIFY_PATH }}' '${{ fromJson(env.SCRIPT_PARAMS) }}'
 
       - name: Format Terraform Files
         if: env.TERRAFORM_TARGET_FOLDER != null
@@ -132,15 +132,12 @@ jobs:
             });
   send_success_message_to_pubsub:
     needs: create_pull_request
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/publish-message-pubsub.yml
     permissions: 
       id-token: write
-    steps:
-      - name: Send success message to Pub/Sub
-        uses: ./.github/workflows/publish-message-pubsub.yml
-        with:
-          auth_project_number: ${{ env.AUTH_PROJECT_NUMBER }}
-          service_account: ${{ env.SERVICE_ACCOUNT }}
-          team_name: ${{ env.TEAM_NAME }}
-          step_id: ${{ env.STEP_ID }}
+    with:
+      auth_project_number: ${{ inputs.auth_project_number }}
+      service_account: ${{ inputs.service_account }}
+      team_name: ${{ inputs.team_name }}
+      step_id: ${{ inputs.step_id }}
     
