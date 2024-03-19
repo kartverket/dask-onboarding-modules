@@ -37,8 +37,8 @@ def edit_file(filepath):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python edit_file.py <path-to-file>")
+    if len(sys.argv) != 3:
+        print("Usage: python edit_file.py <path-to-file> <script-params>")
         sys.exit(1)
 
     file_path = sys.argv[1]
