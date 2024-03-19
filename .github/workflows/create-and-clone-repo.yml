@@ -81,7 +81,7 @@ jobs:
       auth_project_number: ${{ inputs.auth_project_number }}
       service_account: ${{ inputs.service_account }}
       team_name: ${{ inputs.team_name }}
-      step_id: ${{ inputs.step_id }}
+      step_id: setup-ingestor
 
 
 
