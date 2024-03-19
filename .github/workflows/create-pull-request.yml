@@ -89,7 +89,7 @@ jobs:
         run: terraform fmt -recursive
 
       - name: Commit and Push to target repository
-        if: env.SHOULD_CREATE_PR == true
+        if: env.SHOULD_CREATE_PR == 'true'
         working-directory: target-repo
         run: |
           git config --global user.name "DASK CI"
@@ -100,7 +100,7 @@ jobs:
           git push origin dask-onboarding-ci
 
       - name: Create Pull Request
-        if: env.SHOULD_CREATE_PR == true
+        if: env.SHOULD_CREATE_PR == 'true'
         uses: actions/github-script@v7
         with:
           script: |
