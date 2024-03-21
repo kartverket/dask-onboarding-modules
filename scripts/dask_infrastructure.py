@@ -6,14 +6,10 @@ def edit_file(filepath, json_obj):
     team_name: str = json_obj.get("team_name")
     ad_group_name: str = json_obj.get("ad_group_name")
     area_name: str = json_obj.get("area_name")
-    project_id = {}
-    project_id["sandbox"] = json_obj.get("project_id_sandbox")
-    project_id["dev"] = json_obj.get("project_id_dev")
-    project_id["test"] = json_obj.get("project_id_test")
-    project_id["prod"] = json_obj.get("project_id_prod")
+    project_id_map: dict = json_obj.get("project_id_map")
 
     # Define the new team data
-    new_team_data = generate_module_definition(ad_group_name, team_name, area_name, project_id)
+    new_team_data = generate_module_definition(ad_group_name, team_name, area_name, project_id_map)
 
     append_content_to_end_of_file(filepath, new_team_data)
 
