@@ -1,11 +1,11 @@
 # Set up the IAM workload identity pool and provider for Skyporten integration
-resource "google_iam_workload_identity_pool" "maskinporten_test" {
+resource "google_iam_workload_identity_pool" "maskinporten" {
   workload_identity_pool_id = var.workload_pool_id
   display_name              = var.workload_pool_id
 }
 
 resource "google_iam_workload_identity_pool_provider" "maskinporten" {
-  workload_identity_pool_id          = google_iam_workload_identity_pool.maskinporten_test.workload_identity_pool_id
+  workload_identity_pool_id          = google_iam_workload_identity_pool.maskinporten.workload_identity_pool_id
   workload_identity_pool_provider_id = var.provider_id
   attribute_mapping = {
     "attribute.maskinportenscope" = "assertion.scope"
@@ -31,8 +31,9 @@ module "skyporten_consumer" {
   org_number             = each.value
   project_number         = var.project_number
 
-  workload_identity_pool_id = google_iam_workload_identity_pool.maskinporten_test.workload_identity_pool_id
+  workload_identity_pool_id = google_iam_workload_identity_pool.maskinporten.workload_identity_pool_id
   providers = {
     google = google
   }
+  depends_on = [ google_iam_workload_identity_pool.maskinporten, google_iam_workload_identity_pool_provider.maskinporten ]
 }
