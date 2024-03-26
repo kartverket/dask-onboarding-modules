@@ -19,19 +19,19 @@ resource "google_service_account_iam_policy" "foo" {
 }
 
 resource "google_storage_bucket" "skyporten_bucket" {
-  name     = "skyporten-${var.org_number}"
-  location = var.region
+  name                        = "skyporten-${var.org_number}-${var.project_id}"
+  location                    = var.region
   uniform_bucket_level_access = true
 }
 
 resource "google_storage_bucket_iam_member" "legacy_bucket_reader" {
-  bucket   = google_storage_bucket.skyporten_bucket.name
-  role     = "roles/storage.legacyBucketReader"
-  member   = "serviceAccount:${google_service_account.skyporten_consumer.email}"
+  bucket = google_storage_bucket.skyporten_bucket.name
+  role   = "roles/storage.legacyBucketReader"
+  member = "serviceAccount:${google_service_account.skyporten_consumer.email}"
 }
 
 resource "google_storage_bucket_iam_member" "object_admin" {
-  bucket   = google_storage_bucket.skyporten_bucket.name
-  role     = "roles/storage.objectAdmin"
-  member   = "serviceAccount:${google_service_account.skyporten_consumer.email}"
+  bucket = google_storage_bucket.skyporten_bucket.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.skyporten_consumer.email}"
 }

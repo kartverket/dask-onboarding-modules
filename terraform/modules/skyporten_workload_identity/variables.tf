@@ -25,3 +25,7 @@ variable "region" {
 variable "project_number" {
   description = "The project number of the project"
 }
+
+variable "project_id" {
+  description = "The project ID of the project"
+}

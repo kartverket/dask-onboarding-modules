@@ -25,15 +25,17 @@ module "skyporten_consumer" {
   source   = "./skyporten_consumers"
   for_each = var.consumer_org_numbers
 
-  maskinporten_scope     = var.maskinporten_scope
-  maskinporten_client_id = "0192:${each.value}"
-  region                 = var.region
-  org_number             = each.value
-  project_number         = var.project_number
-
+  maskinporten_scope        = var.maskinporten_scope
+  maskinporten_client_id    = "0192:${each.value}"
+  region                    = var.region
+  org_number                = each.value
+  project_number            = var.project_number
   workload_identity_pool_id = google_iam_workload_identity_pool.maskinporten.workload_identity_pool_id
+  project_id                = var.project_id
+
   providers = {
     google = google
   }
-  depends_on = [ google_iam_workload_identity_pool.maskinporten, google_iam_workload_identity_pool_provider.maskinporten ]
+
+  depends_on = [google_iam_workload_identity_pool.maskinporten, google_iam_workload_identity_pool_provider.maskinporten]
 }
