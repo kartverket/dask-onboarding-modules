@@ -26,7 +26,7 @@ variable "project_id" {
   description = "The project ID of the project"
 }
 
-variable "display_name" {
+variable "workload_identity_pool_display_name" {
   description = "The display name of the workload identity pool"
 }
 
