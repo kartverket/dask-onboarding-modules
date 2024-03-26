@@ -7,7 +7,7 @@ resource "google_service_account" "skyporten_consumer" {
   description = "Service account for the Skyporten consumer for organization ${var.org_number} with scope ${local.maskinporten_scope}"
 }
 
-data "google_iam_policy" "clientaccess" {
+data "google_iam_policy" "client_access" {
   binding {
     role = "roles/iam.workloadIdentityUser"
 
@@ -17,9 +17,9 @@ data "google_iam_policy" "clientaccess" {
   }
 }
 
-resource "google_service_account_iam_policy" "foo" {
+resource "google_service_account_iam_policy" "workload_identity_policy" {
   service_account_id = google_service_account.skyporten_consumer.name
-  policy_data        = data.google_iam_policy.clientaccess.policy_data
+  policy_data        = data.google_iam_policy.client_access.policy_data
 }
 
 resource "google_storage_bucket" "skyporten_bucket" {
