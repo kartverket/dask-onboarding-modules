@@ -15,6 +15,9 @@ on:
         description: "The GCP Project Number used for authentication. A 12-digit number used as a unique identifier for the project. Used to find workload identity pool."
         required: true
         type: string
+      script_params:
+        description: "Parameters to use in the script"
+        required: false
       debug_mode:
         description: "If the workflow should actually create resources or just run through without doing so."
         required: false
@@ -81,6 +84,7 @@ jobs:
       auth_project_number: ${{ inputs.auth_project_number }}
       service_account: ${{ inputs.service_account }}
       team_name: ${{ inputs.team_name }}
+      params: ${{ inputs.script_params }}
       step_id: setup-ingestor
 
 

@@ -140,4 +140,5 @@ jobs:
       service_account: ${{ inputs.service_account }}
       team_name: ${{ inputs.team_name }}
       step_id: ${{ inputs.step_id }}
+      params: ${{ inputs.script_params }}
     
