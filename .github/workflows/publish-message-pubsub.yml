@@ -19,12 +19,18 @@ on:
         description: "The step id to notify completion for to the pub sub onboarding topic."
         required: true
         type: string
+      params:
+        description: "The params appended to by each step of the onboarding flow."
+        required: false
+        type: string
+        default: "null"
 
 env:
   AUTH_PROJECT_NUMBER: ${{ inputs.auth_project_number }}
   SERVICE_ACCOUNT: ${{ inputs.service_account }}
   TEAM_NAME: ${{ inputs.team_name }}
   STEP_ID: ${{ inputs.step_id }}
+  PARAMS: ${{ inputs.params }}
   PUBSUB_TOPIC: onboarding_topic
 
 
@@ -55,5 +61,5 @@ jobs:
 
       - name: Add message to PubSub topic
         run: |
-          gcloud pubsub topics publish ${{ env.PUBSUB_TOPIC }} --message='{ "team_name": "${{ env.TEAM_NAME }}", step: "${{ env.STEP_ID }}" }'
+          gcloud pubsub topics publish ${{ env.PUBSUB_TOPIC }} --message='{ "team_name": "${{ env.TEAM_NAME }}", step: "${{ env.STEP_ID }}", "params": ${{ env.PARAMS }} }'
 
