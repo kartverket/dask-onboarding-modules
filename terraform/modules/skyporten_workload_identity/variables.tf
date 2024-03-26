@@ -10,7 +10,7 @@ variable "required_audience" {
   description = "The required audience for the OICD identity pool provider. Does not need to be a valid domain"
 }
 
-variable "org_numbers" {
+variable "consumer_org_numbers" {
   description = "The organization numbers that should be allowed to access the Skyporten integration"
 }
 

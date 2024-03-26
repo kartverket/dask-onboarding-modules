@@ -23,7 +23,7 @@ resource "google_iam_workload_identity_pool_provider" "maskinporten" {
 # Define consumers and access levels
 module "skyporten_consumer" {
   source   = "./skyporten_consumers"
-  for_each = var.org_numbers
+  for_each = var.consumer_org_numbers
 
   maskinporten_scope     = var.maskinporten_scope
   maskinporten_client_id = "0192:${each.value}"

@@ -19,7 +19,7 @@ resource "google_service_account_iam_policy" "foo" {
 }
 
 resource "google_storage_bucket" "skyporten_bucket" {
-  name     = "skyporten-test-${var.org_number}"
+  name     = "skyporten-${var.org_number}"
   location = var.region
   uniform_bucket_level_access = true
 }
