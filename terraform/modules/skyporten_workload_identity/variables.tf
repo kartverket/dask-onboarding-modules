@@ -2,6 +2,10 @@ variable "workload_pool_id" {
   description = "The ID of the workload pool to be used for the Skyporten integration"
 }
 
+variable "workload_identity_pool_display_name" {
+  description = "The display name of the workload identity pool"
+}
+
 variable "provider_id" {
   description = "The provider ID for the OICD identity pool provider"
 }
@@ -26,9 +30,6 @@ variable "project_id" {
   description = "The project ID of the project"
 }
 
-variable "workload_identity_pool_display_name" {
-  description = "The display name of the workload identity pool"
-}
 
 variable "issuer_uri" {
   description = "The issuer URI for the OICD identity pool provider"
