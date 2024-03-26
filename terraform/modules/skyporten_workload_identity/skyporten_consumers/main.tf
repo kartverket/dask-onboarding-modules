@@ -3,7 +3,7 @@ locals {
 }
 
 resource "google_service_account" "skyporten_consumer" {
-  account_id  = "skyporten-consumer-${var.sub_scope}-${var.org_number}"
+  account_id  = "sp-${var.sub_scope}-${var.org_number}"
   description = "Service account for the Skyporten consumer for organization ${var.org_number} with scope ${local.maskinporten_scope}"
 }
 
