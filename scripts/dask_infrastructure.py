@@ -4,11 +4,10 @@ import json
 
 def edit_file(filepath, json_obj):
     team_name: str = json_obj.get("team_name")
-    params: dict = json_obj.get("params")
 
-    ad_group_name: str = params["ad_groups"][0]
-    area_name: str = params["area_name"]
-    project_id_map: dict = params["gcp_project_ids"]
+    ad_group_name: str = json_obj["ad_groups"][0]
+    area_name: str = json_obj["area_name"]
+    project_id_map: dict = json_obj["gcp_project_ids"]
 
     # Define the new team data
     new_team_data = generate_module_definition(ad_group_name, team_name, area_name, project_id_map)

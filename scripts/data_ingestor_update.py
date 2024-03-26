@@ -107,8 +107,7 @@ def configure_github_deploy_workflow(file_path: str, env: str, team_name: str, p
 
 def edit_file(file_path, json_obj):
     team_name: str = json_obj.get("team_name")
-    params: dict = json_obj.get("params")
-    area_name: str = params["area_name"]
+    area_name: str = json_obj.get("area_name")
 
     clear_codeowners(file_path, team_name)
     update_databricks_config(file_path, area_name, team_name)
@@ -118,11 +117,11 @@ def edit_file(file_path, json_obj):
         copy_and_paste_github_deploy_workflow(file_path, env)
 
     for env in envs:
-        state_bucket_for_env = params["gcp_state_buckets"][env]
+        state_bucket_for_env = json_obj.get("gcp_state_buckets")[env]
         update_state_bucket(file_path, env, state_bucket_for_env)
 
-        project_id_for_env = params["gcp_project_ids"][env]
-        auth_project_number_for_env = params["gcp_auth_numbers"][env]
+        project_id_for_env = json_obj.get("gcp_project_ids")[env]
+        auth_project_number_for_env = json_obj.get("gcp_auth_numbers")[env]
         update_tfvar_file(file_path, env, team_name, project_id_for_env, auth_project_number_for_env)
         configure_github_deploy_workflow(file_path, env, team_name, project_id_for_env, auth_project_number_for_env)
 

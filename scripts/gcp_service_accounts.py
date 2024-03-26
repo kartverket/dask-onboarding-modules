@@ -43,10 +43,11 @@ def append_content_to_end_of_file(file_path: str, content: str) -> None:
 
 def edit_file(file_path, json_obj):
     team_name: str = json_obj.get("team_name")
-    project_id_sandbox = json_obj.get("project_id_sandbox")
-    project_id_dev = json_obj.get("project_id_dev")
-    project_id_test = json_obj.get("project_id_test")
-    project_id_prod = json_obj.get("project_id_prod")
+    project_ids = json_obj["gcp_project_ids"]
+    project_id_sandbox = project_ids["sandbox"]
+    project_id_dev = project_ids["dev"]
+    project_id_test = project_ids["test"]
+    project_id_prod = project_ids["prod"]
 
     # Handle modules.tf
     module_definition = generate_module_definition(team_name)
