@@ -47,11 +47,11 @@ def copy_and_paste_github_deploy_workflow(file_path: str, env: str):
             file.writelines(lines)
             file.close()
 
-def update_databricks_config(file_path: str, department_name: str, team_name: str):
+def update_databricks_config(file_path: str, area_name: str, team_name: str):
     config_path = f'{file_path}/src/databricks/config.py'
     
     with open(config_path, 'r') as file:
-        lines = [line.replace("plattform_dataprodukter", f"{department_name.lower()}_{team_name.lower()}") for line in file.readlines()]
+        lines = [line.replace("plattform_dataprodukter", f"{area_name.lower()}_{team_name.lower()}") for line in file.readlines()]
         file.close()
 
         with open(config_path, 'w') as file:
@@ -107,21 +107,22 @@ def configure_github_deploy_workflow(file_path: str, env: str, team_name: str, p
 
 def edit_file(file_path, json_obj):
     team_name: str = json_obj.get("team_name")
-    department_name: str = json_obj.get("department_name")
+    params: dict = json_obj.get("params")
+    area_name: str = params["area_name"]
 
     clear_codeowners(file_path, team_name)
-    update_databricks_config(file_path, department_name, team_name)
+    update_databricks_config(file_path, area_name, team_name)
 
     # Setup github actions files to be used later
     for env in envs:
         copy_and_paste_github_deploy_workflow(file_path, env)
 
     for env in envs:
-        state_bucket_for_env = json_obj.get(f"state_bucket_{env}")
+        state_bucket_for_env = params["gcp_state_buckets"][env]
         update_state_bucket(file_path, env, state_bucket_for_env)
 
-        project_id_for_env = json_obj.get(f"project_id_{env}")
-        auth_project_number_for_env = json_obj.get(f"auth_project_number_{env}")
+        project_id_for_env = params["gcp_project_ids"][env]
+        auth_project_number_for_env = params["gcp_auth_numbers"][env]
         update_tfvar_file(file_path, env, team_name, project_id_for_env, auth_project_number_for_env)
         configure_github_deploy_workflow(file_path, env, team_name, project_id_for_env, auth_project_number_for_env)
 
@@ -137,4 +138,4 @@ if __name__ == "__main__":
 
     edit_file(file_path, json_obj)
 
-# python data_ingestor_update.py './dask-monorepo-reference-setup' '{ "team_name": "TestTeam", "department_name": "TestAvd", "project_id_sandbox": "project-sandbox", "project_id_dev": "project-dev", "project_id_test": "project-test", "project_id_prod": "project-prod", "auth_project_number_sandbox": "auth_project_number-sandbox", "auth_project_number_dev": "auth_project_number-dev", "auth_project_number_test": "auth_project_number-test", "auth_project_number_prod": "auth_project_number-prod", "state_bucket_sandbox": "state_bucket-sandbox", "state_bucket_dev": "state_bucket-dev", "state_bucket_test": "state_bucket-test", "state_bucket_prod": "state_bucket-prod" }'
+# python data_ingestor_update.py './dask-monorepo-reference-setup' '{ "team_name": "TestTeam", "area_name": "TestAvd", "project_id_sandbox": "project-sandbox", "project_id_dev": "project-dev", "project_id_test": "project-test", "project_id_prod": "project-prod", "auth_project_number_sandbox": "auth_project_number-sandbox", "auth_project_number_dev": "auth_project_number-dev", "auth_project_number_test": "auth_project_number-test", "auth_project_number_prod": "auth_project_number-prod", "state_bucket_sandbox": "state_bucket-sandbox", "state_bucket_dev": "state_bucket-dev", "state_bucket_test": "state_bucket-test", "state_bucket_prod": "state_bucket-prod" }'
