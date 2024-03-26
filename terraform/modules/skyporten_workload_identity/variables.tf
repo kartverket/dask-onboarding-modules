@@ -14,10 +14,6 @@ variable "consumer_org_numbers" {
   description = "The organization numbers that should be allowed to access the Skyporten integration"
 }
 
-variable "maskinporten_scope" {
-  description = "The scope for the Maskinporten client. Format <ORGANIZATION_SCOPE:SUB_SCOPE>"
-}
-
 variable "region" {
   description = "The region to deploy the resources in"
 }
