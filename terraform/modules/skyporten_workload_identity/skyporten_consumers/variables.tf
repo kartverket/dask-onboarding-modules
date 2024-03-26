@@ -1,7 +1,3 @@
-variable "maskinporten_scope" {
-  description = "The scope for the Maskinporten client. Format <ORGANIZATION_SCOPE:SUB_SCOPE>"
-}
-
 variable "org_number" {
   description = "The organization number that should be allowed to access the Skyporten integration"
 }
@@ -24,4 +20,17 @@ variable "project_number" {
 
 variable "project_id" {
   description = "The project ID of the project"
+}
+
+variable "consumer_name" {
+  description = "The name of the consumer (organization)"
+}
+
+variable "main_scope" {
+  description = "The main organisation scope for the Maskinporten client."
+  default     = "kartverk"
+}
+
+variable "sub_scope" {
+  description = "The sub scope for the Maskinporten client."
 }

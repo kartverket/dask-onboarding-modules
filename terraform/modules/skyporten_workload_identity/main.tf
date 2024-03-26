@@ -12,11 +12,11 @@ resource "google_iam_workload_identity_pool_provider" "maskinporten" {
     "google.subject"              = "assertion.consumer.ID"
     "attribute.clientaccess"      = "\"client::\" + assertion.consumer.ID + \"::\" + assertion.scope"
   }
-  display_name = "Test admin enheter provider"
+  display_name = var.display_name
   description  = "OIDC identity pool provider for Maskinporten"
   oidc {
     allowed_audiences = [var.required_audience]
-    issuer_uri        = "https://test.sky.maskinporten.no"
+    issuer_uri        = var.issuer_uri
   }
 }
 
@@ -25,10 +25,12 @@ module "skyporten_consumer" {
   source   = "./skyporten_consumers"
   for_each = var.consumer_org_numbers
 
-  maskinporten_scope        = var.maskinporten_scope
-  maskinporten_client_id    = "0192:${each.value}"
+  maskinporten_scope = var.maskinporten_scope
+  # 0192 is the prefix for Norwegian organizations
+  maskinporten_client_id    = "0192:${each.key}"
   region                    = var.region
-  org_number                = each.value
+  org_number                = each.key
+  consumer_name             = each.value
   project_number            = var.project_number
   workload_identity_pool_id = google_iam_workload_identity_pool.maskinporten.workload_identity_pool_id
   project_id                = var.project_id

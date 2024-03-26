@@ -7,7 +7,7 @@ variable "provider_id" {
 }
 
 variable "required_audience" {
-  description = "The required audience for the OICD identity pool provider. Does not need to be a valid domain"
+  description = "The required audience for the OICD identity pool provider. Docs: https://docs.digdir.no/docs/idporten/oidc/oidc_func_aud.html"
 }
 
 variable "consumer_org_numbers" {
@@ -28,4 +28,22 @@ variable "project_number" {
 
 variable "project_id" {
   description = "The project ID of the project"
+}
+
+variable "display_name" {
+  description = "The display name of the workload identity pool"
+}
+
+variable "issuer_uri" {
+  description = "The issuer URI for the OICD identity pool provider"
+  default     = "https://test.sky.maskinporten.no"
+}
+
+variable "main_scope" {
+  description = "The main organisation scope for the Maskinporten client."
+  default     = "kartverk"
+}
+
+variable "sub_scope" {
+  description = "The sub scope for the Maskinporten client."
 }
