@@ -28,14 +28,15 @@ resource "google_storage_bucket" "skyporten_bucket" {
   uniform_bucket_level_access = true
 }
 
-resource "google_storage_bucket_iam_member" "legacy_bucket_reader" {
+resource "google_storage_bucket_iam_member" "storage_viewer" {
   bucket = google_storage_bucket.skyporten_bucket.name
-  role   = "roles/storage.legacyBucketReader"
+  role   = "roles/storage.viewer"
   member = "serviceAccount:${google_service_account.skyporten_consumer.email}"
 }
 
-resource "google_storage_bucket_iam_member" "object_admin" {
+resource "google_storage_bucket_iam_member" "object_viewer" {
   bucket = google_storage_bucket.skyporten_bucket.name
-  role   = "roles/storage.objectAdmin"
+  role   = "roles/storage.objectViewer"
   member = "serviceAccount:${google_service_account.skyporten_consumer.email}"
 }
+
