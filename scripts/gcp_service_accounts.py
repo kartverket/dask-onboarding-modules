@@ -58,7 +58,7 @@ def edit_file(file_path, json_obj):
     append_content_to_end_of_file(file_path + "/variables.tf", variable_def)
 
     # Handle *.tfvars files
-    get_project_var_entry = lambda project: f'{team_name.lower()}_project_id = "{project}"\n'
+    get_project_var_entry = lambda project: f'\n{team_name.lower()}_project_id = "{project}"'
     
     sandbox_var_entry = get_project_var_entry(project_id_sandbox)
     append_content_to_end_of_file(file_path + "/sandbox.tfvars", sandbox_var_entry)
