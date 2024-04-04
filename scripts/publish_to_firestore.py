@@ -3,18 +3,14 @@ from google.cloud import firestore
 
 
 def update_pull_request_url():
-    project_id = os.environ["GCP_PROJECT_ID"]
-    print(project_id)
     step_id = os.environ["STEP_ID"]
     team = os.environ["TEAM_NAME"]
     url = os.environ["PULL_REQUEST_URL"]
     db = firestore.Client()
-    docs = db.collection(u'onboarding').get()
-    print(docs)
-    # doc_ref = db.collection(u'onboarding').document(team)
-    # doc_ref.update({
-    #     u'pr.`'+step_id+"`" : url,
-    # })
+    doc_ref = db.collection(u'onboarding').document(team)
+    doc_ref.update({
+        u'pr.`'+step_id+"`" : url,
+    })
 
 if __name__ == '__main__':
     # os.environ["GCP_PROJECT_ID"] = "dataplattform-sandbox-6f27"
