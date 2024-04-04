@@ -103,8 +103,7 @@ jobs:
           python scripts/${{ env.SCRIPT }} '../target-repo/${{ env.FILE_TO_MODIFY_PATH }}' '${{ env.SCRIPT_PARAMS }}'
 
       - name: Format Terraform Files
-        if: env.TERRAFORM_TARGET_FOLDER != null
-        working-directory: target-repo/${{ env.TERRAFORM_TARGET_FOLDER }}
+        working-directory: target-repo
         run: terraform fmt -recursive
 
       - name: Commit and Push to target repository
