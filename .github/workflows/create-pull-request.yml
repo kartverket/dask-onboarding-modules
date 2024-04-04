@@ -59,6 +59,8 @@ env:
 jobs:
   create_pull_request:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2.0.3
