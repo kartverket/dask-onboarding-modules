@@ -4,10 +4,11 @@ from google.cloud import firestore
 
 def update_pull_request_url():
     project_id = os.environ["GCP_PROJECT_ID"]
+    print(project_id)
     step_id = os.environ["STEP_ID"]
     team = os.environ["TEAM_NAME"]
     url = os.environ["PULL_REQUEST_URL"]
-    db = firestore.Client(project=project_id)
+    db = firestore.Client()
     docs = db.collection(u'onboarding').get()
     print(docs)
     # doc_ref = db.collection(u'onboarding').document(team)
