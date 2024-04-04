@@ -81,6 +81,8 @@ jobs:
         with:
           workload_identity_provider: ${{ steps.set-output.outputs.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ env.SERVICE_ACCOUNT }}
+          export_environment_variables: true
+          create_credentials_file: true
 
       - name: Checkout current repository
         uses: actions/checkout@v4
