@@ -65,6 +65,21 @@ jobs:
         with:
           terraform_wrapper: false
 
+      - name: Set vars
+        id: set-output
+        run: |
+          PRODUCT_NAME=$(echo $SERVICE_ACCOUNT | sed 's/-deploy.*//')
+          DEFAULT_WORKLOAD_IDENTITY="projects/$AUTH_PROJECT_NUMBER/locations/global/workloadIdentityPools/$PRODUCT_NAME-deploy-pool/providers/github-provider"
+          OVERRIDE=$WORKLOAD_IDENTITY_PROVIDER_OVERRIDE
+          PROVIDER=${OVERRIDE:-$DEFAULT_WORKLOAD_IDENTITY}
+          echo "WORKLOAD_IDENTITY_PROVIDER=$PROVIDER" >> $GITHUB_OUTPUT
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ steps.set-output.outputs.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+
       - name: Checkout current repository
         uses: actions/checkout@v4
         with:
@@ -100,6 +115,7 @@ jobs:
           git push origin dask-onboarding-ci
 
       - name: Create Pull Request
+        id: create_pr
         if: env.SHOULD_CREATE_PR == 'true'
         uses: actions/github-script@v7
         with:
@@ -125,11 +141,25 @@ jobs:
                     return response.json();
                 })
                 .then(data => {
-                    console.log('Pull Request created: ', data.html_url);
+                    console.log('Pull Request created: ', data.url);
+                    core.setOutput('pullRequestUrl', data.url);
                 })
                 .catch(error => {
                     console.error(error);
             });
+      - name: Publish Pull Request URL to Firestore
+        if: env.SHOULD_CREATE_PR == 'true' && steps.create_pr.outputs.pullRequestUrl
+        run: |
+          echo "Pull request URL: ${{ steps.create_pr.outputs.pullRequestUrl }}"
+          pip install google-cloud-firestore
+          python scripts/publish_to_firestore.py
+        env:
+          GCP_PROJECT_ID: ${{ env.GCP_PROJECT_ID }}
+          PULL_REQUEST_URL: ${{ steps.create_pr.outputs.pullRequestUrl }}
+          TEAM_NAME: ${{ env.TEAM_NAME }}
+          STEP_ID: ${{ env.STEP_ID }}
+        
+
   send_success_message_to_pubsub:
     needs: create_pull_request
     uses: ./.github/workflows/publish-message-pubsub.yml
