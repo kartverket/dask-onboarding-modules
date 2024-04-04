@@ -10,7 +10,7 @@ def update_pull_request_url():
     db = firestore.Client(project=project_id)
     doc_ref = db.collection(u'onboarding').document(team)
     doc_ref.update({
-        u'pr.'+step_id : url,
+        u'pr.`'+step_id+"`" : url,
     })
 
 if __name__ == '__main__':
