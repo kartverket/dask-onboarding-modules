@@ -111,10 +111,10 @@ jobs:
         run: |
           git config --global user.name "DASK CI"
           git config --global user.email "noreply@kartverket.no"
-          git checkout -b dask-onboarding-ci
+          git checkout -b dask-onboarding-ci-${{ env.TEAM_NAME }}
           git add .
           git commit -m "Update files from DASK CI workflow"
-          git push origin dask-onboarding-ci
+          git push origin dask-onboarding-ci-${{ env.TEAM_NAME }}
 
       - name: Create Pull Request
         id: create_pr
@@ -130,7 +130,7 @@ jobs:
                 },
                 body: JSON.stringify({
                     title: 'Add new team from DASK CI workflow',
-                    head: 'dask-onboarding-ci',
+                    head: 'dask-onboarding-ci-${{ env.TEAM_NAME }}',
                     base: 'main'
                 })
             };
