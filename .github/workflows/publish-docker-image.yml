@@ -90,3 +90,5 @@ jobs:
         id: set_output
         run: |
           echo "image_url=${{ env.registry }}/${{ github.repository }}@${{ steps.build-docker.outputs.digest }}" >> $GITHUB_OUTPUT
+
+          
