@@ -12,6 +12,9 @@ on:
       apps_repo:
         required: true
         type: string
+    outputs:
+      image_url: 
+        value: ${{ jobs.build.outputs.image_url }}
     secrets:
       PAT_REPO:
         required: true
@@ -26,6 +29,8 @@ jobs:
   build:
     name: Build container image for SKIP job
     runs-on: ubuntu-latest
+    outputs:
+      image_url: ${{ steps.set_output.outputs.image_url }}
     permissions:
       contents: read
       packages: write
@@ -80,4 +85,9 @@ jobs:
             git commit -m "Update ${{ inputs.version_file_name }}"
             git push
             fi
+
+      - name: Set output with build values
+        id: set_output
+        run: |
+          echo "image_url=${{ env.REGISTRY }}/${{ github.repository }}@${{ steps.build-docker.outputs.digest }}" >> $GITHUB_OUTPUT
 
