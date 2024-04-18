@@ -74,7 +74,7 @@ def clear_codeowners(file_path: str, team_name: str):
             file.close()
 
 
-def configure_github_deploy_workflow(file_path: str, env: str, team_name: str, project_id: str, project_number: str):
+def configure_github_deploy_workflow(file_path: str, env: str, team_name: str, project_id: str, project_number: str, host: str):
     workflows_path = f'{file_path}/.github/workflows'
 
     sa_to_replace = "dataplattform-deploy@dataprodukter-sandbox-4413.iam.gserviceaccount.com"
@@ -83,6 +83,7 @@ def configure_github_deploy_workflow(file_path: str, env: str, team_name: str, p
     repo_to_replace = "dask-monorepo-reference-setup"
     team_name_to_replace = "dataprodukter"
     env_to_replace = "sandbox"
+    host_to_replace = "https://3127021269182225.5.gcp.databricks.com"
 
     replacement_tuples = [
         (project_number_to_replace, project_number),
@@ -90,7 +91,8 @@ def configure_github_deploy_workflow(file_path: str, env: str, team_name: str, p
         (project_id_to_replace, project_id),
         (repo_to_replace, f'{team_name.lower()}-data-ingestor'),
         (team_name_to_replace, team_name.lower()),
-        (env_to_replace, env)
+        (env_to_replace, env),
+        (host_to_replace, host)
     ]
     
     with open(f'{workflows_path}/deploy-{env}.yml') as file:
@@ -109,6 +111,13 @@ def edit_file(file_path, json_obj):
     team_name: str = json_obj.get("team_name")
     area_name: str = json_obj.get("area_name")
 
+    host_url_map = {
+        "sandbox": "https://3127021269182225.5.gcp.databricks.com",
+        "dev": "https://519194143571414.4.gcp.databricks.com",
+        "test": "https://8402017687396218.8.gcp.databricks.com",
+        "prod": "https://3428319462519584.4.gcp.databricks.com"
+    }
+
     clear_codeowners(file_path, team_name)
     update_databricks_config(file_path, area_name, team_name)
 
@@ -123,7 +132,9 @@ def edit_file(file_path, json_obj):
         project_id_for_env = json_obj.get("gcp_project_ids")[env]
         auth_project_number_for_env = json_obj.get("gcp_auth_numbers")[env]
         update_tfvar_file(file_path, env, team_name, project_id_for_env, auth_project_number_for_env)
-        configure_github_deploy_workflow(file_path, env, team_name, project_id_for_env, auth_project_number_for_env)
+
+        host_for_env = host_url_map[env]
+        configure_github_deploy_workflow(file_path, env, team_name, project_id_for_env, auth_project_number_for_env, host_for_env)
 
 
 if __name__ == "__main__":
