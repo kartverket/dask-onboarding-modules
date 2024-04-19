@@ -12,6 +12,11 @@ on:
       apps_repo:
         required: true
         type: string
+      version_file_directory:
+        description: "Directory where version file with image ref is stored"
+        required: false
+        default: "./versions"
+        type: string
     outputs:
       image_url: 
         value: ${{ jobs.build.outputs.image_url }}
@@ -65,7 +70,7 @@ jobs:
       - name: Create file
         run: |          
             setup_directory () {
-                DIRECTORY="./versions"
+                DIRECTORY=${{ inputs.version_file_directory }}
                 touch $DIRECTORY/${{ inputs.version_file_name }}
                 echo "\"${{ env.REGISTRY }}/${{ github.repository }}@${{ steps.build-docker.outputs.digest }}\"" > $DIRECTORY/${{ inputs.version_file_name }} 
             }
