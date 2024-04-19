@@ -132,7 +132,8 @@ jobs:
                 body: JSON.stringify({
                     title: 'Add new team from DASK CI workflow',
                     head: 'dask-onboarding-ci-${{ env.TEAM_NAME }}',
-                    base: 'main'
+                    base: 'main',
+                    draft: true
                 })
             };
 
