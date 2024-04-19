@@ -19,7 +19,7 @@ def generate_module_definition(ad_group_name: str, team_name: str, area_name: st
     module "{team_name.lower()}" {{
       source = "../dbx_team_resources"
 
-      ad_group_name = "{ad_group_name}"
+      ad_group_name = "CLOUD_SK_TEAM_{ad_group_name}"
       team_name     = "{team_name.lower()}"
       area_name     = "{area_name.lower()}"
       deploy_sa_map = {{
