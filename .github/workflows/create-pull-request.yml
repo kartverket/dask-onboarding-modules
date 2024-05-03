@@ -103,6 +103,7 @@ jobs:
           python scripts/${{ env.SCRIPT }} '../target-repo/${{ env.FILE_TO_MODIFY_PATH }}' '${{ env.SCRIPT_PARAMS }}'
 
       - name: Format Terraform Files
+        if: env.SHOULD_CREATE_PR == 'true'
         working-directory: target-repo
         run: terraform fmt -recursive
 
