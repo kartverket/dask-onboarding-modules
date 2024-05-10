@@ -20,7 +20,7 @@ def update_tfvar_file(monorepo_folder_path: str, env: str, team_name: str, proje
 
         lines.insert(0, f'repo_name = "{team_name.lower()}-data-ingestor"\n')
         lines.insert(0, f'landing_zone_bucket = "landing-zone-{project_id}"\n')
-        lines.insert(0, f'compute_service_account = "databricks-compute@${project_id}.iam.gserviceaccount.com"\n')
+        lines.insert(0, f'compute_service_account = "databricks-compute@{project_id}.iam.gserviceaccount.com"\n')
         lines.insert(0, f'deploy_service_account = "{team_name.lower()}-deploy@{project_id}.iam.gserviceaccount.com"\n')
         lines.insert(0, f'project_number = "{project_number}"\n')
         lines.insert(0, f'project_id = "{project_id}"\n')
