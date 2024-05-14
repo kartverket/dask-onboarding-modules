@@ -3,9 +3,9 @@ import sys
 from typing import List
 
 
-def generate_module_definition(team_name: str) -> str: 
+def generate_module_definition(team_name: str, project_name: str) -> str: 
     module = f'''
-    module "{team_name.lower()}" {{
+    module "{project_name.lower()}" {{
         source    = "./project_team"
         team_name = "{team_name}"
         repositories = [
@@ -43,6 +43,7 @@ def append_content_to_end_of_file(file_path: str, content: str) -> None:
 
 def edit_file(file_path, json_obj):
     team_name: str = json_obj.get("team_name")
+    project_name: str = json_obj.get("project_name")
     project_ids = json_obj["gcp_project_ids"]
     project_id_sandbox = project_ids["sandbox"]
     project_id_dev = project_ids["dev"]
@@ -50,7 +51,7 @@ def edit_file(file_path, json_obj):
     project_id_prod = project_ids["prod"]
 
     # Handle modules.tf
-    module_definition = generate_module_definition(team_name)
+    module_definition = generate_module_definition(team_name, project_name)
     append_content_to_end_of_file(file_path + "/modules.tf", module_definition)
 
     # Handle variables.tf
@@ -80,8 +81,8 @@ if __name__ == "__main__":
 
     file_path = sys.argv[1]
     json_str = sys.argv[2]
-    json_obj = json.loads(json_str)
+    params = json.loads(json_str)
 
-    edit_file(file_path, json_obj)
+    edit_file(file_path, params)
 
 # python gcp_service_accounts.py './path/to/gcp_service_accounts' '{ "team_name": "TestTeam", "project_id_sandbox": "project-sandbox", "project_id_dev": "project-dev", "project_id_test": "project-test", "project_id_prod": "project-prod"  }'

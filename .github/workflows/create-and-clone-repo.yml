@@ -75,6 +75,7 @@ jobs:
           echo "git status: $(git status)"
           echo "git push"
           git push -u origin main
+          
   send_success_message_to_pubsub:
     needs: create_and_clone_repo
     uses: ./.github/workflows/publish-message-pubsub.yml
