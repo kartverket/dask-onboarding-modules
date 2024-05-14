@@ -22,7 +22,7 @@ def generate_module_definition(team_name: str, project_name: str) -> str:
             "roles/cloudscheduler.admin"
         ]
         env                   = var.env
-        project_id            = var.{team_name.lower()}_project_id
+        project_id            = var.{project_name}_project_id
         kubernetes_project_id = var.kubernetes_project_id
         can_manage_sa         = true
     }}
@@ -41,10 +41,10 @@ def append_content_to_end_of_file(file_path: str, content: str) -> None:
             file.writelines(lines)
             file.close()
 
-def edit_file(file_path, json_obj):
-    team_name: str = json_obj.get("team_name")
-    project_name: str = json_obj.get("project_name")
-    project_ids = json_obj["gcp_project_ids"]
+def edit_file(file_path, params):
+    team_name: str = params.get("team_name")
+    project_name: str = params.get("project_name")
+    project_ids = params["gcp_project_ids"]
     project_id_sandbox = project_ids["sandbox"]
     project_id_dev = project_ids["dev"]
     project_id_test = project_ids["test"]
@@ -55,11 +55,11 @@ def edit_file(file_path, json_obj):
     append_content_to_end_of_file(file_path + "/modules.tf", module_definition)
 
     # Handle variables.tf
-    variable_def = f'variable "{team_name.lower()}_project_id" {{}}\n'
+    variable_def = f'variable "{project_name}_project_id" {{}}\n'
     append_content_to_end_of_file(file_path + "/variables.tf", variable_def)
 
     # Handle *.tfvars files
-    get_project_var_entry = lambda project: f'\n{team_name.lower()}_project_id = "{project}"'
+    get_project_var_entry = lambda project: f'\n{project_name}_project_id = "{project}"'
     
     sandbox_var_entry = get_project_var_entry(project_id_sandbox)
     append_content_to_end_of_file(file_path + "/sandbox.tfvars", sandbox_var_entry)
