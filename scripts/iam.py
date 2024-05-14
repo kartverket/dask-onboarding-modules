@@ -9,19 +9,19 @@ def find_line_ref_local_teams(lines: List[str]) -> int:
             return idx
         
 
-def edit_file(file_path, json_obj):
+def edit_file(file_path, params):
     with open(file_path) as file:
-        team_name: str = json_obj.get("team_name")
-        ad_groups: List[str] = json_obj.get("ad_groups")
+        project_name: str = params.get("project_name")
+        ad_groups: List[str] = params.get("ad_groups")
 
-        print("Team Name:", team_name)
+        print("Project Name:", project_name)
         print("AD Groups:", ad_groups)
 
         lines = file.readlines()
         file.close()
 
         last_teams_ref_idx = find_line_ref_local_teams(lines)
-        lines.insert(last_teams_ref_idx + 3, f'"{team_name}"= {json.dumps(ad_groups)},\n')
+        lines.insert(last_teams_ref_idx + 3, f'"{project_name}"= {json.dumps(ad_groups)},\n')
 
         with open(file_path, 'w') as file:
             file.writelines(lines)
@@ -35,6 +35,6 @@ if __name__ == "__main__":
 
     file_path = sys.argv[1]
     json_str = sys.argv[2]
-    json_obj = json.loads(json_str)
+    params = json.loads(json_str)
 
-    edit_file(file_path, json_obj)
+    edit_file(file_path, params)
