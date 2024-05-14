@@ -21,13 +21,13 @@ def generate_module_definition(ad_group_name: str, team_name: str, area_name: st
       source = "../dbx_team_resources"
 
       ad_group_name = "CLOUD_SK_TEAM_{ad_group_name}"
-      team_name     = "{team_name.lower()}"
+      team_name     = "{project_name.lower()}"
       area_name     = "{area_name.lower()}"
       deploy_sa_map = {{
-        sandbox = "{project_name.lower()}-deploy@{project_id_map['sandbox']}.iam.gserviceaccount.com",
-        dev     = "{project_name.lower()}-deploy@{project_id_map['dev']}.iam.gserviceaccount.com",
-        test    = "{project_name.lower()}-deploy@{project_id_map['test']}.iam.gserviceaccount.com",
-        prod    = "{project_name.lower()}-deploy@{project_id_map['prod']}.iam.gserviceaccount.com"
+        sandbox = "{team_name.lower()}-deploy@{project_id_map['sandbox']}.iam.gserviceaccount.com",
+        dev     = "{team_name.lower()}-deploy@{project_id_map['dev']}.iam.gserviceaccount.com",
+        test    = "{team_name.lower()}-deploy@{project_id_map['test']}.iam.gserviceaccount.com",
+        prod    = "{team_name.lower()}-deploy@{project_id_map['prod']}.iam.gserviceaccount.com"
       }}
       projects = {{
         sandbox = "{project_id_map['sandbox']}",
