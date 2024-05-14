@@ -34,7 +34,9 @@ def generate_module_definition(ad_group_name: str, team_name: str, area_name: st
         test    = "{project_id_map['test']}",
         prod    = "{project_id_map['prod']}",
       }}
-
+        
+      marketplace_sa_map = local.marketplace_sa_map
+        
       providers = {{
         databricks.accounts   = databricks.accounts
         databricks.workspace  = databricks.workspace
