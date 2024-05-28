@@ -5,7 +5,7 @@ from typing import List
 
 def find_line_ref_local_teams(lines: List[str]) -> int:
     for (row, idx) in zip(lines, range(len(lines))):
-        if row.startswith('  teams = {'):
+        if row.startswith('  teams_v2 = {'):
             return idx
         
 
@@ -21,7 +21,7 @@ def edit_file(file_path, params):
         file.close()
 
         last_teams_ref_idx = find_line_ref_local_teams(lines)
-        lines.insert(last_teams_ref_idx + 3, f'"{project_name}"= {json.dumps(ad_groups)},\n')
+        lines.insert(last_teams_ref_idx + 3, f'"{project_name}"= "aad-tf-team-skvis{json.dumps(ad_groups).lower()}@kartverket.no",\n')
 
         with open(file_path, 'w') as file:
             file.writelines(lines)
