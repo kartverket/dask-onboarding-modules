@@ -28,9 +28,9 @@ resource "google_storage_bucket" "skyporten_bucket" {
   uniform_bucket_level_access = true
 }
 
-resource "google_storage_bucket_iam_member" "storage_viewer" {
+resource "google_storage_bucket_iam_member" "legacy_bucket_reader" {
   bucket = google_storage_bucket.skyporten_bucket.name
-  role   = "roles/storage.viewer"
+  role   = "roles/storage.legacyBucketReader"
   member = "serviceAccount:${google_service_account.skyporten_consumer.email}"
 }
 
