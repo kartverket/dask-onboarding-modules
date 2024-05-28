@@ -28,8 +28,8 @@ resource "google_storage_bucket" "skyporten_bucket" {
   uniform_bucket_level_access = true
 }
 
-resource "google_storage_bucket_iam_member" "storage_viewer" {
-  bucket = google_storage_bucket.skyporten_bucket.name
+resource "google_project_iam_member" "storage_viewer" {
+  project = var.project_id
   role   = "roles/storage.viewer"
   member = "serviceAccount:${google_service_account.skyporten_consumer.email}"
 }
