@@ -21,8 +21,8 @@ def edit_file(file_path, params):
         file.close()
 
         last_teams_ref_idx = find_line_ref_local_teams(lines)
-        ad_group_formatted = json.dumps(ad_group).replace(' ', '').lower()
-        lines.insert(last_teams_ref_idx + 3, f'"{project_name}"= "[aad-tf-team-{ad_group_formatted}@kartverket.no]",\n')
+        ad_group_formatted = json.dumps(ad_group).replace(' ', '').replace('"', '').lower()
+        lines.insert(last_teams_ref_idx + 3, f'"{project_name}"= ["aad-tf-team-{ad_group_formatted}@kartverket.no"]\n')
 
         with open(file_path, 'w') as file:
             file.writelines(lines)
