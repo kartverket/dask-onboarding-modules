@@ -4,7 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       team_name:
-        description: "The team name used to create the data-ingestor repo"
+        description: "The team name"
+        required: true
+        type: string
+      project_name:
+        description: "The project name used to create the data-ingestor repo"
         required: true
         type: string
       service_account:
@@ -28,7 +32,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.DASK_ONBOARDING_PAT }}
   DEBUG_MODE: ${{ inputs.debug_mode }}
   TEAM_NAME: ${{ inputs.team_name }} # Lowercase-name-for-team
-  REPO_NAME: ${{ inputs.team_name }}-data-ingestor
+  REPO_NAME: ${{ inputs.project_name }}-data-ingestor
   AUTH_PROJECT_NUMBER: ${{ inputs.auth_project_number }}
   SERVICE_ACCOUNT: ${{ inputs.service_account }}
 
