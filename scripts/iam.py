@@ -12,17 +12,17 @@ def find_line_ref_local_teams(lines: List[str]) -> int:
 def edit_file(file_path, params):
     with open(file_path) as file:
         project_name: str = params.get("project_name")
-        ad_groups: List[str] = params.get("ad_groups")
+        ad_group: str = params.get("ad_groups")[0]
 
         print("Project Name:", project_name)
-        print("AD Groups:", ad_groups)
+        print("AD Groups:", ad_group)
 
         lines = file.readlines()
         file.close()
 
         last_teams_ref_idx = find_line_ref_local_teams(lines)
-        ad_group_formatted = json.dumps(ad_groups).replace(' ', '').lower()
-        lines.insert(last_teams_ref_idx + 3, f'"{project_name}"= "aad-tf-team-{ad_group_formatted}@kartverket.no",\n')
+        ad_group_formatted = json.dumps(ad_group).replace(' ', '').lower()
+        lines.insert(last_teams_ref_idx + 3, f'"{project_name}"= "[aad-tf-team-{ad_group_formatted}@kartverket.no]",\n')
 
         with open(file_path, 'w') as file:
             file.writelines(lines)
