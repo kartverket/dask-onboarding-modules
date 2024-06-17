@@ -7,9 +7,9 @@ def generate_module_definition(team_name: str, project_name: str) -> str:
     module = f'''
     module "{project_name.lower()}" {{
         source    = "./project_team"
-        team_name = "{team_name}"
+        team_name = "{project_name}"
         repositories = [
-            "kartverket/{team_name.lower()}-data-ingestor",
+            "kartverket/{project_name.lower()}-data-ingestor",
         ]
         extra_team_sa_roles = [
             "roles/resourcemanager.projectIamAdmin",
