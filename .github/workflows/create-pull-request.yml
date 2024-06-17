@@ -34,6 +34,10 @@ on:
         description: "The team name used to create the data-ingestor repo"
         required: true
         type: string
+      haha:
+        description: "The project name used to create the data-ingestor repo"
+        required: false
+        type: string
       project_name:
         description: "The project name used to create the data-ingestor repo"
         required: true
