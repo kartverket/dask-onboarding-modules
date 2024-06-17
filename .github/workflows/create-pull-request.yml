@@ -19,10 +19,6 @@ on:
         description: "Script to run"
         required: true
         type: string
-      terraform_target_folder:
-        description: "Terraform target folder"
-        required: false
-        type: string
       script_params:
         description: "Parameters to use in the script"
         required: false
@@ -53,7 +49,6 @@ env:
   TARGET_REPO: ${{ inputs.target_repo }}
   FILE_TO_MODIFY_PATH: ${{ inputs.file_to_modify_path }}
   SCRIPT: ${{ inputs.script }}
-  TERRAFORM_TARGET_FOLDER: ${{ inputs.terraform_target_folder }}
   SCRIPT_PARAMS: ${{ inputs.script_params }}
   STEP_ID: ${{ inputs.step_id }} # Must match step-id in dask-onboarding-service
   AUTH_PROJECT_NUMBER: ${{ inputs.auth_project_number }}
