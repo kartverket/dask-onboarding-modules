@@ -5,7 +5,7 @@ import sys
 def create_team_entraid_modul(team_name: str, product_area: str, team_lead: str) -> str:
     entraid_modul = f'''
     module "{"_".join(team_name.lower().split())}" {{
-        source    = "/modules/team"
+        source    = "./modules/team"
         team_name = "{team_name}"
         parent_group_object_id = module.{product_area.lower()}.product_area_object_id
         team_lead              = "{team_lead}"
