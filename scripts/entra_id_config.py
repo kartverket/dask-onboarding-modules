@@ -7,7 +7,7 @@ def create_team_entraid_modul(team_name: str, product_area: str, team_lead: str)
     module "{"_".join(team_name.lower().split())}" {{
         source    = "./modules/team"
         team_name = "{team_name}"
-        parent_group_object_id = module.{product_area.lower()}.product_area_object_id
+        parent_group_object_id = module.{product_area.lower()}.business_unit_object_id
         team_lead              = "{team_lead}"
         azuread_variables      = module.azuread_variables
         enable_databricks      = true
@@ -34,10 +34,7 @@ def edit_file(file_path: str, params: str):
     team_lead = params["team_lead"]
 
     team_entraid_config = create_team_entraid_modul(team_name, product_area, team_lead)
-    if product_area.lower() == 'hydris':
-        append_content_to_end_of_file(file_path + f'/sjo.tf', team_entraid_config)
-    else:
-        append_content_to_end_of_file(file_path + f'/{product_area.lower()}.tf', team_entraid_config)
+    append_content_to_end_of_file(file_path + f'/{product_area.lower()}.tf', team_entraid_config)
 
 
 if __name__ == "__main__":
