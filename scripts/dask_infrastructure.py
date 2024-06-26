@@ -18,7 +18,6 @@ def replace_special_characters(s):
     return re.sub(r'æ|Æ|ø|Ø|å|Å', replace, s)
 
 def edit_file(filepath, params):
-    team_name: str = params.get("team_name")
     project_name: str = params.get("project_name")
 
     ad_group_name: str = params["ad_groups"][0]
@@ -26,7 +25,7 @@ def edit_file(filepath, params):
     project_id_map: dict = params["gcp_project_ids"]
 
     # Define the new team data
-    new_team_data = generate_module_definition(ad_group_name, team_name, area_name, project_name, project_id_map)
+    new_team_data = generate_module_definition(ad_group_name, area_name, project_name, project_id_map)
 
     append_content_to_end_of_file(filepath, new_team_data)
 
