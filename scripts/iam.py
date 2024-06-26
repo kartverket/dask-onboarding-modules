@@ -1,7 +1,22 @@
 import json
 import sys
 from typing import List
+import re
 
+def replace_special_characters(s):
+    replacements = {
+        'æ': 'ae',
+        'Æ': 'Ae',
+        'ø': 'o',
+        'Ø': 'O',
+        'å': 'aa',
+        'Å': 'Aa'
+    }
+    
+    def replace(match):
+        return replacements[match.group(0)]
+    
+    return re.sub(r'æ|Æ|ø|Ø|å|Å', replace, s)
 
 def find_line_ref_local_teams(lines: List[str]) -> int:
     for (row, idx) in zip(lines, range(len(lines))):
@@ -21,7 +36,8 @@ def edit_file(file_path, params):
         file.close()
 
         last_teams_ref_idx = find_line_ref_local_teams(lines)
-        ad_group_formatted = json.dumps(ad_group).replace(' ', '').replace('"', '').lower()
+        ad_replace_chars = replace_special_characters(ad_group)
+        ad_group_formatted = json.dumps(ad_replace_chars).replace(' ', '').replace('"', '').lower()
         lines.insert(last_teams_ref_idx + 3, f'"{project_name}"= ["aad-tf-team-{ad_group_formatted}@kartverket.no", "aad-tf-team-dataplattform@kartverket.no"]\n')
 
         with open(file_path, 'w') as file:

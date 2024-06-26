@@ -1,6 +1,21 @@
 import sys
-import os
 import json
+import re
+
+def replace_special_characters(s):
+    replacements = {
+        'æ': 'ae',
+        'Æ': 'Ae',
+        'ø': 'o',
+        'Ø': 'O',
+        'å': 'aa',
+        'Å': 'Aa'
+    }
+    
+    def replace(match):
+        return replacements[match.group(0)]
+    
+    return re.sub(r'æ|Æ|ø|Ø|å|Å', replace, s)
 
 def edit_file(filepath, params):
     team_name: str = params.get("team_name")
@@ -15,14 +30,15 @@ def edit_file(filepath, params):
 
     append_content_to_end_of_file(filepath, new_team_data)
 
-def generate_module_definition(ad_group_name: str, team_name: str, area_name: str, project_name: str, project_id_map: dict) -> str: 
+def generate_module_definition(ad_group_name: str, area_name: str, project_name: str, project_id_map: dict) -> str: 
+    area_special_chars_replaced = replace_special_characters(area_name)
     module = f'''
     module "{project_name.lower()}" {{
       source = "../dbx_team_resources"
 
       ad_group_name = "AAD - TF - TEAM - {ad_group_name}"
       team_name     = "{project_name.lower()}"
-      area_name     = "{area_name.lower()}"
+      area_name     = "{area_special_chars_replaced.lower()}"
       deploy_sa_map = {{
         sandbox = "{project_name.lower()}-deploy@{project_id_map['sandbox']}.iam.gserviceaccount.com",
         dev     = "{project_name.lower()}-deploy@{project_id_map['dev']}.iam.gserviceaccount.com",
