@@ -1,9 +1,10 @@
 import json
 import sys
 from typing import List
+from common import append_content_to_end_of_file
 
 
-def generate_module_definition(team_name: str, project_name: str) -> str: 
+def generate_module_definition(project_name: str) -> str: 
     module = f'''
     module "{project_name.lower()}" {{
         source    = "./project_team"
@@ -31,18 +32,7 @@ def generate_module_definition(team_name: str, project_name: str) -> str:
     return module
 
 
-def append_content_to_end_of_file(file_path: str, content: str) -> None:
-    with open(file_path) as file:
-        lines = file.readlines()
-        file.close()
-        lines.insert(len(lines), content)
-
-        with open(file_path, 'w') as file:
-            file.writelines(lines)
-            file.close()
-
 def edit_file(file_path, params):
-    team_name: str = params.get("team_name")
     project_name: str = params.get("project_name")
     project_ids = params["gcp_project_ids"]
     project_id_sandbox = project_ids["sandbox"]
@@ -51,7 +41,7 @@ def edit_file(file_path, params):
     project_id_prod = project_ids["prod"]
 
     # Handle modules.tf
-    module_definition = generate_module_definition(team_name, project_name)
+    module_definition = generate_module_definition(project_name)
     append_content_to_end_of_file(file_path + "/modules.tf", module_definition)
 
     # Handle variables.tf

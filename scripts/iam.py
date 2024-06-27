@@ -1,22 +1,7 @@
 import json
 import sys
 from typing import List
-import re
-
-def replace_special_characters(s):
-    replacements = {
-        'æ': 'ae',
-        'Æ': 'Ae',
-        'ø': 'o',
-        'Ø': 'O',
-        'å': 'aa',
-        'Å': 'Aa'
-    }
-    
-    def replace(match):
-        return replacements[match.group(0)]
-    
-    return re.sub(r'æ|Æ|ø|Ø|å|Å', replace, s)
+from common import replace_special_characters
 
 def find_line_ref_local_teams(lines: List[str]) -> int:
     for (row, idx) in zip(lines, range(len(lines))):
@@ -28,9 +13,6 @@ def edit_file(file_path, params):
     with open(file_path) as file:
         project_name: str = params.get("project_name")
         ad_group: str = params.get("ad_groups")[0]
-
-        print("Project Name:", project_name)
-        print("AD Groups:", ad_group)
 
         lines = file.readlines()
         file.close()
