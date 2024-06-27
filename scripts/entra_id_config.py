@@ -1,5 +1,6 @@
 import json
 import sys
+from common import append_content_to_end_of_file
 
 
 def create_team_entraid_modul(team_name: str, product_area: str, team_lead: str) -> str:
@@ -15,17 +16,6 @@ def create_team_entraid_modul(team_name: str, product_area: str, team_lead: str)
     '''
 
     return entraid_modul
-
-
-def append_content_to_end_of_file(file_path: str, content: str) -> None:
-    with open(file_path) as read_file:
-        lines = read_file.readlines()
-        read_file.close()
-        lines.append(content)
-
-        with open(file_path, 'w') as write_file:
-            write_file.writelines(lines)
-            write_file.close()
 
 
 def edit_file(file_path: str, params: str):
