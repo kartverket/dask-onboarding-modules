@@ -1,6 +1,6 @@
 import json
 import sys
-from common import append_content_to_end_of_file
+from common import append_content_to_end_of_file, replace_special_characters
 
 
 def create_team_entraid_modul(team_name: str, product_area: str, team_lead: str) -> str:
@@ -20,8 +20,8 @@ def create_team_entraid_modul(team_name: str, product_area: str, team_lead: str)
 
 def edit_file(file_path: str, params: str):
     team_name: str = params.get("team_name")
-    product_area: str = params.get("product_area")
-    team_lead = params["team_lead"]
+    product_area: str = replace_special_characters(params.get("product_area"))
+    team_lead: str = params.get("team_lead")
 
     team_entraid_config = create_team_entraid_modul(team_name, product_area, team_lead)
     append_content_to_end_of_file(file_path + f'/{product_area.lower()}.tf', team_entraid_config)
