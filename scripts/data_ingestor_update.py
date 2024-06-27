@@ -1,5 +1,6 @@
 import json
 import sys
+from common import replace_special_characters
 
 envs = ["sandbox", "dev", "test", "prod"]
 
@@ -11,17 +12,17 @@ def should_keep_line(line: str) -> bool:
     
     return False
 
-def update_tfvar_file(monorepo_folder_path: str, env: str, team_name: str, project_id: str, project_number: str):
+def update_tfvar_file(monorepo_folder_path: str, env: str, project_name: str, project_id: str, project_number: str):
     tfvars_path = f'{monorepo_folder_path}/terraform/variables/{env}.tfvars'
     
     with open(tfvars_path) as file:
         lines = list(filter(should_keep_line, file.readlines()))
         file.close()
 
-        lines.insert(0, f'repo_name = "{team_name.lower()}-data-ingestor"\n')
+        lines.insert(0, f'repo_name = "{project_name.lower()}-data-ingestor"\n')
         lines.insert(0, f'landing_zone_bucket = "landing-zone-{project_id}"\n')
         lines.insert(0, f'compute_service_account = "databricks-compute@{project_id}.iam.gserviceaccount.com"\n')
-        lines.insert(0, f'deploy_service_account = "{team_name.lower()}-deploy@{project_id}.iam.gserviceaccount.com"\n')
+        lines.insert(0, f'deploy_service_account = "{project_name.lower()}-deploy@{project_id}.iam.gserviceaccount.com"\n')
         lines.insert(0, f'project_number = "{project_number}"\n')
         lines.insert(0, f'project_id = "{project_id}"\n')
 
@@ -47,11 +48,11 @@ def copy_and_paste_github_deploy_workflow(file_path: str, env: str):
             file.writelines(lines)
             file.close()
 
-def update_databricks_config(file_path: str, area_name: str, team_name: str):
+def update_databricks_config(file_path: str, area_name: str, project_name: str):
     config_path = f'{file_path}/src/databricks/config.py'
     
     with open(config_path, 'r') as file:
-        lines = [line.replace("plattform_dataprodukter", f"{area_name.lower()}_{team_name.lower()}") for line in file.readlines()]
+        lines = [line.replace("plattform_dataprodukter", f"{area_name.lower()}_{project_name.lower()}") for line in file.readlines()]
         file.close()
 
         with open(config_path, 'w') as file:
@@ -74,23 +75,23 @@ def clear_codeowners(file_path: str, team_name: str):
             file.close()
 
 
-def configure_github_deploy_workflow(file_path: str, env: str, team_name: str, project_id: str, project_number: str, host: str):
+def configure_github_deploy_workflow(file_path: str, env: str, project_name: str, project_id: str, project_number: str, host: str):
     workflows_path = f'{file_path}/.github/workflows'
 
     sa_to_replace = "dataplattform-deploy@dataprodukter-sandbox-4413.iam.gserviceaccount.com"
     project_number_to_replace = "364051313161"
     project_id_to_replace = "dataprodukter-sandbox-4413.iam.gserviceaccount.com"
     repo_to_replace = "dask-monorepo-reference-setup"
-    team_name_to_replace = "dataprodukter"
+    project_name_to_replace = "dataprodukter"
     env_to_replace = "sandbox"
     host_to_replace = "https://3127021269182225.5.gcp.databricks.com"
 
     replacement_tuples = [
         (project_number_to_replace, project_number),
-        (sa_to_replace, f'{team_name.lower()}-deploy@{project_id}.iam.gserviceaccount.com'),
+        (sa_to_replace, f'{project_name.lower()}-deploy@{project_id}.iam.gserviceaccount.com'),
         (project_id_to_replace, project_id),
-        (repo_to_replace, f'{team_name.lower()}-data-ingestor'),
-        (team_name_to_replace, team_name.lower()),
+        (repo_to_replace, f'{project_name.lower()}-data-ingestor'),
+        (project_name_to_replace, project_name.lower()),
         (env_to_replace, env),
         (host_to_replace, host)
     ]
@@ -109,7 +110,8 @@ def configure_github_deploy_workflow(file_path: str, env: str, team_name: str, p
 
 def edit_file(file_path, json_obj):
     team_name: str = json_obj.get("team_name")
-    area_name: str = json_obj.get("area_name")
+    area_name: str = replace_special_characters(json_obj.get("area_name"))
+    project_name: str = json_obj.get("project_name")
 
     host_url_map = {
         "sandbox": "https://3127021269182225.5.gcp.databricks.com",
@@ -119,7 +121,7 @@ def edit_file(file_path, json_obj):
     }
 
     clear_codeowners(file_path, team_name)
-    update_databricks_config(file_path, area_name, team_name)
+    update_databricks_config(file_path, area_name, project_name)
 
     # Setup github actions files to be used later
     for env in envs:
@@ -131,10 +133,10 @@ def edit_file(file_path, json_obj):
 
         project_id_for_env = json_obj.get("gcp_project_ids")[env]
         auth_project_number_for_env = json_obj.get("gcp_auth_numbers")[env]
-        update_tfvar_file(file_path, env, team_name, project_id_for_env, auth_project_number_for_env)
+        update_tfvar_file(file_path, env, project_name, project_id_for_env, auth_project_number_for_env)
 
         host_for_env = host_url_map[env]
-        configure_github_deploy_workflow(file_path, env, team_name, project_id_for_env, auth_project_number_for_env, host_for_env)
+        configure_github_deploy_workflow(file_path, env, project_name, project_id_for_env, auth_project_number_for_env, host_for_env)
 
 
 if __name__ == "__main__":
