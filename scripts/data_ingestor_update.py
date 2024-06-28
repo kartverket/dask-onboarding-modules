@@ -2,7 +2,7 @@ import json
 import sys
 from common import replace_special_characters
 
-envs = ["sandbox", "dev", "test", "prod"]
+envs = ["sandbox", "dev", "prod"]
 
 def should_keep_line(line: str) -> bool:
     lines_to_keep = ["databricks_workspace_url", "environment"]
@@ -116,7 +116,6 @@ def edit_file(file_path, json_obj):
     host_url_map = {
         "sandbox": "https://3127021269182225.5.gcp.databricks.com",
         "dev": "https://519194143571414.4.gcp.databricks.com",
-        "test": "https://8402017687396218.8.gcp.databricks.com",
         "prod": "https://3428319462519584.4.gcp.databricks.com"
     }
 
