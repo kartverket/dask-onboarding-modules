@@ -26,13 +26,11 @@ def generate_module_definition(ad_group_name: str, area_name: str, project_name:
       deploy_sa_map = {{
         sandbox = "{project_name.lower()}-deploy@{project_id_map['sandbox']}.iam.gserviceaccount.com",
         dev     = "{project_name.lower()}-deploy@{project_id_map['dev']}.iam.gserviceaccount.com",
-        test    = "{project_name.lower()}-deploy@{project_id_map['test']}.iam.gserviceaccount.com",
         prod    = "{project_name.lower()}-deploy@{project_id_map['prod']}.iam.gserviceaccount.com"
       }}
       projects = {{
         sandbox = "{project_id_map['sandbox']}",
         dev     = "{project_id_map['dev']}",
-        test    = "{project_id_map['test']}",
         prod    = "{project_id_map['prod']}",
       }}
         

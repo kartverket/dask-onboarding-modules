@@ -36,7 +36,7 @@ def edit_file(file_path, params):
     project_name: str = params.get("project_name")
     project_ids = params["gcp_project_ids"]
     project_id_sandbox = project_ids["sandbox"]
-    project_id_test = project_ids["test"]
+    project_id_dev = project_ids["dev"]
     project_id_prod = project_ids["prod"]
 
     # Handle modules.tf
@@ -53,8 +53,8 @@ def edit_file(file_path, params):
     sandbox_var_entry = get_project_var_entry(project_id_sandbox)
     append_content_to_end_of_file(file_path + "/sandbox.tfvars", sandbox_var_entry)
 
-    test_var_entry = get_project_var_entry(project_id_test)
-    append_content_to_end_of_file(file_path + "/test.tfvars", test_var_entry)
+    dev_var_entry = get_project_var_entry(project_id_dev)
+    append_content_to_end_of_file(file_path + "/dev.tfvars", dev_var_entry)
 
     prod_var_entry = get_project_var_entry(project_id_prod)
     append_content_to_end_of_file(file_path + "/prod.tfvars", prod_var_entry)
