@@ -1,8 +1,40 @@
 import sys
 import json
+from typing import List
 from common import replace_special_characters, append_content_to_end_of_file
 
-def edit_file(filepath, params):
+def find_line_ref_local_teams(lines: List[str]) -> int:
+    for (row, idx) in zip(lines, range(len(lines))):
+        if row.startswith('output "catalog_names" {'):
+            return idx
+
+def edit_dbx_teams_output_file(params):
+    file_path: str = "terraform/modules/dbx_teams/outputs.tf"
+    project_name: str = params.get("project_name")
+    
+    content = f'''
+    output "catalog_name" {{
+      value = "module.{project_name.lower()}.catalog_name"  
+    }}
+    '''
+    append_content_to_end_of_file(file_path, content)
+
+def edit_dbx_create_workspace_with_cluster_output_file(params):
+    file_path: str = "terraform/modules/dbx_create_workspace_with_cluster/outputs.tf"
+    project_name: str = params.get("project_name")
+    with open(file_path) as file:
+        lines = file.readlines()
+        file.close()
+
+        last_teams_ref_idx = find_line_ref_local_teams(lines)
+        lines.insert(last_teams_ref_idx + 3, f'{project_name.lower()}_catalog_name\n')
+
+        with open(file_path, 'w') as file:
+          file.writelines(lines)
+          file.close()
+    
+
+def edit_dbx_teams_file(filepath, params):
     project_name: str = params.get("project_name")
 
     ad_group_name: str = params["ad_groups"][0]
@@ -64,4 +96,4 @@ if __name__ == "__main__":
     json_str = sys.argv[2]
     params = json.loads(json_str)
 
-    edit_file(file_path, params)
+    edit_dbx_teams_file(file_path, params)
