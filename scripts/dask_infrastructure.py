@@ -8,7 +8,7 @@ def edit_dbx_teams_output_file(params):
     project_name: str = params.get("project_name")
     
     content = f'''
-    output "catalog_name" {{
+    output "{project_name.lower()}_catalog_name" {{
       value = "module.{project_name.lower()}.catalog_name"  
     }}
     '''
