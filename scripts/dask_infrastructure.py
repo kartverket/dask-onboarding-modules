@@ -1,10 +1,9 @@
 import sys
 import json
-from typing import List
 from common import replace_special_characters, append_content_to_end_of_file
 
-def edit_dbx_teams_output_file(params):
-    file_path: str = "https://github.com/kartverket/dask-infrastructure/terraform/modules/dbx_teams/outputs.tf"
+def edit_dbx_teams_output_file(file_path, params):
+    adjusted_file_path: str = file_path.replace("main.tf", "outputs.tf")
     project_name: str = params.get("project_name")
     
     content = f'''
@@ -12,7 +11,7 @@ def edit_dbx_teams_output_file(params):
       value = "module.{project_name.lower()}.catalog_name"  
     }}
     '''
-    append_content_to_end_of_file(file_path, content)
+    append_content_to_end_of_file(adjusted_file_path, content)
     
 
 def edit_dbx_teams_file(filepath, params):
@@ -78,4 +77,4 @@ if __name__ == "__main__":
     params = json.loads(json_str)
 
     edit_dbx_teams_file(file_path, params)
-    edit_dbx_teams_output_file(params)
+    edit_dbx_teams_output_file(file_path, params)
