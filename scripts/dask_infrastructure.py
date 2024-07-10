@@ -4,7 +4,7 @@ from typing import List
 from common import replace_special_characters, append_content_to_end_of_file
 
 def edit_dbx_teams_output_file(params):
-    file_path: str = "terraform/modules/dbx_teams/outputs.tf"
+    file_path: str = "https://github.com/kartverket/dask-infrastructure/terraform/modules/dbx_teams/outputs.tf"
     project_name: str = params.get("project_name")
     
     content = f'''
