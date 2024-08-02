@@ -36,3 +36,7 @@ terraform.rc
 **/http
 **/java_pid*
 venv/*
+
+# dask-felleskomponenter
+**/__pycache__
+**/.coverage
