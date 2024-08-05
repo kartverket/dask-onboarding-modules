@@ -13,6 +13,7 @@ class MetadataError:
     description: str
     solution: Optional[str]
 
+
 def check_codelist_value(kodeliste_url: Optional[str], value: Any, allowed_values: Optional[List[Any]] = None, override_kodeliste_keyword: Optional[str] = None) -> bool:
     if value == None:
         return False
