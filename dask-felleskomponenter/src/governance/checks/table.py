@@ -16,6 +16,8 @@ def check_beskrivelse(metadata: TableMetadata, context: List) -> List[MetadataEr
     return context
 
 def check_tilgangsnivaa(metadata: TableMetadata, context: List) -> List[MetadataError]:
+    kodeliste_url = "https://register.geonorge.no/api/register/sikkerhetsniva"
+    
     if metadata.tilgangsnivaa is None:
         error_obj = MetadataError(catalog=metadata.catalog, 
                                      schema=metadata.schema, 
@@ -29,6 +31,8 @@ def check_tilgangsnivaa(metadata: TableMetadata, context: List) -> List[Metadata
     return context
 
 def check_medaljongnivaa(metadata: TableMetadata, context: List) -> List[MetadataError]:
+    valid_values = ["bronse", "sølv", "gull"]
+
     if metadata.medaljongnivaa is None:
         error_obj = MetadataError(catalog=metadata.catalog, 
                                      schema=metadata.schema, 
@@ -42,6 +46,8 @@ def check_medaljongnivaa(metadata: TableMetadata, context: List) -> List[Metadat
     return context
 
 def check_bruksvilkaar(metadata: TableMetadata, context: List) -> List[MetadataError]:
+    kodeliste_url = "https://register.geonorge.no/api/register/formal"
+    
     if metadata.privacy_considerations is None:
         error_obj = MetadataError(catalog=metadata.catalog, 
                                      schema=metadata.schema, 
@@ -55,6 +61,7 @@ def check_bruksvilkaar(metadata: TableMetadata, context: List) -> List[MetadataE
     return context
 
 def check_tema(metadata: TableMetadata, context: List) -> List[MetadataError]:
+    kodeliste_url = "https://register.geonorge.no/api/register/inspiretema"
     if metadata.tema is None:
         error_obj = MetadataError(catalog=metadata.catalog, 
                                      schema=metadata.schema, 
@@ -76,6 +83,7 @@ def check_emneord(metadata: TableMetadata, context: List) -> List[MetadataError]
                                      error_id=Errors.missing_emneord, 
                                      description="🔴 Feil: 'emneord' mangler i table properties", 
                                      solution=f"ALTER TABLE {metadata.catalog}.{metadata.schema}.{metadata.table} SET TBLPROPERTIES ( 'emneord' = '<<SETT_emneord_HER>>')")
+        
         context.append(error_obj)
     
     return context
@@ -83,6 +91,8 @@ def check_emneord(metadata: TableMetadata, context: List) -> List[MetadataError]
 
 # Spør thom om denne
 def check_epsg_koder(metadata: TableMetadata, context: List) -> List[MetadataError]:
+    kodeliste_url = "https://register.geonorge.no/api/register/epsg-koder"
+
     if metadata.epsg_koder is None:
         error_obj = MetadataError(catalog=metadata.catalog, 
                                      schema=metadata.schema, 
@@ -96,6 +106,8 @@ def check_epsg_koder(metadata: TableMetadata, context: List) -> List[MetadataErr
     return context
 
 def check_romlig_representasjonstype(metadata: TableMetadata, context: List) -> List[MetadataError]:
+    kodeliste_url = "https://register.geonorge.no/api/register/romlig-representasjonstype "
+
     if metadata.romlig_representasjonstype is None:
         error_obj = MetadataError(catalog=metadata.catalog, 
                                      schema=metadata.schema, 
