@@ -3,12 +3,12 @@
     "schema": "example value for schema",
     "table": "example value for table",
     "beskrivelse": "example value for beskrivelse",
-    "tilgangsnivaa": "example value for tilgangsnivaa",
+    "tilgangsnivaa": "confidential",
     "medaljongnivaa": "gull",
-    "tema": "example value for tema",
-    "begrep": "example value for begrep",
-    "epsg_koder": "example value for epsg_koder",
+    "tema": "Land use",
+    "begrep": "Høydedata",
+    "epsg_koder": "25835",
     "romlig_representasjonstype": "example value for romlig_representasjonstype",
-    "bruksomraade": "example value for bruksomraade",
+    "bruksomraade": "plansjøkonfliktområder",
     "emneord": "example value for bruksomraade"
 }
