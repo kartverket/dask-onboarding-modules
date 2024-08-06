@@ -13,7 +13,6 @@ def read_file(filepath: str):
 
 
 class TestValidateTable(unittest.TestCase):
-    
     def test_validate_calls_get_metadata_with_correct_arguments(self):
         # Arrange
         gold_mock_json_data = read_file("example_table_metadata_gold.json")
