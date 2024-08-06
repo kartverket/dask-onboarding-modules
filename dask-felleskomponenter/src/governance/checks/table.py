@@ -13,7 +13,6 @@ def check_beskrivelse(metadata: TableMetadata, context: List) -> List[MetadataEr
 def check_tilgangsnivaa(metadata: TableMetadata, context: List) -> List[MetadataError]:
     kodeliste_url = "https://register.geonorge.no/api/register/sikkerhetsniva"
 
-    
     if not check_codelist_value(kodeliste_url, metadata.tilgangsnivaa):
         description = "🔴 Feil: 'tilgangsnivaa' mangler i table properties. Type: <sikkerhetsnivaa> - gyldige verdier finner du her: " + kodeliste_url
         solution = f"ALTER TABLE {metadata.catalog}.{metadata.schema}.{metadata.table} SET TBLPROPERTIES ( 'tilgangsnivaa' = '<<SETT_TILGANGSNIVAA_HER>>')"

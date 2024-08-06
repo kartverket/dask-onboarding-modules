@@ -12,15 +12,6 @@ def read_file(filepath: str):
 
         return gold_mock_json_data
 
-class MockSparkDf:
-    def collect(self) -> Any:
-        pass
-
-class MockSparkContext:
-    def sql(self, _: str):
-        return MockSparkDf()
-
-    
 
 class TestValidateTable(unittest.TestCase):
     
@@ -28,7 +19,7 @@ class TestValidateTable(unittest.TestCase):
         # Arrange
         gold_mock_json_data = read_file("example_table_metadata_gold.json")
         Metadata.get_table_metadata = MagicMock(return_value=TableMetadata(**gold_mock_json_data))
-        metadata = Metadata("catalog", "schema", "table", MockSparkContext())
+        metadata = Metadata("catalog", "schema", "table", None)
 
         # Act
         metadata.validate()
@@ -40,7 +31,7 @@ class TestValidateTable(unittest.TestCase):
         # Arrange
         gold_mock_json_data = read_file("example_table_metadata_gold.json")
         Metadata.get_table_metadata = MagicMock(return_value=TableMetadata(**gold_mock_json_data))
-        metadata = Metadata("catalog", "schema", "table", MockSparkContext())
+        metadata = Metadata("catalog", "schema", "table", None)
 
         # Act
         result = metadata.validate()
