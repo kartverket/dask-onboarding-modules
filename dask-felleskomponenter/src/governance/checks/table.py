@@ -1,12 +1,16 @@
-from typing import List
+from typing import List, Optional
 from .common import MetadataError, check_codelist_value, TableMetadata
+
+def _genenrate_metadata_error(catalog: str, schema: str, table: str, field: str, type: str, is_missing: bool, valid_values: Optional[str] = None):
+    description = f"🔴 Feil: '{field}' mangler i table properties. Type: <{type}>"
+    if valid_values != None:
+        valid_values += f" - {valid_values}"
+    solution = f"ALTER TABLE {catalog}.{schema}.{table} SET TBLPROPERTIES ( '{field}' = '<<SETT_{field.upper()}_HER>>')"
+    return MetadataError(catalog=catalog, schema=schema, table=table, column=None, description=description, solution=solution)
 
 def check_beskrivelse(metadata: TableMetadata, context: List) -> List[MetadataError]:
     if not check_codelist_value(None, metadata.beskrivelse):
-        description = "🔴 Feil: 'beskrivelse' mangler i table properties. Type: <string>"
-        solution = f"ALTER TABLE {metadata.catalog}.{metadata.schema}.{metadata.table} SET TBLPROPERTIES ( 'beskrivelse' = '<<SETT_BESKRIVELSE_HER>>')"
-        error_obj = MetadataError(catalog=metadata.catalog, schema=metadata.schema, table=metadata.table, column=None, description=description, solution=solution)
-        context.append(error_obj)
+        context.append(_genenrate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "beskrivelse", "string", metadata.beskrivelse == None))
     
     return context
 
@@ -14,20 +18,14 @@ def check_tilgangsnivaa(metadata: TableMetadata, context: List) -> List[Metadata
     kodeliste_url = "https://register.geonorge.no/api/register/sikkerhetsniva"
 
     if not check_codelist_value(kodeliste_url, metadata.tilgangsnivaa):
-        description = "🔴 Feil: 'tilgangsnivaa' mangler i table properties. Type: <sikkerhetsnivaa> - gyldige verdier finner du her: " + kodeliste_url
-        solution = f"ALTER TABLE {metadata.catalog}.{metadata.schema}.{metadata.table} SET TBLPROPERTIES ( 'tilgangsnivaa' = '<<SETT_TILGANGSNIVAA_HER>>')"
-        error_obj = MetadataError(catalog=metadata.catalog, schema=metadata.schema, table=metadata.table, column=None, description=description, solution=solution)
-        context.append(error_obj)
+        context.append(_genenrate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "tilgangsnivaa", "sikkerhetsnivaa", metadata.tilgangsnivaa == None, f"gyldige verdier finner du her: {kodeliste_url}"))
     
     return context
 
 def check_medaljongnivaa(metadata: TableMetadata, context: List) -> List[MetadataError]:
     valid_values = ["bronse", "sølv", "gull"]
     if not check_codelist_value(None, metadata.medaljongnivaa, valid_values):
-        description = "🔴 Feil: 'medaljongnivaa' mangler i table properties. Type: <valør> - Gyldige verdier: ['bronse', 'sølv', 'gull']",
-        solution = f"ALTER TABLE {metadata.catalog}.{metadata.schema}.{metadata.table} SET TBLPROPERTIES ( 'medaljongnivaa' = '<<SETT_MEDALJONGNIVAA_HER>>')"
-        error_obj = MetadataError(catalog=metadata.catalog, schema=metadata.schema, table=metadata.table, column=None, description=description, solution=solution)
-        context.append(error_obj)
+        context.append(_genenrate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "medaljongnivaa", "valør", metadata.medaljongnivaa == None, "gyldige verdier: ['bronse', 'sølv', 'gull']"))
     
     return context
 
@@ -35,20 +33,13 @@ def check_tema(metadata: TableMetadata, context: List) -> List[MetadataError]:
     kodeliste_url = "https://register.geonorge.no/api/register/inspiretema"
 
     if not check_codelist_value(kodeliste_url, metadata.tema):
-        error_reason = "mangler" if metadata.tema == None else "har ugyldig verdi"
-        description = f"🔴 Feil: 'tema' {error_reason} i table properties. Type: <inspiretema> - gyldige verdier finner du her: {kodeliste_url}"
-        solution = f"ALTER TABLE {metadata.catalog}.{metadata.schema}.{metadata.table} SET TBLPROPERTIES ( 'tema' = '<<SETT_TEMA_HER>>')"
-        error_obj = MetadataError(catalog=metadata.catalog, schema=metadata.schema, table=metadata.table, column=None, description=description, solution=solution)
-        context.append(error_obj)
+        context.append(_genenrate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "tema", "inspiretema", metadata.tema == None, f"gyldige verdier finner du her: {kodeliste_url}"))
     
     return context
 
 def check_emneord(metadata: TableMetadata, context: List) -> List[MetadataError]:
     if not check_codelist_value(None, metadata.emneord):
-        description = "🔴 Feil: 'emneord' mangler i table properties. Type: <string>"
-        solution = f"ALTER TABLE {metadata.catalog}.{metadata.schema}.{metadata.table} SET TBLPROPERTIES ( 'emneord' = '<<SETT_EMNEORD_HER>>')"
-        error_obj = MetadataError(catalog=metadata.catalog, schema=metadata.schema, table=metadata.table, column=None, description=description, solution=solution)
-        context.append(error_obj)
+        context.append(_genenrate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "emneord", "string", metadata.emneord == None))
     
     return context
 
@@ -58,11 +49,7 @@ def check_epsg_koder(metadata: TableMetadata, context: List) -> List[MetadataErr
     kodeliste_url = "https://register.geonorge.no/api/register/epsg-koder"
 
     if not check_codelist_value(kodeliste_url, metadata.epsg_koder, override_kodeliste_keyword="epsgcode"):
-        error_reason = "mangler" if metadata.epsg_koder == None else "har ugyldig verdi"
-        description = f"🔴 Feil: 'epsg_koder' {error_reason} i table properties. Type: <epsg_koder> - gyldige verdier finner du her: {kodeliste_url}"
-        solution = f"ALTER TABLE {metadata.catalog}.{metadata.schema}.{metadata.table} SET TBLPROPERTIES ( 'epsg_koder' = '<<SETT_EPSG_KODER_HER>>')"
-        error_obj = MetadataError(catalog=metadata.catalog, schema=metadata.schema, table=metadata.table, column=None, description=description, solution=solution)
-        context.append(error_obj)
+        context.append(_genenrate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "epsg_koder", "epsg_koder", metadata.epsg_koder == None, f"gyldige verdier finner du her: {kodeliste_url}"))
     
     return context
 
@@ -70,11 +57,7 @@ def check_bruksomraade(metadata: TableMetadata, context: List) -> List[MetadataE
     kodeliste_url = "https://register.geonorge.no/metadata-kodelister/formal"
 
     if not check_codelist_value(kodeliste_url, metadata.bruksomraade):
-        error_reason = "mangler" if metadata.epsg_koder == None else "har ugyldig verdi"
-        description = f"🔴 Feil: bruksomraade {error_reason} i table properties. Type: <formal> - gyldige verdier finner du her: {kodeliste_url}"
-        solution = f"ALTER TABLE {metadata.catalog}.{metadata.schema}.{metadata.table} SET TBLPROPERTIES ( 'bruksomraade' = '<<SETT_BRUKSOMRAADE_HER>>')"
-        error_obj = MetadataError(catalog=metadata.catalog, schema=metadata.schema, table=metadata.table, column=None, description=description, solution=solution)
-        context.append(error_obj)
+        context.append(_genenrate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "bruksomraade", "formal", metadata.bruksomraade == None, f"gyldige verdier finner du her: {kodeliste_url}"))
     
     return context
 
@@ -82,11 +65,7 @@ def check_begrep(metadata: TableMetadata, context: List) -> List[MetadataError]:
     kodeliste_url = "https://register.geonorge.no/metadata-kodelister/nasjonal-temainndeling"
 
     if not check_codelist_value(kodeliste_url, metadata.begrep):
-        error_reason = "mangler" if metadata.epsg_koder == None else "har ugyldig verdi"
-        description = f"🔴 Feil: 'begrep' {error_reason} i table properties. Type: <nasjonal-temainndeling> - gyldige verdier finner du her: {kodeliste_url}"
-        solution = f"ALTER TABLE {metadata.catalog}.{metadata.schema}.{metadata.table} SET TBLPROPERTIES ( 'begrep' = '<<SETT_BEGREP_HER>>')"
-        error_obj = MetadataError(catalog=metadata.catalog, schema=metadata.schema, table=metadata.table, column=None, description=description, solution=solution)
-        context.append(error_obj)
+        context.append(_genenrate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "begrep", "nasjonal", metadata.begrep == None, f"gyldige verdier finner du her: {kodeliste_url}"))
     
     return context
     
