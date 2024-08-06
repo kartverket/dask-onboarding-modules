@@ -1,14 +1,14 @@
 {
-    "catalog": "example value for catalog",
-    "schema": "example value for schema",
-    "table": "example value for table",
-    "beskrivelse": "example value for beskrivelse",
+    "catalog": "catalog",
+    "schema": "schema",
+    "table": "table",
+    "beskrivelse": "beskrivelse",
     "tilgangsnivaa": "confidential",
     "medaljongnivaa": "gull",
     "tema": "Land use",
     "begrep": "Høydedata",
     "epsg_koder": "25835",
-    "romlig_representasjonstype": "example value for romlig_representasjonstype",
+    "romlig_representasjonstype": "romlig_representasjonstype",
     "bruksomraade": "plansjøkonfliktområder",
-    "emneord": "example value for bruksomraade"
+    "emneord": "bruksomraade"
 }
