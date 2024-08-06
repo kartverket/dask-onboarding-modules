@@ -1,6 +1,5 @@
-from typing import Any, List, Optional
-from src.governance.main import TableMetadata
-from .common import MetadataError, check_codelist_value
+from typing import List
+from .common import MetadataError, check_codelist_value, TableMetadata
 
 def check_beskrivelse(metadata: TableMetadata, context: List) -> List[MetadataError]:
     if not check_codelist_value(None, metadata.beskrivelse):

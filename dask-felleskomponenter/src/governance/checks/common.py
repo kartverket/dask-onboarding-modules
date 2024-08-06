@@ -1,8 +1,22 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, List, Optional
 
 import requests
 
+@dataclass
+class TableMetadata:
+    catalog: Optional[str] = field(default=None)
+    schema: Optional[str] = field(default=None)
+    table: Optional[str] = field(default=None)
+    beskrivelse: Optional[str] = field(default=None)
+    tilgangsnivaa: Optional[str] = field(default=None)
+    medaljongnivaa: Optional[str] = field(default=None)
+    tema: Optional[str] = field(default=None)
+    emneord: Optional[str] = field(default=None)    
+    epsg_koder: Optional[str] = field(default=None)    
+    romlig_representasjonstype: Optional[str] = field(default=None)
+    bruksomraade: Optional[str] = field(default=None)
+    begrep: Optional[str] = field(default=None)
 
 @dataclass
 class MetadataError:

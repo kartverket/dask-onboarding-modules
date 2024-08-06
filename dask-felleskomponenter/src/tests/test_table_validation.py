@@ -1,7 +1,7 @@
+from typing import Any
 import unittest
 from unittest.mock import MagicMock
 
-from src.governance.validate import validate
 from src.governance.main import Metadata, TableMetadata
 
 import json
@@ -12,6 +12,15 @@ def read_file(filepath: str):
 
         return gold_mock_json_data
 
+class MockSparkDf:
+    def collect(self) -> Any:
+        pass
+
+class MockSparkContext:
+    def sql(self, _: str):
+        return MockSparkDf()
+
+    
 
 class TestValidateTable(unittest.TestCase):
     
@@ -19,9 +28,10 @@ class TestValidateTable(unittest.TestCase):
         # Arrange
         gold_mock_json_data = read_file("example_table_metadata_gold.json")
         Metadata.get_table_metadata = MagicMock(return_value=TableMetadata(**gold_mock_json_data))
+        metadata = Metadata("catalog", "schema", "table", MockSparkContext())
 
         # Act
-        validate("catalog", "schema", "table")
+        metadata.validate()
 
         # Assert
         Metadata.get_table_metadata.assert_any_call()
@@ -30,9 +40,10 @@ class TestValidateTable(unittest.TestCase):
         # Arrange
         gold_mock_json_data = read_file("example_table_metadata_gold.json")
         Metadata.get_table_metadata = MagicMock(return_value=TableMetadata(**gold_mock_json_data))
-        
+        metadata = Metadata("catalog", "schema", "table", MockSparkContext())
+
         # Act
-        result = validate(catalog="catalog", schema="schema", table="table")
+        result = metadata.validate()
 
         # Assert
         self.assertListEqual(result, [])
