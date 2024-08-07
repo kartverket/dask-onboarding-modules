@@ -1,0 +1,13 @@
+{
+    "catalog": "catalog",
+    "schema": "schema",
+    "table": "table",
+    "beskrivelse": "beskrivelse",
+    "tilgangsnivaa": "confidential",
+    "medaljongnivaa": "gull",
+    "tema": "Land use",
+    "begrep": "Høydedata",
+    "epsg_koder": "25835",
+    "bruksomraade": "plansjøkonfliktområder",
+    "emneord": "bruksomraade"
+}
