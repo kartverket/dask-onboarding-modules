@@ -8,13 +8,13 @@ def _genenrate_metadata_error(catalog: str, schema: str, table: str, field: str,
     solution = f"ALTER TABLE {catalog}.{schema}.{table} SET TBLPROPERTIES ( '{field}' = '<<SETT_{field.upper()}_HER>>')"
     return MetadataError(catalog=catalog, schema=schema, table=table, column=None, description=description, solution=solution)
 
-def check_beskrivelse(metadata: TableMetadata, context: List) -> List[MetadataError]:
+def check_beskrivelse(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
     if not check_codelist_value(None, metadata.beskrivelse):
         context.append(_genenrate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "beskrivelse", "string", metadata.beskrivelse == None))
     
     return context
 
-def check_tilgangsnivaa(metadata: TableMetadata, context: List) -> List[MetadataError]:
+def check_tilgangsnivaa(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
     kodeliste_url = "https://register.geonorge.no/api/register/sikkerhetsniva"
 
     if not check_codelist_value(kodeliste_url, metadata.tilgangsnivaa):
@@ -22,14 +22,14 @@ def check_tilgangsnivaa(metadata: TableMetadata, context: List) -> List[Metadata
     
     return context
 
-def check_medaljongnivaa(metadata: TableMetadata, context: List) -> List[MetadataError]:
+def check_medaljongnivaa(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
     valid_values = ["bronse", "sølv", "gull"]
     if not check_codelist_value(None, metadata.medaljongnivaa, valid_values):
-        context.append(_genenrate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "medaljongnivaa", "valør", metadata.medaljongnivaa == None, "gyldige verdier: ['bronse', 'sølv', 'gull']"))
+        context.append(_genenrate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "medaljongnivaa", "valør", metadata.medaljongnivaa == None, f"gyldige verdier: {valid_values}"))
     
     return context
 
-def check_tema(metadata: TableMetadata, context: List) -> List[MetadataError]:
+def check_tema(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
     kodeliste_url = "https://register.geonorge.no/api/register/inspiretema"
 
     if not check_codelist_value(kodeliste_url, metadata.tema):
@@ -37,7 +37,7 @@ def check_tema(metadata: TableMetadata, context: List) -> List[MetadataError]:
     
     return context
 
-def check_emneord(metadata: TableMetadata, context: List) -> List[MetadataError]:
+def check_emneord(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
     if not check_codelist_value(None, metadata.emneord):
         context.append(_genenrate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "emneord", "string", metadata.emneord == None))
     
@@ -45,7 +45,7 @@ def check_emneord(metadata: TableMetadata, context: List) -> List[MetadataError]
 
 
 # Spør thom om denne
-def check_epsg_koder(metadata: TableMetadata, context: List) -> List[MetadataError]:
+def check_epsg_koder(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
     kodeliste_url = "https://register.geonorge.no/api/register/epsg-koder"
 
     if not check_codelist_value(kodeliste_url, metadata.epsg_koder, override_kodeliste_keyword="epsgcode"):
@@ -53,7 +53,7 @@ def check_epsg_koder(metadata: TableMetadata, context: List) -> List[MetadataErr
     
     return context
 
-def check_bruksomraade(metadata: TableMetadata, context: List) -> List[MetadataError]:
+def check_bruksomraade(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
     kodeliste_url = "https://register.geonorge.no/metadata-kodelister/formal"
 
     if not check_codelist_value(kodeliste_url, metadata.bruksomraade):
@@ -61,7 +61,7 @@ def check_bruksomraade(metadata: TableMetadata, context: List) -> List[MetadataE
     
     return context
 
-def check_begrep(metadata: TableMetadata, context: List) -> List[MetadataError]:
+def check_begrep(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
     kodeliste_url = "https://register.geonorge.no/metadata-kodelister/nasjonal-temainndeling"
 
     if not check_codelist_value(kodeliste_url, metadata.begrep):
