@@ -4,11 +4,10 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 packages = setuptools.find_packages(where="src")
-print("Found packages:", packages)  
 
 setuptools.setup(
     name="dask-felleskomponenter",
-    version="0.0.12",
+    version="0.0.13",
     author="Dataplattform@Statens Kartverk",
     author_email="dataplattform@kartverket.no",
     description="Felleskomponenter på DASK",
