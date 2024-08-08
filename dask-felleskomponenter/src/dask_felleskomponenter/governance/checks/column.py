@@ -1,6 +1,6 @@
 from typing import List
 from .common import MetadataError
-from src.governance.main import TableMetadata
+from src.dask_felleskomponenter.governance.main import TableMetadata
 
 def check_romlig_representasjonstype(metadata: TableMetadata, context: List) -> List[MetadataError]:
     kodeliste_url = "https://register.geonorge.no/api/register/romlig-representasjonstype "
