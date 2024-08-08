@@ -6,7 +6,10 @@ def _generate_metadata_error(catalog: str, schema: str, table: str, field: str, 
     description = f"🔴 Feil: '{field}' {error_reason} i table properties. Type: <{type}>"
     if valid_values != None:
         description += f" - {valid_values}"
-    solution = f"ALTER TABLE {catalog}.{schema}.{table} SET TBLPROPERTIES ( '{field}' = '<<SETT_{field.upper()}_HER>>')"
+    if field == "beskrivelse":
+        solution = f"COMMENT ON TABLE {catalog}.{schema}.{table} IS '<<SETT_{field.upper()}_HER>>'"
+    else:
+        solution = f"ALTER TABLE {catalog}.{schema}.{table} SET TAGS ( '{field}' = '<<SETT_{field.upper()}_HER>>')"
     return MetadataError(catalog=catalog, schema=schema, table=table, column=None, description=description, solution=solution)
 
 def check_beskrivelse(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
