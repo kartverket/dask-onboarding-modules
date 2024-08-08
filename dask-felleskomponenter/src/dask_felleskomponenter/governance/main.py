@@ -13,14 +13,16 @@ class Metadata:
     def get_table_metadata(self) -> TableMetadata:
         spark = SparkSession.builder.getOrCreate()
         df_tbltags = spark.sql(f"SELECT catalog_name, schema_name, table_name, tag_name, tag_value FROM system.information_schema.table_tags WHERE catalog_name = '{self.catalog}' AND schema_name = '{self.schema}' AND table_name = '{self.table}';")
-        
+        df_comment = spark.sql(f"SELECT comment FROM system.information_schema.tables WHERE table_catalog = '{self.catalog}' AND table_schema = '{self.schema}' AND table_name = '{self.table}';")
+    
         keys = { }
 
         for r in df_tbltags.collect():
             if "delta." in r["tag_name"]: # Ignorer delta spesifikke properties
                 continue
             keys[r["tag_name"]] = r["tag_value"]
-
+        keys["beskrivelse"] = df_comment.collect()[0]["comment"]
+        
         return TableMetadata(
             catalog=self.catalog, schema=self.schema, table=self.table, 
             beskrivelse=keys.get("beskrivelse"), tilgangsnivaa=keys.get("tilgangsnivaa"), 
