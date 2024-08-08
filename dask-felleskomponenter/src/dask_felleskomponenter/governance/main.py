@@ -1,5 +1,4 @@
 from typing import Any, List
-from pyspark.sql import SparkSession
 
 from .checks.table import validate_table
 from .checks.common import MetadataError, TableMetadata
@@ -11,6 +10,7 @@ class Metadata:
         self.table = table
     
     def get_table_metadata(self) -> TableMetadata:
+        from pyspark.sql import SparkSession
         spark = SparkSession.builder.getOrCreate()
         df_tbltags = spark.sql(f"SELECT catalog_name, schema_name, table_name, tag_name, tag_value FROM system.information_schema.table_tags WHERE catalog_name = '{self.catalog}' AND schema_name = '{self.schema}' AND table_name = '{self.table}';")
         df_comment = spark.sql(f"SELECT comment FROM system.information_schema.tables WHERE table_catalog = '{self.catalog}' AND table_schema = '{self.schema}' AND table_name = '{self.table}';")
@@ -32,6 +32,7 @@ class Metadata:
         )
     
     def get_table_column_metadata(self) -> Any: # Lage denne typen i annen oppgave
+        from pyspark.sql import SparkSession
         spark = SparkSession.builder.getOrCreate()
         df = spark.sql(f"""
                     SELECT C.*, CT.*

@@ -3,11 +3,11 @@
     "schema": "schema",
     "table": "table",
     "beskrivelse": "beskrivelse",
-    "tilgangsnivaa": "confidential",
+    "tilgangsnivaa": "Begrenset",
     "medaljongnivaa": "gull",
-    "tema": "Land use",
+    "tema": "Befolkningsfordeling",
     "begrep": "Høydedata",
     "epsg_koder": "25835",
-    "bruksomraade": "plansjøkonfliktområder",
+    "bruksomraade": "Transport - trafikk - navigasjon",
     "emneord": "bruksomraade"
 }
