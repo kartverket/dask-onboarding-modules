@@ -12,7 +12,7 @@ class Metadata:
         self.spark = spark
     
     def get_table_metadata(self) -> TableMetadata:
-        df_tbltags = self.spark.sql(f"SELECT catalog_name, schema_name, table_name, tag_name, tag_value FROM information_schema.table_tags WHERE catalog_name = '{self.catalog}' AND schema_name = '{self.schema}' AND table_name = '{self.table}';")
+        df_tbltags = self.spark.sql(f"SELECT catalog_name, schema_name, table_name, tag_name, tag_value FROM system.information_schema.table_tags WHERE catalog_name = '{self.catalog}' AND schema_name = '{self.schema}' AND table_name = '{self.table}';")
         
         keys = { }
 
