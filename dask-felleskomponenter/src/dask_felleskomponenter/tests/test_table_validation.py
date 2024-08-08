@@ -17,7 +17,7 @@ class TestValidateTable(unittest.TestCase):
         # Arrange
         gold_mock_json_data = read_file("example_table_metadata_gold.json")
         Metadata.get_table_metadata = MagicMock(return_value=TableMetadata(**gold_mock_json_data))
-        metadata = Metadata("catalog", "schema", "table", None)
+        metadata = Metadata("catalog", "schema", "table")
 
         # Act
         metadata.validate()
@@ -29,7 +29,7 @@ class TestValidateTable(unittest.TestCase):
         # Arrange
         gold_mock_json_data = read_file("example_table_metadata_gold.json")
         Metadata.get_table_metadata = MagicMock(return_value=TableMetadata(**gold_mock_json_data))
-        metadata = Metadata("catalog", "schema", "table", None)
+        metadata = Metadata("catalog", "schema", "table")
 
         # Act
         result = metadata.validate()
