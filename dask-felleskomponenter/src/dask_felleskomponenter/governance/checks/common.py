@@ -26,6 +26,11 @@ class MetadataError:
     description: str
     solution: Optional[str]
 
+def get_valid_codelist_values(kodeliste_url: str, override_kodeliste_keyword: Optional[str] = None) -> List[str]:
+    kodeliste_entry = "label" if override_kodeliste_keyword == None else override_kodeliste_keyword
+    values_res = requests.get(kodeliste_url, headers={ "Accept": "application/json" }).json()
+    valid_values = list(filter(lambda x: x != None, [x.get(kodeliste_entry, None) for x in values_res["containeditems"]]))
+    return valid_values
 
 def check_codelist_value(kodeliste_url: Optional[str], value: Any, allowed_values: Optional[List[Any]] = None, override_kodeliste_keyword: Optional[str] = None) -> bool:
     if value == None:
@@ -37,8 +42,8 @@ def check_codelist_value(kodeliste_url: Optional[str], value: Any, allowed_value
     if kodeliste_url == None:
         return value != None
 
-    kodeliste_entry = "codevalue" if override_kodeliste_keyword == None else override_kodeliste_keyword
-    values_res = requests.get(kodeliste_url, headers={ "Accept": "application/json" }).json()
-    valid_values = list(filter(lambda x: x != None, [x.get(kodeliste_entry, None) for x in values_res["containeditems"]]))
-
+    valid_values = get_valid_codelist_values(kodeliste_url, override_kodeliste_keyword)
     return value in valid_values
+
+if __name__ == "__main__":
+    check_codelist_value("https://register.geonorge.no/api/register/sikkerhetsniva", "Ugradert", None, None)
