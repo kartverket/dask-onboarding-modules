@@ -4,7 +4,7 @@ from .common import MetadataError, check_codelist_value, TableMetadata
 def _genenrate_metadata_error(catalog: str, schema: str, table: str, field: str, type: str, is_missing: bool, valid_values: Optional[str] = None):
     description = f"🔴 Feil: '{field}' mangler i table properties. Type: <{type}>"
     if valid_values != None:
-        valid_values += f" - {valid_values}"
+        description += f" - {valid_values}"
     solution = f"ALTER TABLE {catalog}.{schema}.{table} SET TBLPROPERTIES ( '{field}' = '<<SETT_{field.upper()}_HER>>')"
     return MetadataError(catalog=catalog, schema=schema, table=table, column=None, description=description, solution=solution)
 

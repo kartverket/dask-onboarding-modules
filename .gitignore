@@ -40,3 +40,7 @@ venv/*
 # dask-felleskomponenter
 **/__pycache__
 **/.coverage
+**/.venv/*
+**/build
+**/dist
+**/src/dask_felleskomponenter.egg-info
