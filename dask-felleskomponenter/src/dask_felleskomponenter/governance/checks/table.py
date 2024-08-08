@@ -49,17 +49,6 @@ def check_emneord(metadata: TableMetadata, context: List[MetadataError]) -> List
     
     return context
 
-
-# Spør thom om denne
-def check_epsg_koder(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
-    kodeliste_url = "https://register.geonorge.no/api/register/epsg-koder"
-
-    if not check_codelist_value(kodeliste_url, metadata.epsg_koder, override_kodeliste_keyword="epsgcode"):
-        valid_values = get_valid_codelist_values(kodeliste_url, "epsgcode")
-        context.append(_generate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "epsg_koder", "epsg_koder", metadata.epsg_koder == None, f"gyldige verdier: {valid_values}"))
-    
-    return context
-
 def check_bruksomraade(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
     kodeliste_url = "https://register.geonorge.no/metadata-kodelister/formal"
 
