@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 packages = setuptools.find_packages(where="src")
-print("Found packages:", packages)  # Debug print to verify packages found
+print("Found packages:", packages)  
 
 setuptools.setup(
     name="dask-felleskomponenter",
@@ -24,6 +24,11 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     package_dir={"": "src"},
-    packages=setuptools.find_packages(where="src"),
-    python_requires=">=3.7"
+    packages=packages,  # Use the variable here
+    python_requires=">=3.7",
+    install_requires=[
+        "requests",
+        "pyspark",
+        "setuptools"
+    ],
 )
