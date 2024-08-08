@@ -3,17 +3,20 @@ import setuptools
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
+packages = setuptools.find_packages(where="src")
+print("Found packages:", packages)  # Debug print to verify packages found
+
 setuptools.setup(
     name="dask-felleskomponenter",
-    version="0.0.11",
+    version="0.0.12",
     author="Dataplattform@Statens Kartverk",
     author_email="dataplattform@kartverket.no",
-    description="Felleskomponeneter for utvikling av Apache Beam pipelines",
+    description="Felleskomponenter på DASK",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/kartverket/dask-felleskomponenter",
+    url="https://github.com/kartverket/dask-modules/dask-felleskomponenter",
     project_urls={
-        "Bug Tracker": "https://github.com/kartverket/dask-felleskomponenter/issues",
+        "Bug Tracker": "https://github.com/kartverket/dask-modules/issues",
     },
     classifiers=[
         "Programming Language :: Python :: 3",
