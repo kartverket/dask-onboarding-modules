@@ -30,7 +30,8 @@ Replace the last command with `python3 -m twine upload --repository testpypi dis
 ## Run tests
 
 Use the following command
+
 ```sh
-coverage run -m unittest discover -s src/tests
+coverage run -m unittest discover -s src/dask_felleskomponenter/tests
 coverage report -m
 ```
