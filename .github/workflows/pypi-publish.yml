@@ -28,6 +28,11 @@ jobs:
           pip install -r requirements.txt
           pip install setuptools wheel twine build
 
+      - name: Configure Git
+        run: |
+          git config --local user.name "GitHub Actions"
+          git config --local user.email "actions@github.com"
+
       - name: Bump version in setup.py
         run: |
           sed -i "s/version=\"[^\"]*\"/version=\"${{ github.event.inputs.version }}\"/" setup.py
