@@ -24,7 +24,7 @@ jobs:
         run: |
           sed -i "s/version=\"[^\"]*\"/version=\"${{ github.event.inputs.version }}\"/" setup.py
           git add setup.py
-          git commit -m "Bump PyPI package version to ${{ github.event.inputs.version }}"
+          git commit -m "Bump dask-felleskomponenter PyPI package version to ${{ github.event.inputs.version }}"
           git push origin main
 
       - name: Build the package
