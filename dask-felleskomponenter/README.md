@@ -17,7 +17,7 @@ pip install -r requirements.txt
 
 ### Steps for publishing using GitHub Actions
 
-Navigate to the [Publish to PyPI](https://github.com/kartverket/dask-modules/actions/workflows/pypi-publish.yml) in GitHub Actions, choose the `main` branch and bump the version.
+Navigate to the [Publish to PyPI](https://github.com/kartverket/dask-modules/actions/workflows/pypi-publish.yml) workflow in GitHub Actions, choose the `main` branch and bump the version.
 
 One member of Team DASK needs to approve the workflow run before it starts.
 
