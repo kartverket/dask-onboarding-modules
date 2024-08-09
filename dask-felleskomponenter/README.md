@@ -1,6 +1,8 @@
 # DASK Felleskomponenter
 
-This is a repo where we make available governance components, common functions and reusable UDFs. DASK felleskomponenter is still in an early stage of the development process.
+This is a repo where we make available governance components, common functions and reusable UDFs. DASK felleskomponenter is still in an early stage of the development process. 
+
+You can find the PyPI package [here](https://pypi.org/project/dask-felleskomponenter/).
 
 ## Dependencies
 
@@ -13,7 +15,10 @@ pip install -r requirements.txt
 
 ## Bulding and publishing of package
 
-### Steps
+### Steps for publishing using GitHub Actions 
+Navigate to the [Publish to PyPI](https://github.com/kartverket/dask-modules/actions/workflows/pypi-publish.yml) in GitHub Actions, choose the `main` branch and bump the version.  
+
+### Steps for manual publishing
 
 - Remove old dist-folder, from last time you published
 - Update version in `setup.py`, for instance `0.0.7`->`0.0.8`
