@@ -1,4 +1,4 @@
-name: Build an publish Docker Image
+name: Build and publish Docker Image
 
 on:
   workflow_call:
@@ -18,7 +18,7 @@ on:
         default: "./versions"
         type: string
     outputs:
-      image_url: 
+      image_url:
         value: ${{ jobs.build.outputs.image_url }}
     secrets:
       PAT_REPO:
@@ -32,7 +32,7 @@ env:
 
 jobs:
   build:
-    name: Build container image for SKIP job
+    name: Build container image
     runs-on: ubuntu-latest
     outputs:
       image_url: ${{ steps.set_output.outputs.image_url }}
@@ -43,8 +43,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for changes in context path
+        id: check_changes
+        run: |
+          if git diff --quiet HEAD^ HEAD -- ${{ env.CONTEXT_PATH }}; then
+            echo "No changes in ${{ env.CONTEXT_PATH }}. Skipping build."
+            echo "::set-output name=skip_build::true"
+          else
+            echo "::set-output name=skip_build::false"
+          fi
 
       - name: Login to Github Container Registry
+        if: steps.check_changes.outputs.skip_build == 'false'
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
@@ -52,6 +65,7 @@ jobs:
           password: ${{ github.token }}
 
       - name: Build and push Docker image
+        if: steps.check_changes.outputs.skip_build == 'false'
         id: build-docker
         uses: docker/build-push-action@v5
         with:
@@ -61,38 +75,41 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ github.repository }}:latest
 
       - name: Checkout the repository
+        if: steps.check_changes.outputs.skip_build == 'false'
         uses: actions/checkout@v3
         with:
-            repository: kartverket/${{ env.APPS_REPO }}
-            ref: main
-            token: ${{ secrets.PAT_REPO }}
+          repository: kartverket/${{ env.APPS_REPO }}
+          ref: main
+          token: ${{ secrets.PAT_REPO }}
 
       - name: Create file
-        run: |          
-            setup_directory () {
-                DIRECTORY=${{ inputs.version_file_directory }}
-                touch $DIRECTORY/${{ inputs.version_file_name }}
-                echo "\"${{ env.REGISTRY }}/${{ github.repository }}@${{ steps.build-docker.outputs.digest }}\"" > $DIRECTORY/${{ inputs.version_file_name }} 
-            }
+        if: steps.check_changes.outputs.skip_build == 'false'
+        run: |
+          setup_directory () {
+              DIRECTORY=${{ inputs.version_file_directory }}
+              touch $DIRECTORY/${{ inputs.version_file_name }}
+              echo "\"${{ env.REGISTRY }}/${{ github.repository }}@${{ steps.build-docker.outputs.digest }}\"" > $DIRECTORY/${{ inputs.version_file_name }} 
+          }
 
-            if [[ "${{ env.BRANCH }}" == "main" ]]; then
-                setup_directory 
-            fi
+          if [[ "${{ env.BRANCH }}" == "main" ]]; then
+              setup_directory 
+          fi
 
       - name: Commit and Push Changes
+        if: steps.check_changes.outputs.skip_build == 'false'
         run: |
-            git config --global user.email "noreply@kartverket.no"
-            git config --global user.name "DASK CI"
-            git add .
-            if git diff --staged --quiet; then
+          git config --global user.email "noreply@kartverket.no"
+          git config --global user.name "DASK CI"
+          git add .
+          if git diff --staged --quiet; then
             echo "No changes to commit."
-            else
+          else
             git commit -m "Update ${{ inputs.version_file_name }}"
             git push
-            fi
+          fi
 
       - name: Set output with build values
+        if: steps.check_changes.outputs.skip_build == 'false'
         id: set_output
         run: |
           echo "image_url=${{ env.REGISTRY }}/${{ github.repository }}@${{ steps.build-docker.outputs.digest }}" >> $GITHUB_OUTPUT
-
