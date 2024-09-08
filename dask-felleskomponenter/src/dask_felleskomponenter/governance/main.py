@@ -28,7 +28,7 @@ class Metadata:
             beskrivelse=keys.get("beskrivelse"), tilgangsnivaa=keys.get("tilgangsnivaa"), 
             medaljongnivaa=keys.get("medaljongnivaa"), tema=keys.get("tema"), 
             emneord=keys.get("emneord"), epsg_koder=keys.get("epsg_koder"), 
-            bruksomraade=keys.get("bruksomraade"), begrep=keys.get("begrep")
+            bruksvilkaar=keys.get("bruksvilkaar"), begrep=keys.get("begrep")
         )
     
     def get_table_column_metadata(self) -> Any: # Lage denne typen i annen oppgave

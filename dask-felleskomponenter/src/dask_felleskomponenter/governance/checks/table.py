@@ -49,12 +49,12 @@ def check_emneord(metadata: TableMetadata, context: List[MetadataError]) -> List
     
     return context
 
-def check_bruksomraade(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
-    kodeliste_url = "https://register.geonorge.no/metadata-kodelister/formal"
+def check_Bruksvilkaar(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
+    kodeliste_url = "https://register.geonorge.no/metadata-kodelister/tilgangsrestriksjoner"
 
-    if not check_codelist_value(kodeliste_url, metadata.bruksomraade):
+    if not check_codelist_value(kodeliste_url, metadata.bruksvilkaar):
         valid_values = get_valid_codelist_values(kodeliste_url)
-        context.append(_generate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "bruksomraade", "formal", metadata.bruksomraade == None, f"gyldige verdier: {valid_values}"))
+        context.append(_generate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "bruksvilkaar", "tilgangsrestriksjoner", metadata.bruksvilkaar == None, f"gyldige verdier: {valid_values}"))
     
     return context
 
