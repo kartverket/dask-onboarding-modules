@@ -8,7 +8,7 @@ def edit_dbx_teams_output_file(file_path, params):
     
     content = f'''
     output "{project_name.lower()}_catalog_name" {{
-      value = "module.{project_name.lower()}.catalog_name"  
+      value = module.{project_name.lower()}.catalog_name  
     }}
     '''
     append_content_to_end_of_file(adjusted_file_path, content)
