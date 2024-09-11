@@ -31,6 +31,10 @@ on:
         description: "The path to the repo where the notebooks are located in Databricks."
         required: true
         type: string
+      databricks_repo_folder:
+        description: "The folder in the Databricks workspace where the notebooks are located."
+        required: true
+        type: string
       databricks_host:
         description: "The host of the Databricks workspace."
         required: true
@@ -46,6 +50,7 @@ env:
   SERVICE_ACCOUNT: ${{ inputs.service_account }}
   PROJECT_ID: ${{ inputs.project_id }}
   ENVIRONMENT: ${{ inputs.environment }}
+  DATABRICKS_REPO_FOLDER: ${{ inputs.databricks_repo_folder }}
   DATABRICKS_REPO_PATH: ${{ inputs.databricks_repo_path }}
   REPO_URL: ${{ inputs.repo_url }}
   DATABRICKS_HOST: ${{ inputs.databricks_host }}
@@ -65,7 +70,7 @@ jobs:
           PROVIDER=${OVERRIDE:-$DEFAULT_WORKLOAD_IDENTITY}
           echo "WORKLOAD_IDENTITY_PROVIDER=$PROVIDER" >> $GITHUB_OUTPUT
   deploy_databricks:
-    needs: [ setup-env ]
+    needs: [setup-env]
     name: Databricks deploy to ${{ inputs.environment }}
     runs-on: ${{ inputs.runner }}
     environment: ${{ inputs.environment }}
@@ -114,7 +119,7 @@ jobs:
       - name: Check if Databricks repo exists
         run: |
           set +e 
-          REPO_EXISTS=$(databricks workspace list /Workspace/Repos/ --output json | \
+          REPO_EXISTS=$(databricks workspace list $DATABRICKS_REPO_FOLDER --output json | \
             jq -r --arg REPO_PATH "$DATABRICKS_REPO_PATH" \
             'if . != null then (map(select(.path == $REPO_PATH)) | if length > 0 then "true" else "false" end) else "false" end')
           echo "REPO_EXISTS=$REPO_EXISTS" >> $GITHUB_ENV
