@@ -114,7 +114,7 @@ jobs:
       - name: Check if Databricks repo exists
         run: |
           set +e 
-          REPO_EXISTS=$(databricks repos list --output json | \
+          REPO_EXISTS=$(databricks workspace list /Workspace/Repos/ --output json | \
             jq -r --arg REPO_PATH "$DATABRICKS_REPO_PATH" \
             'if . != null then (map(select(.path == $REPO_PATH)) | if length > 0 then "true" else "false" end) else "false" end')
           echo "REPO_EXISTS=$REPO_EXISTS" >> $GITHUB_ENV
