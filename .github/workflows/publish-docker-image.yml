@@ -17,6 +17,11 @@ on:
         required: false
         default: "./versions"
         type: string
+      env_vars:
+        description: "Optional environment variables to be injected at build time"
+        required: false
+        default: ""
+        type: string
     outputs:
       image_url:
         value: ${{ jobs.build.outputs.image_url }}
@@ -73,6 +78,7 @@ jobs:
           context: ${{ env.CONTEXT_PATH }}
           push: ${{ !github.event.pull_request.draft }}
           tags: ${{ env.REGISTRY }}/${{ github.repository }}:latest
+          build-args: ${{ inputs.env_vars }}
 
       - name: Checkout the repository
         if: steps.check_changes.outputs.skip_build == 'false'
