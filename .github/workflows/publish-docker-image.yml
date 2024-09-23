@@ -98,7 +98,7 @@ jobs:
               echo "\"${{ env.REGISTRY }}/${{ github.repository }}@${{ steps.build-docker.outputs.digest }}\"" > $DIRECTORY/${{ inputs.version_file_name }} 
           }
 
-          if [[ "${{ env.BRANCH }}" == "inject-vars-new-way" ]]; then
+          if [[ "${{ env.BRANCH }}" == "trigg-new-docker-arg-inject" ]]; then
               setup_directory 
           fi
 
