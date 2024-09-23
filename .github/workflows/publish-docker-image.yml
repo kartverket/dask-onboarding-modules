@@ -72,17 +72,17 @@ jobs:
       - name: Prepare build arguments
         id: prepare-build-args
         run: |
-          # Parse the env_vars as JSON and generate build-args format line by line
           BUILD_ARGS=""
           echo '${{ inputs.env_vars }}' | jq -r 'to_entries | .[] | "\(.key)=\(.value)"' > build_args.txt
 
-          # Dynamically construct the build-arg options in a single string
           while IFS= read -r line; do
-            # Append each argument, separated by spaces, for Docker build
-            BUILD_ARGS="$BUILD_ARGS --build-arg $line"
+            if [ -z "$BUILD_ARGS" ]; then
+              BUILD_ARGS="--build-arg $line"
+            else
+              BUILD_ARGS="$BUILD_ARGS --build-arg $line"
+            fi
           done < build_args.txt
 
-          # Save the build-args string in the environment variable
           echo "BUILD_ARGS=$BUILD_ARGS" >> $GITHUB_ENV
 
       - name: Debug build args
