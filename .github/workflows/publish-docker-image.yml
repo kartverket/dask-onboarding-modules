@@ -73,12 +73,7 @@ jobs:
         id: prepare-build-args
         run: |
           echo "BUILD_ARGS=" >> $GITHUB_ENV
-          # Parse the env_vars as a proper JSON string
-          echo '${{ inputs.env_vars }}' | jq -r 'keys[]' | while read -r key; do
-            value=$(echo '${{ inputs.env_vars }}' | jq -r --arg key "$key" '.[$key]')
-            echo "--build-arg $key=$value" >> $GITHUB_ENV
-          done
-          echo "Final BUILD_ARGS value: $(cat $GITHUB_ENV)"
+          echo '${{ inputs.env_vars }}' | jq -r 'to_entries | .[] | "\(.key)=\(.value)"' >> $GITHUB_ENV
 
       - name: Debug build args
         run: |
