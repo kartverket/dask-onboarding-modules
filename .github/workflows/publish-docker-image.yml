@@ -78,8 +78,7 @@ jobs:
           context: ${{ env.CONTEXT_PATH }}
           push: ${{ !github.event.pull_request.draft }}
           tags: ${{ env.REGISTRY }}/${{ github.repository }}:latest
-          build-args: |
-            $(echo "${{ inputs.env_vars }}" | tr ' ' '\n' | sed 's/^/--build-arg /')
+          build-args: ${{ toJSON(inputs.env_vars) }}
 
       - name: Checkout the repository
         if: steps.check_changes.outputs.skip_build == 'false'
