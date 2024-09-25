@@ -25,7 +25,7 @@ output "uri" {
 
 # _____________________DEBUG____________________ #
 output "archive_output_path" {
-  value = data.archive_file.this.output_path
+  value = abspath(data.archive_file.this.output_path)
 }
 
 output "current_dir" {

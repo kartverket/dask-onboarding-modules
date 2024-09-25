@@ -1,6 +1,6 @@
 data "archive_file" "this" {
   type        = "zip"
-  output_path = "${path.root}/lambda-files.zip"
+  output_path = "${abspath(path.root)}/lambda-files.zip"
   source_dir  = var.function_folder_location
   excludes    = var.excludes
   output_file_mode = "0666"
@@ -9,7 +9,7 @@ data "archive_file" "this" {
 resource "google_storage_bucket_object" "this" {
   name   = "${var.name}.${data.archive_file.this.output_sha}.zip"
   bucket = var.bucket_id
-  source = data.archive_file.this.output_path
+  source = abspath(data.archive_file.this.output_path)
   detect_md5hash = base64encode(data.archive_file.this.output_md5)
 }
 
