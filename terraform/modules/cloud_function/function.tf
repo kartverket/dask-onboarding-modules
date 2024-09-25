@@ -3,7 +3,6 @@ data "archive_file" "this" {
   output_path = "${abspath(path.root)}/lambda-files.zip"
   source_dir  = var.function_folder_location
   excludes    = var.excludes
-  output_file_mode = "0666"
 }
 
 resource "google_storage_bucket_object" "this" {
