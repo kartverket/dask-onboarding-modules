@@ -72,11 +72,9 @@ jobs:
       - name: Prepare build arguments
         id: prepare-build-args
         run: |
-          # Parse the env_vars as JSON and generate key=value pairs
           BUILD_ARGS=""
           echo '${{ inputs.env_vars }}' | jq -r 'to_entries | .[] | "\(.key)=\(.value)"' > build_args.txt
 
-          # Construct the build-args string: first argument without `--build-arg`, others with it
           first=true
           while IFS= read -r line; do
             if [ "$first" = true ]; then
@@ -87,7 +85,6 @@ jobs:
             fi
           done < build_args.txt
 
-          # Save the build-args string in the environment
           echo "BUILD_ARGS=$BUILD_ARGS" >> $GITHUB_ENV
 
       - name: Debug build args
