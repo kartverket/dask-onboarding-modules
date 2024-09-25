@@ -3,12 +3,14 @@ data "archive_file" "this" {
   output_path = "${path.module}/lambda-files.zip"
   source_dir  = var.function_folder_location
   excludes    = var.excludes
+  output_file_mode = "0666"
 }
 
 resource "google_storage_bucket_object" "this" {
   name   = "${var.name}.${data.archive_file.this.output_sha}.zip"
   bucket = var.bucket_id
   source = data.archive_file.this.output_path
+  detect_md5hash = base64encode(data.archive_file.this.output_md5)
 }
 
 resource "google_cloudfunctions2_function" "this" {
