@@ -22,3 +22,16 @@ output "uri" {
   description = "The uri to reach the function"
   value       = google_cloudfunctions2_function.this.service_config[0].uri
 }
+
+# _____________________DEBUG____________________ #
+output "archive_output_path" {
+  value = data.archive_file.this.output_path
+}
+
+output "current_dir" {
+  value = abspath(path.root)
+}
+
+output "module_dir" {
+  value = abspath(path.module)
+}
