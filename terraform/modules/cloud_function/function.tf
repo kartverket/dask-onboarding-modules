@@ -1,4 +1,4 @@
-data "archive_file" "this" {
+resource "archive_file" "this" {
   type        = "zip"
   output_path = "${abspath(path.root)}/lambda-files.zip"
   source_dir  = var.function_folder_location
