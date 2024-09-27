@@ -85,9 +85,6 @@ jobs:
           done < build_args.txt
           # Save the build-args string in the environment
           echo "BUILD_ARGS=$BUILD_ARGS" >> $GITHUB_ENV
-      - name: Debug build args
-        run: |
-          echo "Build args: ${{ env.BUILD_ARGS }}"
 
       - name: Build and push Docker image
         if: steps.check_changes.outputs.skip_build == 'false'
@@ -118,7 +115,7 @@ jobs:
               echo "\"${{ env.REGISTRY }}/${{ github.repository }}@${{ steps.build-docker.outputs.digest }}\"" > $DIRECTORY/${{ inputs.version_file_name }} 
           }
 
-          if [[ "${{ env.BRANCH }}" == "trigg-new-docker-arg-inject" ]]; then
+          if [[ "${{ env.BRANCH }}" == "main" ]]; then
               setup_directory 
           fi
 
