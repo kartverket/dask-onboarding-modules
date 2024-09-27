@@ -35,3 +35,11 @@ output "current_dir" {
 output "module_dir" {
   value = abspath(path.module)
 }
+
+output "function_folder_path" {
+  value = var.function_folder_location
+}
+
+output "function_folder_abs_path" {
+  value = abspath(var.function_folder_location)
+}
