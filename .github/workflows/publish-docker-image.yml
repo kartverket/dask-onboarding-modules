@@ -69,27 +69,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-      - name: Prepare build arguments
-        id: prepare-build-args
+      - name: Convert JSON to Build Args
+        id: build_args
         run: |
-          BUILD_ARGS=""
-          echo '${{ inputs.env_vars }}' | jq -r 'to_entries | .[] | "\(.key)=\(.value)"' > build_args.txt
-
-          first=true
-          while IFS= read -r line; do
-            if [ "$first" = true ]; then
-              BUILD_ARGS="$line"
-              first=false
-            else
-              BUILD_ARGS="$BUILD_ARGS --build-arg $line"
-            fi
-          done < build_args.txt
-
-          echo "BUILD_ARGS=$BUILD_ARGS" >> $GITHUB_ENV
-
-      - name: Debug build args
-        run: |
-          echo "Build args: ${{ env.BUILD_ARGS }}"
+          echo "${{ inputs.env_vars }}" | jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' > build-args.txt
 
       - name: Build and push Docker image
         if: steps.check_changes.outputs.skip_build == 'false'
@@ -100,7 +83,8 @@ jobs:
           context: ${{ env.CONTEXT_PATH }}
           push: ${{ !github.event.pull_request.draft }}
           tags: ${{ env.REGISTRY }}/${{ github.repository }}:latest
-          build-args: ${{ env.BUILD_ARGS }}
+          build-args: |
+            ${{ steps.build_args.outputs.build_args }}
 
       - name: Checkout the repository
         if: steps.check_changes.outputs.skip_build == 'false'
