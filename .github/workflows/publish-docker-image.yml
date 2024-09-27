@@ -74,10 +74,8 @@ jobs:
         run: |
           echo '${{ inputs.env_vars }}' | jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' > build-args.txt
           build_args=$(cat build-args.txt)
-          echo "::set-output name=build_args::$build_args"
-          shell: bash
-          outputs:
-            build_args: ${{ steps.build_args.outputs.build_args }}
+          echo "build_args=$build_args" >> $GITHUB_ENV
+        shell: bash
 
       - name: Build and push Docker image
         if: steps.check_changes.outputs.skip_build == 'false'
