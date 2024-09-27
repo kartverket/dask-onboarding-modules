@@ -18,7 +18,7 @@ on:
         default: "./versions"
         type: string
       env_vars:
-        description: "Optional environment variables to be injected at build time"
+        description: "Optional environment variables (JSON) to be injected at build time"
         required: false
         default: ""
         type: string
@@ -69,6 +69,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
+      - name: Prepare build arguments
+        id: prepare-build-args
+        run: |
+          BUILD_ARGS=""
+          echo '${{ inputs.env_vars }}' | jq -r 'to_entries | .[] | "\(.key)=\(.value)"' > build_args.txt
+          first=true
+          while IFS= read -r line; do
+            if [ "$first" = true ]; then
+              BUILD_ARGS="$line"
+              first=false
+            else
+              BUILD_ARGS="$BUILD_ARGS --build-arg $line"
+            fi
+          done < build_args.txt
+          # Save the build-args string in the environment
+          echo "BUILD_ARGS=$BUILD_ARGS" >> $GITHUB_ENV
+
       - name: Build and push Docker image
         if: steps.check_changes.outputs.skip_build == 'false'
         id: build-docker
@@ -78,7 +95,8 @@ jobs:
           context: ${{ env.CONTEXT_PATH }}
           push: ${{ !github.event.pull_request.draft }}
           tags: ${{ env.REGISTRY }}/${{ github.repository }}:latest
-          build-args: ${{ inputs.env_vars }}
+          build-args: |
+            ${{ env.BUILD_ARGS }}
 
       - name: Checkout the repository
         if: steps.check_changes.outputs.skip_build == 'false'
