@@ -18,7 +18,7 @@ on:
         default: "./versions"
         type: string
       env_vars:
-        description: "Optional environment variables to be injected at build time"
+        description: "Optional environment variables (JSON) to be injected at build time"
         required: false
         default: ""
         type: string
@@ -72,7 +72,7 @@ jobs:
       - name: Convert JSON to Build Args
         id: build_args
         run: |
-          echo "${{ inputs.env_vars }}" | jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' > build-args.txt
+          echo '${{ inputs.env_vars }}' | jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' > build-args.txt
 
       - name: Build and push Docker image
         if: steps.check_changes.outputs.skip_build == 'false'
