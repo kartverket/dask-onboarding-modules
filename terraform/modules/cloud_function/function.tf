@@ -1,6 +1,6 @@
 resource "archive_file" "this" {
   type        = "zip"
-  output_path = "${abspath(path.root)}/lambda-files.zip"
+  output_path = "${abspath(path.root)}/terraform_created_zip/${var.name}/lambda-files.zip"
   source_dir  = var.function_folder_location
   excludes    = var.excludes
 }
