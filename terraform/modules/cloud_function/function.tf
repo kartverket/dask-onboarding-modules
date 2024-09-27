@@ -6,10 +6,10 @@ resource "archive_file" "this" {
 }
 
 resource "google_storage_bucket_object" "this" {
-  name   = "${var.name}.${data.archive_file.this.output_sha}.zip"
+  name   = "${var.name}.${archive_file.this.output_sha}.zip"
   bucket = var.bucket_id
-  source = abspath(data.archive_file.this.output_path)
-  detect_md5hash = base64encode(data.archive_file.this.output_md5)
+  source = abspath(archive_file.this.output_path)
+  detect_md5hash = base64encode(archive_file.this.output_md5)
 }
 
 resource "google_cloudfunctions2_function" "this" {
