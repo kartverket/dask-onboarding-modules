@@ -19,7 +19,11 @@ def append_content_to_end_of_file(file_path: str, content: str) -> None:
     with open(file_path) as file:
         lines = file.readlines()
         file.close()
-        lines.insert(len(lines), content)
+        
+        if lines and not lines[-1].endswith('\n'):
+            lines[-1] += '\n'
+
+        lines.insert(len(lines), '\n' + content)
 
         with open(file_path, 'w') as file:
             file.writelines(lines)
