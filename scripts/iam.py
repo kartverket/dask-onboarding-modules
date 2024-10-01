@@ -5,7 +5,7 @@ from common import replace_special_characters
 
 def find_line_ref_local_teams(lines: List[str]) -> int:
     for (row, idx) in zip(lines, range(len(lines))):
-        if row.startswith('  teams_v2 = {'):
+        if row.startswith('  products_v2 = {'):
             return idx
         
 

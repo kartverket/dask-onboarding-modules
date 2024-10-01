@@ -36,7 +36,6 @@ env:
   AUTH_PROJECT_NUMBER: ${{ inputs.auth_project_number }}
   SERVICE_ACCOUNT: ${{ inputs.service_account }}
 
-
 jobs:
   create_and_clone_repo:
     runs-on: ubuntu-latest
@@ -79,11 +78,11 @@ jobs:
           echo "git status: $(git status)"
           echo "git push"
           git push -u origin main
-          
+
   send_success_message_to_pubsub:
     needs: create_and_clone_repo
     uses: ./.github/workflows/publish-message-pubsub.yml
-    permissions: 
+    permissions:
       id-token: write
     with:
       auth_project_number: ${{ inputs.auth_project_number }}
@@ -91,6 +90,3 @@ jobs:
       team_name: ${{ inputs.team_name }}
       params: ${{ inputs.script_params }}
       step_id: setup-ingestor
-
-
-
