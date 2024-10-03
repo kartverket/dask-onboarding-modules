@@ -28,7 +28,7 @@ def check_tilgangsnivaa(metadata: TableMetadata, context: List[MetadataError]) -
     return context
 
 def check_medaljongnivaa(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
-    valid_values = ["Bronze", "Silver", "Gold"]
+    valid_values = ["bronze", "silver", "gold"]
     if not check_codelist_value(None, metadata.medaljongnivaa, valid_values):
         context.append(_generate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "medaljongnivaa", "valør", metadata.medaljongnivaa == None, f"gyldige verdier: {valid_values}"))
     
