@@ -37,3 +37,15 @@ class TestValidateTable(unittest.TestCase):
         # Assert
         self.assertListEqual(result, [])
 
+    def test_validate_succeeds_with_correct_set_of_gold_metadata_and_additional_optional_field(self):
+        # Arrange
+        gold_mock_json_data = read_file("example_table_metadata_gold.json")
+        gold_mock_json_data["optional"] = "value"
+        Metadata.get_table_metadata = MagicMock(return_value=TableMetadata(**gold_mock_json_data))
+        metadata = Metadata("catalog", "schema", "table")
+
+        # Act
+        result = metadata.validate()
+
+        # Assert
+        self.assertListEqual(result, [])
