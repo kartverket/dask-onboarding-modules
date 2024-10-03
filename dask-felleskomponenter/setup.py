@@ -7,7 +7,7 @@ packages = setuptools.find_packages(where="src")
 
 setuptools.setup(
     name="dask-felleskomponenter",
-    version="0.0.23",
+    version="0.0.24",
     author="Dataplattform@Statens Kartverk",
     author_email="dataplattform@kartverket.no",
     description="Felleskomponenter på DASK",
@@ -27,7 +27,6 @@ setuptools.setup(
     python_requires=">=3.7",
     install_requires=[
         "requests",
-        "pyspark",
         "setuptools"
     ],
 )
