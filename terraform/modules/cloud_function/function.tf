@@ -27,8 +27,9 @@ resource "google_cloudfunctions2_function" "this" {
   lifecycle { ignore_changes = [build_config[0].source[0].storage_source[0].generation, build_config[0].docker_repository] }
 
   build_config {
-    runtime     = var.runtime
-    entry_point = var.entry_point
+    runtime         = var.runtime
+    entry_point     = var.entry_point
+    service_account = var.service_account_email
 
     source {
       storage_source {
