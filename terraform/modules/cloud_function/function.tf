@@ -11,6 +11,12 @@ resource "google_storage_bucket_object" "this" {
   source = data.archive_file.this.output_path
 }
 
+resource "google_project_iam_member" "cloud_build" {
+  project = var.project
+  role    = "roles/cloudbuild.builds.builder"
+  member  = "serviceAccount:${var.service_account_email}"
+}
+
 resource "google_cloudfunctions2_function" "this" {
   name        = var.name
   location    = var.location
@@ -42,6 +48,7 @@ resource "google_cloudfunctions2_function" "this" {
     all_traffic_on_latest_revision = var.all_traffic_on_latest_revision
     service_account_email          = var.service_account_email
   }
+  depends_on = [google_project_iam_member.cloud_build]
 }
 
 resource "google_cloudfunctions2_function_iam_member" "invoker" {
