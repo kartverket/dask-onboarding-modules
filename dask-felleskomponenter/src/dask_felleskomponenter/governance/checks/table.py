@@ -85,7 +85,7 @@ def validate_table(metadata: TableMetadata) -> List[MetadataError]:
 
     return validation_context
 
-def get_mandatory_metadta_for_medaljongnivaa(medaljongnivaa: str):
+def get_mandatory_metadata_for_medaljongnivaa(medaljongnivaa: str):
     metadata_dict = { }
     
     for check in checks_for_valor[medaljongnivaa]:
