@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 import requests
 
-@dataclass
+@dataclass(init=False)
 class TableMetadata:
     catalog: Optional[str] = field(default=None)
     schema: Optional[str] = field(default=None)
@@ -12,10 +12,21 @@ class TableMetadata:
     tilgangsnivaa: Optional[str] = field(default=None)
     medaljongnivaa: Optional[str] = field(default=None)
     tema: Optional[str] = field(default=None)
-    emneord: Optional[str] = field(default=None)    
+    emneord: Optional[str] = field(default=None)
     epsg_koder: Optional[str] = field(default=None)
-    bruksomraade: Optional[str] = field(default=None)
     begrep: Optional[str] = field(default=None)
+    bruksvilkaar: Optional[str] = field(default=None)
+
+    optional_params: Dict[str, Any] = field(default_factory=dict)
+
+    def __init__(self, **kwargs):
+        self.optional_params = {}
+        for field_name in self.__dataclass_fields__:
+            if field_name != 'optional_params':
+                setattr(self, field_name, kwargs.get(field_name, None))
+        for key, value in kwargs.items():
+            if key not in self.__dataclass_fields__ and "delta." not in key:
+                self.optional_params[key] = value
 
 @dataclass
 class MetadataError:
@@ -25,6 +36,8 @@ class MetadataError:
     column: Optional[str]
     description: str
     solution: Optional[str]
+    for_field: str
+    valid_values: str | List[str]
 
 def get_valid_codelist_values(kodeliste_url: str, override_kodeliste_keyword: Optional[str] = None) -> List[str]:
     kodeliste_entry = "label" if override_kodeliste_keyword == None else override_kodeliste_keyword

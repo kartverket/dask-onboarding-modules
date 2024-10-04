@@ -2,5 +2,5 @@ build
 twine
 coverage
 requests
-pyspark
+databricks-connect
 setuptools
