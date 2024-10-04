@@ -36,6 +36,8 @@ class MetadataError:
     column: Optional[str]
     description: str
     solution: Optional[str]
+    for_field: str
+    valid_values: str | List[str]
 
 def get_valid_codelist_values(kodeliste_url: str, override_kodeliste_keyword: Optional[str] = None) -> List[str]:
     kodeliste_entry = "label" if override_kodeliste_keyword == None else override_kodeliste_keyword
