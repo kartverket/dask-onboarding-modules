@@ -42,11 +42,6 @@ resource "google_cloudfunctions2_function" "cloud_function" {
     ingress_settings      = var.ingress_settings
     service_account_email = var.service_account_email
   }
-
-  depends_on = [
-    google_project_iam_member.cloud_build_function_access,
-    google_project_iam_member.cloud_build_storage_access
-  ]
 }
 
 # Grant permissions for invoking the function
