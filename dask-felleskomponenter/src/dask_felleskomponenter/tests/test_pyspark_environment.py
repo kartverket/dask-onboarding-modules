@@ -1,7 +1,12 @@
 import time
 import traceback
-from sedona.spark import *
 
+from sedona.spark import *
+import pyspark.sql.functions as f
+from pyspark.sql import SparkSession
+
+# Get active SparkSession
+spark = SparkSession.getActiveSession()
 
 # Test functions
 def test_numpy():
@@ -120,8 +125,6 @@ def test_spark():
 
 
 def test_pyspark_sedona():
-    import pyspark.sql.functions as f
-
     # Create a coordinate (longitude, latitude)
     point = [(10.75, 59.9167)]  # Oslo, Norway
     # Create a DataFrame with coordinate columns containing the point
@@ -171,8 +174,6 @@ def test_spark_numpy():
 
 
 def test_sedona_kepler_pydeck():
-    import pyspark.sql.functions as f
-
     # Create a Point geometry (longitude, latitude)
     point = [(10.75, 59.9167)]  # Oslo, Norway
     # Create a DataFrame from the point
