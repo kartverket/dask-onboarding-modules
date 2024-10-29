@@ -11,29 +11,3 @@ spec:
   lifecycle: "production"
   owner: "dataplattform"
   system: "dataplattformtjenester"
----
-apiVersion: "backstage.io/v1alpha1"
-kind: "Group"
-metadata:
-  name: "security_champion_dask-modules"
-  title: "Security Champion dask-modules"
-spec:
-  type: "security_champion"
-  parent: "it_security_champions"
-  members:
-  - "augustdahl"
-  children:
-  - "resource:dask-modules"
----
-apiVersion: "backstage.io/v1alpha1"
-kind: "Resource"
-metadata:
-  name: "dask-modules"
-  links:
-  - url: "https://github.com/kartverket/dask-modules"
-    title: "dask-modules på GitHub"
-spec:
-  type: "repo"
-  owner: "security_champion_dask-modules"
-  dependencyOf:
-  - "component:dask-modules"
