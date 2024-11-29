@@ -1,70 +1,81 @@
 import sys
 import json
+
 from common import replace_special_characters, append_content_to_end_of_file
 
-def edit_dbx_teams_output_file(file_path, params):
-    adjusted_file_path: str = file_path.replace("main.tf", "outputs.tf")
+TF_FOLDERS = {"dev": "dev", "prod": "prod_v2"}
+
+
+def edit_common_output_file(filepath: str, params: dict):
+    tf_output_file_path: str = f'{filepath}/modules_v2/common/output.tf'
     project_name: str = params.get("project_name")
-    
+
     content = f'''
-    output "{project_name.lower()}_catalog_name" {{
-      value = module.{project_name.lower()}.catalog_name  
-    }}
-    '''
-    append_content_to_end_of_file(adjusted_file_path, content)
-    
+    output "{project_name.lower()}" {{
+      value = local.{project_name.lower()}
+    }}'''
 
-def edit_dbx_teams_file(filepath, params):
+    append_content_to_end_of_file(tf_output_file_path, content)
+
+
+def edit_ws_configure_file(filepath: str, params: dict):
     project_name: str = params.get("project_name")
 
-    ad_group_name: str = params["ad_groups"][0]
-    area_name: str = params["area_name"]
     project_id_map: dict = params["gcp_project_ids"]
 
-    # Define the new team data
-    new_team_data = generate_module_definition(ad_group_name, area_name, project_name, project_id_map)
+    for env, tf_folder in TF_FOLDERS.items():
+        tf_ws_configure_filepath = f'{filepath}/{tf_folder}/4_workspace_configure.tf'
+        # Define the new team data
+        new_team_data = generate_module_definition(project_name, project_id_map, env)
 
-    append_content_to_end_of_file(filepath, new_team_data)
+        append_content_to_end_of_file(tf_ws_configure_filepath, new_team_data)
 
-def generate_module_definition(ad_group_name: str, area_name: str, project_name: str, project_id_map: dict) -> str: 
-    area_special_chars_replaced = replace_special_characters(area_name)
+
+def generate_module_definition(project_name: str, project_id_map: dict, env: str) -> str:
     module = f'''
     module "{project_name.lower()}" {{
-      source = "../dbx_team_resources"
+      source = "../modules_v2/dbx_team_resources"
 
-      ad_group_name = "AAD - TF - TEAM - {ad_group_name}"
-      team_name     = "{project_name.lower()}"
-      area_name     = "{area_special_chars_replaced.lower()}"
-      deploy_sa_map = {{
-        sandbox = "{project_name.lower()}-deploy@{project_id_map['sandbox']}.iam.gserviceaccount.com",
-        dev     = "{project_name.lower()}-deploy@{project_id_map['dev']}.iam.gserviceaccount.com",
-        prod    = "{project_name.lower()}-deploy@{project_id_map['prod']}.iam.gserviceaccount.com"
-      }}
-      projects = {{
-        sandbox = "{project_id_map['sandbox']}",
-        dev     = "{project_id_map['dev']}",
-        prod    = "{project_id_map['prod']}",
-      }}
-        
-      marketplace_sa_map = local.marketplace_sa_map
-        
+      team                    = module.common.{project_name.lower()}
+      team_deploy_sa          = "{project_name.lower()}-deploy@{project_id_map[env]}.iam.gserviceaccount.com"
+      project_id              = "{project_id_map[env]}"
+      common_users_and_groups = local.common_users_and_groups
+      config                  = local.config
+    
       providers = {{
         databricks.accounts   = databricks.accounts
         databricks.workspace  = databricks.workspace
         google.global_storage = google.global_storage
       }}
+    }}'''
 
-      metastore_id              = var.metastore_id
-      workspace_id              = var.workspace_id
-      workspace_env             = var.workspace_env
-      env                       = var.env
-      all_users_group_id        = var.all_users_group_id
-      product_teams_group_id    = var.product_teams_group_id
-      compute_sa_teams_group_id = var.compute_sa_teams_group_id
+    return module
+
+
+def edit_common_teams_file(filepath: str, params: dict):
+    tf_teams_file_path: str = f'{filepath}/modules_v2/common/teams.tf'
+    ad_group_name: str = params["ad_groups"][0]
+    project_name: str = params.get("project_name")
+    area_name: str = params["area_name"]
+    area_special_chars_replaced = replace_special_characters(area_name)
+
+    team_content = f'''
+    {project_name.lower()} = {{
+      ad_group_name = "AAD - TF - TEAM - {ad_group_name}"
+      team_name     = "{project_name.lower()}"
+      area_name     = "{area_special_chars_replaced.lower()}"
     }}
     '''
 
-    return module
+    with open(tf_teams_file_path, 'r') as file:
+        content = file.read()
+
+    index = content.rindex("}\n")
+
+    new_content = ''.join([content[:index], team_content, content[index:]])
+
+    with open(tf_teams_file_path, 'w') as file:
+        file.write(new_content)
 
 
 if __name__ == "__main__":
@@ -76,5 +87,6 @@ if __name__ == "__main__":
     json_str = sys.argv[2]
     params = json.loads(json_str)
 
-    edit_dbx_teams_file(file_path, params)
-    edit_dbx_teams_output_file(file_path, params)
+    edit_ws_configure_file(file_path, params)
+    edit_common_output_file(file_path, params)
+    edit_common_teams_file(file_path, params)

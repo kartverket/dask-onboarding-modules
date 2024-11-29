@@ -2,7 +2,7 @@ import json
 import sys
 from common import replace_special_characters
 
-envs = ["sandbox", "dev", "prod"]
+envs = ["dev", "prod"]
 
 def should_keep_line(line: str) -> bool:
     lines_to_keep = ["databricks_workspace_url", "environment"]
@@ -37,17 +37,6 @@ def update_state_bucket(monorepo_folder_path: str, env: str, val_for_env: str) -
         file.close()
 
 
-def copy_and_paste_github_deploy_workflow(file_path: str, env: str):
-    workflows_path = f'{file_path}/.github/workflows'
-    
-    with open(f'{workflows_path}/deploy-sandbox.yml') as file:
-        lines = file.readlines()
-        file.close()
-
-        with open(f'{workflows_path}/deploy-{env}.yml', 'w') as file:
-            file.writelines(lines)
-            file.close()
-
 def update_databricks_config(file_path: str, area_name: str, project_name: str):
     config_path = f'{file_path}/src/databricks/config.py'
     
@@ -75,25 +64,40 @@ def clear_codeowners(file_path: str, team_name: str):
             file.close()
 
 
-def configure_github_deploy_workflow(file_path: str, env: str, project_name: str, project_id: str, project_number: str, host: str):
+def clear_catalog_info(file_path: str, team_name: str, project_name: str):
+    cataloginfo_path = f'{file_path}/catalog-info.yaml'
+
+    with open(cataloginfo_path, 'r') as file:
+        file_content = file.read()
+        file_content = file_content.replace("dask-monorepo-reference-setup", f'{project_name.lower()}-data-ingestor')
+        file_content = file_content.replace("augustdahl", "<<enter security champion (@username) here>>")
+        file_content = file_content.replace("dataplattform", team_name)
+        file.close()
+
+        with open(cataloginfo_path, 'w') as file_out:
+            file_out.write(file_content)
+            file_out.close()
+
+
+def configure_github_deploy_workflow(file_path: str, env: str, project_name: str, project_id: str, project_number: str):
     workflows_path = f'{file_path}/.github/workflows'
 
-    sa_to_replace = "dataplattform-deploy@dataprodukter-sandbox-4413.iam.gserviceaccount.com"
-    project_number_to_replace = "364051313161"
-    project_id_to_replace = "dataprodukter-sandbox-4413.iam.gserviceaccount.com"
+    sa_to_replace = {
+        "dev": "dataplattform-deploy@dataprodukter-dev-5daa.iam.gserviceaccount.com",
+        "prod": "dataplattform-deploy@dataprodukter-prod-d62f.iam.gserviceaccount.com"
+    }
+    project_number_to_replace = {
+        "dev": "167289175624",
+        "prod": "220770510673"
+    }
     repo_to_replace = "dask-monorepo-reference-setup"
     project_name_to_replace = "dataprodukter"
-    env_to_replace = "sandbox"
-    host_to_replace = "https://3127021269182225.5.gcp.databricks.com"
 
     replacement_tuples = [
-        (project_number_to_replace, project_number),
-        (sa_to_replace, f'{project_name.lower()}-deploy@{project_id}.iam.gserviceaccount.com'),
-        (project_id_to_replace, project_id),
+        (project_number_to_replace[env], project_number),
+        (sa_to_replace[env], f'{project_name.lower()}-deploy@{project_id}.iam.gserviceaccount.com'),
         (repo_to_replace, f'{project_name.lower()}-data-ingestor'),
         (project_name_to_replace, project_name.lower()),
-        (env_to_replace, env),
-        (host_to_replace, host)
     ]
     
     with open(f'{workflows_path}/deploy-{env}.yml') as file:
@@ -113,18 +117,9 @@ def edit_file(file_path, json_obj):
     area_name: str = replace_special_characters(json_obj.get("area_name"))
     project_name: str = json_obj.get("project_name")
 
-    host_url_map = {
-        "sandbox": "https://3127021269182225.5.gcp.databricks.com",
-        "dev": "https://519194143571414.4.gcp.databricks.com",
-        "prod": "https://3428319462519584.4.gcp.databricks.com"
-    }
-
     clear_codeowners(file_path, team_name)
     update_databricks_config(file_path, area_name, project_name)
-
-    # Setup github actions files to be used later
-    for env in envs:
-        copy_and_paste_github_deploy_workflow(file_path, env)
+    clear_catalog_info(file_path, team_name, project_name)
 
     for env in envs:
         state_bucket_for_env = json_obj.get("gcp_state_buckets")[env]
@@ -134,8 +129,7 @@ def edit_file(file_path, json_obj):
         auth_project_number_for_env = json_obj.get("gcp_auth_numbers")[env]
         update_tfvar_file(file_path, env, project_name, project_id_for_env, auth_project_number_for_env)
 
-        host_for_env = host_url_map[env]
-        configure_github_deploy_workflow(file_path, env, project_name, project_id_for_env, auth_project_number_for_env, host_for_env)
+        configure_github_deploy_workflow(file_path, env, project_name, project_id_for_env, auth_project_number_for_env)
 
 
 if __name__ == "__main__":
@@ -149,4 +143,3 @@ if __name__ == "__main__":
 
     edit_file(file_path, json_obj)
 
-# python data_ingestor_update.py './dask-monorepo-reference-setup' '{ "team_name": "TestTeam", "area_name": "TestAvd", "project_id_sandbox": "project-sandbox", "project_id_dev": "project-dev", "project_id_test": "project-test", "project_id_prod": "project-prod", "auth_project_number_sandbox": "auth_project_number-sandbox", "auth_project_number_dev": "auth_project_number-dev", "auth_project_number_test": "auth_project_number-test", "auth_project_number_prod": "auth_project_number-prod", "state_bucket_sandbox": "state_bucket-sandbox", "state_bucket_dev": "state_bucket-dev", "state_bucket_test": "state_bucket-test", "state_bucket_prod": "state_bucket-prod" }'
