@@ -11,7 +11,7 @@ class TableMetadata:
     beskrivelse: Optional[str] = field(default=None)
     tilgangsnivaa: Optional[str] = field(default=None)
     medaljongnivaa: Optional[str] = field(default=None)
-    tema: Optional[str] = field(default=None)
+    hovedkategori: Optional[str] = field(default=None)
     emneord: Optional[str] = field(default=None)
     epsg_koder: Optional[str] = field(default=None)
     begrep: Optional[str] = field(default=None)

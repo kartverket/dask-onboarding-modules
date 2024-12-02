@@ -5,8 +5,8 @@
     "beskrivelse": "beskrivelse",
     "tilgangsnivaa": "Begrenset",
     "medaljongnivaa": "gold",
-    "tema": "Befolkningsfordeling",
-    "begrep": "Høydedata",
+    "hovedkategori": "Basisdata",
+    "begrep": "Landskap",
     "epsg_koder": "25835",
     "emneord": "bruksomraade",
     "bruksvilkaar": "Åpne data"
