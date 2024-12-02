@@ -39,7 +39,7 @@ def check_hovedkategori(metadata: TableMetadata, context: List[MetadataError]) -
 
     if not check_codelist_value(kodeliste_url, metadata.hovedkategori):
         valid_values = get_valid_codelist_values(kodeliste_url)
-        context.append(_generate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "hovedkategori", "hovedkategori", metadata.tema == None, f"gyldige verdier: {valid_values}", valid_values=valid_values))
+        context.append(_generate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "hovedkategori", "hovedkategori", metadata.hovedkategori == None, f"gyldige verdier: {valid_values}", valid_values=valid_values))
     
     return context
 
