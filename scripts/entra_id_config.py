@@ -1,39 +1,48 @@
-import json
 import sys
-from common import append_content_to_end_of_file, replace_special_characters
+import yaml
+
+def read_yaml_file(file):
+    with open(file, 'r') as f:
+        yaml_data=yaml.safe_load(f)
+    return yaml_data
+
+def modify_yaml_with_params(data: dict, params: dict):
+    
+    area_name = params.get("area_name")
+    team_name = params.get("team_name")
+    team_lead = params.get("team_lead")
 
 
-def create_team_entraid_modul(team_name: str, product_area: str, team_lead: str) -> str:
-    entraid_modul = f'''
-    module "{"_".join(team_name.lower().split())}" {{
-        source    = "./modules/team"
-        team_name = "{team_name}"
-        parent_group_object_id = module.{product_area.lower()}.business_unit_object_id
-        team_lead              = "{team_lead}"
-        azuread_variables      = module.azuread_variables
-        enable_databricks      = true
-    }}
-    '''
+    newteamdata = {
+        area_name: {
+            "name": area_name.title(),
+            "teams": {
+                team_name: {
+                    "enable_databricks": True,
+                    "name": team_name.title(),
+                    "team_lead": team_lead,
+                }
+            }
+        }
+    }
 
-    return entraid_modul
+    
+    for key, value in newteamdata.items():
+        if key in data:
+            print(key)
+            data[key]["teams"].update(value["teams"])
+        else:
+            data.update(value)
 
-
-def edit_file(file_path: str, params: str):
-    team_name: str = params.get("team_name")
-    product_area: str = replace_special_characters(params.get("product_area"))
-    team_lead: str = params.get("team_lead")
-
-    team_entraid_config = create_team_entraid_modul(team_name, product_area, team_lead)
-    append_content_to_end_of_file(file_path + f'/{product_area.lower()}.tf', team_entraid_config)
-
+    return data
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
+    if len(sys.argv) < 2:
         print("Usage: python script.py <file_path> <json_object>")
         sys.exit(1)
 
     file_path = sys.argv[1]
-    json_str = sys.argv[2]
-    params = json.loads(json_str)
-
-    edit_file(file_path, params)
+    params = {"area_name": "land", "project_name": "team_test", "shouldCreateNewTeam": True,"team_lead": "test.testesen@kartverket.no", "team_name": "TeamTest"}
+    
+    data = modify_yaml_with_params(read_yaml_file(sys.argv[1]), params)
+    print(yaml.dump(data))
