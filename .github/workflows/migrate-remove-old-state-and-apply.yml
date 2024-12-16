@@ -134,7 +134,7 @@ jobs:
       # Run terraform destroy on push to main if 'destroy' is set to true
       - name: Terraform remove old state
         run: |
-          terraform state list | grep databricks_ | while IFS= read -r resource; do terraform state rm "$resource" done
+          terraform state list | grep databricks_ | while IFS= read -r resource; do terraform state rm "$resource"; done
 
       - name: Run Terraform apply into new workspace
         run: terraform apply -input=false -auto-approve=true ${TF_OPTION_1:+"$TF_OPTION_1"}
