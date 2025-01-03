@@ -19,7 +19,7 @@ resource "google_storage_bucket_object" "function_source" {
 }
 ##########
 
-########## Cloud Function
+########## Cloud Function necessary permissions
 resource "google_cloudfunctions2_function" "function" {
   name     = "${var.name}-function"
   location = var.region
@@ -38,9 +38,17 @@ resource "google_cloudfunctions2_function" "function" {
     service_account_email = var.service_account_email
   }
 }
+
+resource "google_cloud_run_service_iam_member" "scheduler_invoker" {
+  project  = var.project_id
+  location = google_cloudfunctions2_function.function.location
+  service  = google_cloudfunctions2_function.function.name
+  role     = "roles/run.invoker"
+  member   = "serviceAccount:${var.service_account_email}"
+}
 ##########
 
-########## Scheduler and necessary permissions
+########## Cloud Scheduler Job
 resource "google_cloud_scheduler_job" "job" {
   name        = "${var.name}-scheduler-job"
   schedule    = var.schedule
@@ -53,13 +61,5 @@ resource "google_cloud_scheduler_job" "job" {
       service_account_email = var.service_account_email
     }
   }
-}
-
-resource "google_cloud_run_service_iam_member" "scheduler_invoker" {
-  project  = var.project_id
-  location = google_cloudfunctions2_function.function.location
-  service  = google_cloudfunctions2_function.function.name
-  role     = "roles/run.invoker"
-  member   = "serviceAccount:${var.service_account_email}"
 }
 ##########
