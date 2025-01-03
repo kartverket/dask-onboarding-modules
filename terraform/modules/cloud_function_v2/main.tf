@@ -1,4 +1,4 @@
-########## Source code bucket and object
+########## Google Storage Bucket and bucket object for the Cloud Function source code
 resource "google_storage_bucket" "source_bucket" {
   name                        = "gcf-${var.name}-${var.project_id}"
   location                    = var.region
@@ -19,7 +19,7 @@ resource "google_storage_bucket_object" "function_source" {
 }
 ##########
 
-########## Cloud Function necessary permissions
+########## Cloud Function and necessary permissions
 resource "google_cloudfunctions2_function" "function" {
   name     = "${var.name}-function"
   location = var.region
