@@ -25,7 +25,7 @@ resource "google_cloudfunctions2_function" "function" {
   location = var.region
   build_config {
     entry_point = "main"
-    runtime     = "python310"
+    runtime     = var.runtime
     source {
       storage_source {
         bucket = google_storage_bucket.source_bucket.name
