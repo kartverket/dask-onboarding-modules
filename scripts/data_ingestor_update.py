@@ -12,7 +12,7 @@ def should_keep_line(line: str) -> bool:
     
     return False
 
-def update_tfvar_file(monorepo_folder_path: str, env: str, project_name: str, project_id: str, project_number: str):
+def update_tfvar_file(monorepo_folder_path: str, env: str, project_name: str, project_id: str, project_number: str, area_name: str) -> None:
     tfvars_path = f'{monorepo_folder_path}/terraform/variables/{env}.tfvars'
     
     with open(tfvars_path) as file:
@@ -25,6 +25,8 @@ def update_tfvar_file(monorepo_folder_path: str, env: str, project_name: str, pr
         lines.insert(0, f'deploy_service_account = "{project_name.lower()}-deploy@{project_id}.iam.gserviceaccount.com"\n')
         lines.insert(0, f'project_number = "{project_number}"\n')
         lines.insert(0, f'project_id = "{project_id}"\n')
+        lines.insert(0, f'area_name = "{area_name}"\n')
+        lines.insert(0, f'team_name = "{project_name.lower()}"\n')
 
         with open(tfvars_path, 'w') as file:
             file.writelines(lines)
@@ -127,7 +129,8 @@ def edit_file(file_path, json_obj):
 
         project_id_for_env = json_obj.get("gcp_project_ids")[env]
         auth_project_number_for_env = json_obj.get("gcp_auth_numbers")[env]
-        update_tfvar_file(file_path, env, project_name, project_id_for_env, auth_project_number_for_env)
+        area_name = json_obj.get("area_name")
+        update_tfvar_file(file_path, env, project_name, project_id_for_env, auth_project_number_for_env, area_name)
 
         configure_github_deploy_workflow(file_path, env, project_name, project_id_for_env, auth_project_number_for_env)
 
