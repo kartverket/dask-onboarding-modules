@@ -49,12 +49,12 @@ def check_emneord(metadata: TableMetadata, context: List[MetadataError]) -> List
     
     return context
 
-def check_bruksvilkaar(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
-    kodeliste_url = "https://register.geonorge.no/metadata-kodelister/tilgangsrestriksjoner"
+def check_Sikkerhetsnivaa(metadata: TableMetadata, context: List[MetadataError]) -> List[MetadataError]:
+    kodeliste_url = "https://register.geonorge.no/metadata-kodelister/sikkerhetsniva"
 
-    if not check_codelist_value(kodeliste_url, metadata.bruksvilkaar):
+    if not check_codelist_value(kodeliste_url, metadata.sikkerhetsnivaa):
         valid_values = get_valid_codelist_values(kodeliste_url)
-        context.append(_generate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "bruksvilkaar", "tilgangsrestriksjoner", metadata.bruksvilkaar == None, f"gyldige verdier: {valid_values}", valid_values=valid_values))
+        context.append(_generate_metadata_error(metadata.catalog, metadata.schema, metadata.table, "sikkerhetsnivaa", "sikkerhetsniva", metadata.sikkerhetsnivaa == None, f"gyldige verdier: {valid_values}", valid_values=valid_values))
     
     return context
 
@@ -68,9 +68,9 @@ def check_begrep(metadata: TableMetadata, context: List[MetadataError]) -> List[
     return context
     
 checks_for_valor = {
-    "bronze": [check_beskrivelse, check_tilgangsnivaa],
-    "silver":   [check_beskrivelse, check_hovedkategori, check_emneord, check_tilgangsnivaa, check_bruksvilkaar],
-    "gold":   [check_beskrivelse, check_hovedkategori, check_emneord, check_begrep, check_tilgangsnivaa, check_bruksvilkaar],
+    "bronze": [check_beskrivelse, check_sikkerhetsnivaa],
+    "silver":   [check_beskrivelse, check_hovedkategori, check_emneord, check_tilgangsnivaa, check_sikkerhetsnivaa],
+    "gold":   [check_beskrivelse, check_hovedkategori, check_emneord, check_begrep, check_tilgangsnivaa, check_sikkerhetsnivaa],
 }
 
 
