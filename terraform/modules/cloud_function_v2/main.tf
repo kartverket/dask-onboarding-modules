@@ -32,6 +32,7 @@ resource "google_cloudfunctions2_function" "function" {
         object = google_storage_bucket_object.function_source.name
       }
     }
+    service_account = "projects/${var.project_id}/serviceAccounts/${var.service_account_email}"
   }
   service_config {
     environment_variables = var.environment_variables
