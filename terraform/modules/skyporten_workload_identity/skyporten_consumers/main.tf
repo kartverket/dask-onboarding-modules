@@ -3,8 +3,9 @@ locals {
 }
 
 resource "random_string" "random" {
-  length           = 4
-  special          = false
+  length  = 4
+  special = false
+  upper   = false
 }
 
 resource "google_service_account" "skyporten_consumer" {
